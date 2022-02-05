@@ -563,7 +563,7 @@
 //                    }
 //                    console.log(error);
 //                    console.log(error.message);
-                    window.showToast('danger', 'لطفا تصویر را کوچکتر کنید', onclick = null);
+                    window.showToast('danger', 'لطفا خطاها را اصلاح کنید', onclick = null);
                 });
             },
             log(str) {
