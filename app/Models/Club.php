@@ -17,7 +17,9 @@ class Club extends Model
         'id', 'user_id', 'province_id', 'county_id', 'name', 'address', 'location', 'description', 'phone', 'times', 'created_at', 'updated_at', 'active','hidden',
     ];
     protected $casts = [
-        'born_at' => 'timestamp'
+        'born_at' => 'timestamp',
+        'active' => 'boolean',
+        'hidden' => 'boolean',
 
     ];
 

@@ -15,7 +15,7 @@ class Blog extends Model
         'id', 'user_id', 'category_id', 'title', 'summary', 'content', 'tags', 'is_draft', 'published_at', 'created_at', 'updated_at'
     ];
     protected $casts = [
-
+        'is_draft' => 'boolean'
 
     ];
 

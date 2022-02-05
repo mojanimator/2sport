@@ -17,7 +17,10 @@ class Player extends Model
         'id', 'user_id', 'province_id', 'county_id', 'sport_id', 'name', 'family', 'height', 'weight', 'born_at', 'is_man', 'phone', 'description', 'created_at', 'updated_at', 'active', 'hidden',
     ];
     protected $casts = [
-        'born_at' => 'timestamp'
+        'born_at' => 'timestamp',
+        'is_man' => 'boolean',
+        'active' => 'boolean',
+        'hidden' => 'boolean',
 
     ];
 

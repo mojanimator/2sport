@@ -17,7 +17,12 @@ class Product extends Model
         'id', 'shop_id', 'group_id',
         'props', 'name', 'description', 'count', 'tags', 'sold', 'price', 'discount_price', 'created_at', 'active', 'hidden',
     ];
+    protected $casts = [
 
+        'active' => 'boolean',
+        'hidden' => 'boolean',
+
+    ];
 //    protected static function booted()
 //    {
 //        static::addGlobalScope('active', function (Builder $builder) {

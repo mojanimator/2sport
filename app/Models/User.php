@@ -57,6 +57,11 @@ class User extends Authenticatable implements /*Auditable,*/
      */
     protected $casts = [
 
+        'is_man' => 'boolean',
+        'active' => 'boolean',
+        'email_verified' => 'boolean',
+        'phone_verified' => 'boolean',
+
 
     ];
 

@@ -16,7 +16,10 @@ class Coach extends Model
         'id', 'user_id', 'sport_id', 'province_id', 'county_id', 'name', 'family', 'born_at', 'is_man', 'phone', 'description', 'created_at', 'updated_at', 'active','hidden',
     ];
     protected $casts = [
-        'born_at' => 'timestamp'
+        'born_at' => 'timestamp',
+        'is_man' => 'boolean',
+        'active' => 'boolean',
+        'hidden' => 'boolean',
 
     ];
 
