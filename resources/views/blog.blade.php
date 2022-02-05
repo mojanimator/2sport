@@ -145,7 +145,6 @@
                                 @if(isset($section->data->caption))
                                     <span
                                             class="small font-weight-bold d-block mb-2">{{$section->data->caption}}</span>
-
                                 @endif
                                 <i class="fa fa-quote-right mx-2 small opacity-50" aria-hidden="true"></i>
                                 <span class="text-secondary ">{{$section->data->text}}</span>
