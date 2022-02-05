@@ -15,3 +15,9 @@ jobs:
         username: sportir
         password: ${{ secrets.ftp_password }}
         server-dir: /sportir/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/node_modules/**
+          **/vendor/**
