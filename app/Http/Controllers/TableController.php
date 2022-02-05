@@ -202,10 +202,10 @@ class TableController extends Controller
             $query = $query->orderBy($orderBy, $dir);
 
         $cols = ['id', 'type_id', 'title', 'tournament', 'content->tags as tags', 'content->img as img', 'active', 'updated_at',];
-        if ($request->with_content)
+        if ($request->with_content) {
             $cols[] = 'content->table->header as header';
-        $cols[] = 'content->table->body as body';
-
+            $cols[] = 'content->table->body as body';
+        }
         $query = $query->select($cols);
 
 
