@@ -1,0 +1,183 @@
+// Body
+$body-bg: #f8fafc;
+$is-rtl: true;
+// Typography
+$font-family-sans-serif: 'Nunito', sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+
+$white: #fff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black: #000;
+
+// Colors
+$light-transparent: rgba(250, 250, 250, .5);
+$dark-transparent: rgba(50, 50, 50, .7);
+$dark: #373737;
+$blue: #3490dc;
+$indigo: #6574cd;
+$purple: #9561e2;
+$pink: #f66d9b;
+$red: #e3342f;
+$orange: #f6993f;
+$yellow: #ffed4a;
+$green: #38c172;
+$teal: #4dc0b5;
+$cyan: #18ffff;
+$secondary: #b23cfd;
+$primary: #343265;
+$primary-color: #343265;
+.bg-primary {
+  background-color: $primary !important;
+}
+
+.text-primary {
+  color: $primary !important;
+}
+
+$light: $gray-100;
+$dark: $dark;
+
+$colors: ();
+$colors: map-merge((
+        "dark-transparent":$dark-transparent,
+        "light-transparent":$light-transparent,
+        "purple": $purple,
+        "dark": $dark,
+        "red": $red,
+        "white": $white,
+        "gray-dark": $gray-800,
+        "blue": $blue,
+        "indigo": $indigo,
+        "pink": $pink,
+        "orange": $orange,
+        "yellow": $yellow,
+        "green": $green,
+        "teal": $teal,
+        "cyan": $cyan,
+        "primary":$primary,
+), $colors);
+
+$theme-colors: ();
+$theme-colors: map-merge((
+        "dark-transparent":$dark-transparent,
+        "light-transparent":$light-transparent,
+        "purple": $purple,
+        "success": $green,
+        'secondary': $secondary,
+        "light": $light,
+        "dark": $dark,
+        "blue": $blue,
+        "indigo": $indigo,
+        "pink": $pink,
+        "red": $red,
+        "danger": $red,
+        "orange": $orange,
+        "yellow": $yellow,
+        "green": $green,
+        "teal": $teal,
+        "cyan": $cyan,
+        "primary":$primary,
+), $theme-colors);
+
+$grid-breakpoints: (
+        xs: 0,
+        ms: 320px,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px
+);
+//@include _assert-ascending($grid-breakpoints, '$grid-breakpoints');
+//@include _assert-starts-at-zero($grid-breakpoints, '$grid-breakpoints');
+/* set the overriding variables */
+//$grid-breakpoints: (
+//        xxxs: 0,
+//        xxs: 320px,
+//        xs: 568px,
+//        sm: 667px,
+//        md: 768px,
+//        lg: 992px,
+//        xl: 1200px,
+//        xxl: 1440px,
+//        xxxl: 1600px
+//);
+
+$container-max-widths: (
+        ms: 320px,
+        sm: 540px,
+        md: 720px,
+        lg: 960px,
+        xl: 1140px,
+        xxl: 1320px
+);
+//@include _assert-ascending($container-max-widths, "$container-max-widths");
+$enable-transitions: true;
+$enable-reduced-motion: true;
+//@include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
+//@include _assert-starts-at-zero($grid-breakpoints, "$grid-breakpoints");
+$navbar-dark-color: rgba($white, .55);
+
+$navbar-dark-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='#{$navbar-dark-color}' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+$navbar-dark-toggler-border-color: rgba($white, .1);
+
+$navbar-light-color: rgba($black, .55);
+
+$navbar-light-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='#{$navbar-light-color}' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+$navbar-light-toggler-border-color: rgba($black, .1);
+
+.navbar-dark .navbar-toggler-icon {
+  background-image: $navbar-dark-toggler-icon-bg;
+  border-color: $navbar-dark-toggler-border-color;
+}
+
+$enable-rounded: true;
+$font-weight-normal: 400;
+$variable-prefix: bs-;
+$font-family-base: var(--#{$variable-prefix}font-sans-serif);
+$spacer: 1rem;
+// scss-docs-start border-radius-variables
+$border-radius: .25rem;
+$border-radius-sm: .2rem;
+$border-radius-lg: .3rem;
+$border-radius-pill: 50rem;
+
+$font-size-root: null;
+$font-size-base: 1rem; // Assumes the browser default, typically `16px`
+$font-size-sm: $font-size-base * .875;
+$font-size-lg: $font-size-base * 1.25;
+
+$zindex-tooltip: 1080;
+// scss-docs-start tooltip-variables
+$tooltip-font-size: $font-size-sm;
+$tooltip-max-width: 200px;
+$tooltip-color: $white;
+$tooltip-bg: $black;
+$tooltip-border-radius: $border-radius;
+$tooltip-opacity: .9;
+$tooltip-padding-y: $spacer * .25;
+$tooltip-padding-x: $spacer * .5;
+$tooltip-margin: 0;
+
+$tooltip-arrow-width: .8rem;
+$tooltip-arrow-height: .4rem;
+$tooltip-arrow-color: $tooltip-bg;
+// scss-docs-end tooltip-variables
+
+// Form tooltips must come after regular tooltips
+// scss-docs-start tooltip-feedback-variables
+$form-feedback-tooltip-padding-y: $tooltip-padding-y;
+$form-feedback-tooltip-padding-x: $tooltip-padding-x;
+$form-feedback-tooltip-font-size: $tooltip-font-size;
+$form-feedback-tooltip-line-height: null;
+$form-feedback-tooltip-opacity: $tooltip-opacity;
+$form-feedback-tooltip-border-radius: $tooltip-border-radius;
+// scss-docs-end tooltip-feedback-variables

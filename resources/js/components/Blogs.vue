@@ -1,0 +1,640 @@
+<template>
+    <div class="container  ">
+        <transition :duration="1000" name="fade" style="transition: opacity 1.0s ease">
+
+            <div class="row ">
+                <div class="  navbar-light bg-light position-absolute start-0 end-0 "></div>
+
+
+                <nav id="navbars" class="navbar navbar-expand navbar-light bg-light   "
+                     aria-label="news">
+                    <div class=" container-fluid   ">
+                        <!--<a class="navbar-brand me-0 me-md-2 font-weight-bold" href="/">-->
+                        <!--<img src="/img/icon.png" height="64" alt="">-->
+
+                        <!--</a>-->
+                        <!--<button class="navbar-toggler  collapsed" type="button" data-bs-toggle="collapse"-->
+                        <!--data-bs-target="#navbar2" aria-controls="navbar1" aria-expanded="false"-->
+                        <!--aria-label="Toggle navigation">-->
+                        <!--<span class="navbar-toggler-icon"></span>-->
+                        <!--</button>-->
+
+                        <div class="navbar-collapse collapse row " id="navbar2" style="">
+                            <ul class="navbar-nav col-md-7  justify-content-center   ">
+
+                                <li class="nav-item small ms-2  my-1">
+                                    <div class="nav-link px-1 px-md-2  hoverable-primary rounded font-weight-bold "
+                                         :class="view=='blog-all'? 'text-white bg-primary':'text-primary'"
+                                         aria-current="page" @click="view='blog-all'">اخبار ورزشی
+                                    </div>
+                                </li>
+                                <li class="nav-item   small ms-2 ms-sm-1 ms-md-1 my-1">
+                                    <div class="nav-link px-1 px-md-2  hoverable-primary rounded  font-weight-bold "
+                                         :class="view=='blog-iran'? 'text-white bg-primary':'text-primary'"
+                                         aria-current="page" @click="view='blog-iran'">اخبار فوتبال داخلی
+                                    </div>
+                                </li>
+                                <li class="nav-item  small ms-2 ms-sm-1 ms-md-1 my-1">
+                                    <div class="nav-link px-1 px-md-2  hoverable-primary rounded font-weight-bold  "
+                                         :class="view=='blog-world'? 'text-white bg-primary':'text-primary'"
+                                         aria-current="page" @click="view='blog-world'">اخبار فوتبال خارجی
+                                    </div>
+                                </li>
+                            </ul>
+                            <ul class="navbar-nav  col-md-5    justify-content-center justify-content-md-start">
+                                <li class="nav-item  small ms-2 ms-sm-1 ms-md-1 my-1">
+                                    <a class="nav-link px-1 px-md-2  hoverable-primary rounded font-weight-bold  "
+                                       :class="view=='table-all'? 'text-white bg-primary':'text-primary'"
+                                       aria-current="page" @click="view='table-all'">جدول لیگ ها</a>
+                                </li>
+                                <li class="nav-item  small ms-2 ms-sm-1 ms-md-1 my-1">
+                                    <div class="nav-link px-1 px-md-2  hoverable-primary rounded font-weight-bold  "
+                                         :class="view=='conductor'? 'text-white bg-primary':'text-primary'"
+                                         aria-current="page" @click="view='conductor'">کنداکتور ورزشی
+                                    </div>
+                                </li>
+
+
+                            </ul>
+
+                        </div>
+                    </div>
+                </nav>
+
+                <section class="row mt-1 flex-wrap " data-masonry='{"percentPosition": true }'>
+                    <!--<div v-show="loading" class="  position-absolute col-12 mx-auto  text-center"-->
+                    <!--style="margin-top: -1rem">-->
+                    <!--<div v-for="i in  [1,1,1,1,1]"-->
+                    <!--class="spinner-grow mx-1 mt-3   spinner-grow-sm text-primary "-->
+                    <!--role="status">-->
+                    <!--<span class="visually-hidden"> </span>-->
+                    <!--</div>-->
+
+                    <!--</div>-->
+                    <!--all blogs cards-->
+                    <div v-if="view=='blog-all'" v-for="d,idx in allBlogs"
+                         class="col-ms-12 col-sm-6 col-md-6 col-lg-5 col-xl-4 mx-auto    "
+                    >
+                        <a :href="'/blog/'+d.id+'/'+replaceAll(d.title,' ','-')" class="  d-block  mx-auto  "
+                           style="height: 95%;max-width: 28rem">
+                            <div class="  move-on-hover h-100 card shadow-3-primary ">
+                                <div class="card-body  p-3 ">
+                                    <div class="row  h-100">
+                                        <div class="col-4 align-content-stretch    ">
+
+                                            <img :src="getImage(d.docs )" class="rounded  w-100 h-100   "
+                                                 style="object-fit: cover; "
+                                                 alt="" @error="imgError">
+
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="small  mb-0 text-dark-transparent text-end  "
+                                                 style="font-size: .6rem">
+                                                {{ getDateTime(d.published_at) }}
+                                            </div>
+                                            <div class="small  mb-0 text-secondary font-weight-bold"
+                                                 style="font-size: .8rem">
+                                                {{d.title && d.title.length > 30 ? d.title.substring(0, 30) + '...' : d.title
+                                                }}
+                                            </div>
+                                            <div class="col-12 small text-dark text-opacity-75   mt-1 "
+                                                 style="font-size: .7rem">
+                                                {{d.summary && d.summary.length > 70 ? d.summary.substring(0, 70) + '...' : d.summary
+                                                }}
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div v-if="view=='blog-iran'" v-for="d,idx in iranFootballBlogs"
+                         class="col-ms-12 col-sm-6 col-md-6 col-lg-5 col-xl-4 mx-auto    "
+                    >
+                        <a :href="'/blog/'+d.id+'/'+replaceAll(d.title,' ','-')" class="  d-block  mx-auto  "
+                           style="height: 95%;max-width: 28rem">
+                            <div class="  move-on-hover h-100 card shadow-3-primary ">
+                                <div class="card-body  p-3 ">
+                                    <div class="row  h-100">
+                                        <div class="col-4 align-content-stretch    ">
+
+                                            <img :src="getImage(d.docs )" class="rounded  w-100 h-100   "
+                                                 style="object-fit: cover; "
+                                                 alt="" @error="imgError">
+
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="small  mb-0 text-dark-transparent text-end  "
+                                                 style="font-size: .6rem">
+                                                {{ getDateTime(d.published_at) }}
+                                            </div>
+                                            <div class="small  mb-0 text-secondary font-weight-bold"
+                                                 style="font-size: .8rem">
+                                                {{d.title && d.title.length > 30 ? d.title.substring(0, 30) + '...' : d.title
+                                                }}
+                                            </div>
+                                            <div class="col-12 small text-dark text-opacity-75   mt-1 "
+                                                 style="font-size: .7rem">
+                                                {{d.summary && d.summary.length > 70 ? d.summary.substring(0, 70) + '...' : d.summary
+                                                }}
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div v-if="view=='blog-world'" v-for="d,idx in worldFootballBlogs"
+                         class="col-ms-12 col-sm-6 col-md-6 col-lg-5 col-xl-4 mx-auto    "
+                    >
+                        <a :href="'/blog/'+d.id+'/'+replaceAll(d.title,' ','-')" class="  d-block  mx-auto  "
+                           style="height: 95%;max-width: 28rem">
+                            <div class="  move-on-hover h-100 card shadow-3-primary ">
+                                <div class="card-body  p-3 ">
+                                    <div class="row  h-100">
+                                        <div class="col-4 align-content-stretch    ">
+
+                                            <img :src="getImage(d.docs )" class="rounded  w-100 h-100   "
+                                                 style="object-fit: cover; "
+                                                 alt="" @error="imgError">
+
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="small  mb-0 text-dark-transparent text-end  "
+                                                 style="font-size: .6rem">
+                                                {{ getDateTime(d.published_at) }}
+                                            </div>
+                                            <div class="small  mb-0 text-secondary font-weight-bold"
+                                                 style="font-size: .8rem">
+                                                {{d.title && d.title.length > 30 ? d.title.substring(0, 30) + '...' : d.title
+                                                }}
+                                            </div>
+                                            <div class="col-12 small text-dark text-opacity-75   mt-1 "
+                                                 style="font-size: .7rem">
+                                                {{d.summary && d.summary.length > 70 ? d.summary.substring(0, 70) + '...' : d.summary
+                                                }}
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div v-if="view=='table-all'"
+                         v-for="d,idx in groupBy( allTables.filter(function(el)  {return el.type_id != 2;}),'tournament')"
+                         class="col-md-6  col-xl-4">
+                        <div v-if="!Array.isArray(d)" class="card shadow-primary small">
+
+                            <div class="card-header bg-primary text-white   d-flex justify-content-between ">
+                                <span class="  ">{{d.title}}</span>
+                                <a class="text-white d-block px-1 rounded hoverable-cyan"
+                                   :href="'/table/'+d.id+'/'+replaceAll(d.title,' ','-')">جزییات...</a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table  table-striped table-light  "
+                                       style="white-space: nowrap;">
+                                    <thead class="">
+                                    <tr>
+                                        <th class="  py-1 font-weight-bold  "
+
+                                            v-for="h,idx in JSON.parse(d.header).filter(get3Index)">
+                                            {{h}}
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="row,idx in JSON.parse(d.body).map(function(el){return el.filter(get3Index);})"
+                                        class=" ">
+                                        <td v-for="col,idx in row" class=" py-1   overflow-hidden"
+                                        >
+                                            <img v-if="col.type=='img'" :src="col.value" alt="" style="height: 3rem;">
+                                            <span v-else="">{{col.value}}</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div v-else="" class="card shadow-primary small py-2">
+                            <div class="card-header bg-primary text-white   d-flex justify-content-between ">
+                                <span class="  ">{{d[0].tournament}}</span>
+                                <a class="text-white d-block px-1 rounded hoverable-cyan"
+                                   :href="'/table/'+d[0].id+'/'+replaceAll(d[0].tournament,' ','-')">جزییات...</a>
+                            </div>
+                            <div v-for="table,idx in d" class="accordion " id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item mx-2">
+                                    <h2 class="accordion-header  " :id="'panel-heading-'+table.id">
+                                        <button class="accordion-button collapsed p-2 px-3 bg-secondary text-white"
+                                                type="button"
+                                                data-mdb-toggle="collapse"
+                                                :data-mdb-target="'#panel-collapse-'+table.id"
+                                                aria-expanded="true"
+                                                :aria-controls="'panel-collapse-'+table.id">
+                                            {{table.title}}
+                                        </button>
+                                    </h2>
+                                    <div :id="'panel-collapse-'+table.id"
+                                         class="accordion-collapse collapse   "
+                                         aria-labelledby="panelsStayOpen-headingOne">
+                                        <div class="accordion-body p-1">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-light"
+                                                       style="white-space: nowrap;">
+                                                    <thead class="">
+                                                    <tr>
+                                                        <th scope="col" class="py-1   font-weight-bold"
+                                                            v-for="h,idx in JSON.parse(table.header).filter(get3Index)">
+                                                            {{h}}
+                                                        </th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr v-for="row,idx in JSON.parse(table.body).map(function(row){return row.filter(get3Index)})">
+                                                        <td v-for="col,idx in row" class="py-1   overflow-hidden">
+                                                            <img v-if="col.type=='img'" :src="col.value" alt=""
+                                                                 style="height: 3rem;">
+                                                            <span v-else="">{{col.value}}</span>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="view=='conductor'"
+                         v-for="d,idx in  conductor.filter(function(el)  {return el.type_id == 2;}) "
+                         class="col-md-10 col-xl-6 mx-auto">
+                        <div class="card shadow-primary small">
+
+                            <div class="card-header bg-primary text-white">{{d.title}}</div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-light">
+                                    <thead class="">
+                                    <tr>
+                                        <th scope="col" class="p-1 px-2 font-weight-bold"
+                                            v-for="h,idx in JSON.parse(d.header)">{{h}}
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="row,idx in JSON.parse(d.body)">
+                                        <td v-for="col,idx in row" class="p-1 px-2">
+                                            <img v-if="col.type=='img'" :src="col.value" alt="" style="height: 3rem;">
+                                            <span v-else="">{{col.value}}</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="progress-line mt-1" :style="loading?'opacity:1;':'opacity:0;'"></div>
+                </section>
+
+            </div>
+        </transition>
+    </div>
+</template>
+
+<script>
+    //    import 'masonry-layout';
+    let scrolled = false;
+    let self;
+    export default {
+        props: ['tableLink', 'blogLink', 'categoryData', 'urlParams'],
+        data() {
+            return {
+                view: 'blog-all',
+                loading: false,
+                allBlogs: [],
+                allBlogsParams: {},
+                iranFootballBlogs: [],
+                iranFootballBlogsParams: {},
+                worldFootballBlogs: [],
+                worldFootballBlogsParams: {},
+                allTables: [],
+                allTablesParams: {},
+                conductor: [],
+                conductorParams: {},
+                params: {},
+                dataLink: null,
+                loader: null,
+                categories: this.categoryData ? JSON.parse(this.categoryData) : [],
+
+            }
+        },
+        watch: {
+            view(val) {
+                this.getData(1);
+            }
+        },
+        created() {
+            if (this.urlParams) {
+                this.params = JSON.parse(this.urlParams);
+                if (this.params.view) {
+                    this.view = this.params.view;
+                }
+            }
+        },
+        mounted() {
+            self = this;
+            this.loader = document.querySelector('.progress-line');
+
+            this.setScroll(this.loader);
+            this.getData(1);
+        },
+        methods: {
+            get3Index(el, idx, array) {
+                return idx == 0 || idx == 1 || idx == array.length - 1;
+            },
+            replaceAll(str, search, replace) {
+
+                if (!str) return;
+                str = str.toString();
+
+                for (let i in str) {
+//                    str = str.replaceAll(eng[i], per[i]);
+                    if (str[i] == search)
+                        str = str.replace(search, replace);
+                }
+                return str;
+
+            },
+            groupBy(list, key) {
+                let res = [];
+                let tmp = list.reduce(function (rv, x) {
+                    (rv[x[key]] = rv[x[key]] || []).push(x);
+                    return rv;
+                }, {});
+                for (let idx in tmp) {
+                    if (idx == 'null')
+                        for (let jdx in tmp[idx])
+                            res.push(tmp[idx][jdx]);
+                    else
+                        res.push(tmp[idx]);
+                }
+                return res;
+            },
+            setScroll(el) {
+                window.onscroll = function () {
+//                    const {top, bottom, height} = this.loader.getBoundingClientRect();
+
+                    let top_of_element = el.offsetTop;
+                    let bottom_of_element = el.offsetTop + el.offsetHeight;
+                    let bottom_of_screen = window.pageYOffset + window.innerHeight;
+                    let top_of_screen = window.pageYOffset;
+
+
+                    if ((bottom_of_screen + 300 > top_of_element) && (top_of_screen < bottom_of_element + 200) && !self.loading) {
+                        self.getData();
+                        scrolled = true;
+//                        console.log('visible')
+                        // the element is visible, do something
+                    } else {
+//                        console.log('invisible')
+                        // the element is not visible, do something else
+                    }
+                };
+            },
+
+            getDateTime(date) {
+                let d = new Date(date);
+                let options = {
+                    hour12: false,
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    nu: 'arab',
+                    calendar: 'persian',
+                };
+//                let day = d.toLocaleDateString('fa-IR');
+
+                return d.toLocaleString('fa-IR', options).split(' ').reverse().join(' ');
+            },
+            imgError(event) {
+
+                event.target.src = '/img/noimage.png';
+                event.target.parentElement.href = '/img/noimage.png';
+            },
+            getImage(docs) {
+
+                let doc;
+                if (docs && docs.length > 0)
+                    doc = docs[0];
+
+                if (doc)
+                    return '/storage/' + doc.type_id + "/" + doc.id + ".jpg";
+                else
+                    return this.assetLink + "/noimage.png";
+            },
+            setParams(page, data) {
+                if (page)
+                    this.params.page = page;
+                if (data)
+                    this.params.total = data.total;
+
+
+                switch (this.view) {
+                    case 'blog-all':
+
+                        if (this.params.total > 0 && this.params.total <= this.allBlogs.length)
+                            return false; //no data, dont try
+                        this.allBlogsParams.category = null;
+                        this.params = this.allBlogsParams;
+                        this.dataLink = this.blogLink;
+                        this.allBlogsParams.page = page;
+                        if (this.params.page === 1 && !data) {
+                            this.allBlogs.splice(0, this.allBlogs.length);
+                        }
+                        if (data) {
+
+                            Array.prototype.push.apply(this.allBlogs, data.data);
+
+                            if (this.allBlogs.length === 0)
+                                this.noData = true;
+                            if (this.params.page > 1 && this.allBlogs.length === 0) {
+                                this.noData = false;
+                                this.allBlogsParams.page = 1;
+                                this.getData();
+                            }
+                        }
+                        break;
+                    case 'blog-iran':
+                        if (this.params.total > 0 && this.params.total <= this.iranFootballBlogs.length)
+                            return false; //no data, dont try
+                        this.iranFootballBlogsParams.category = 2;
+                        this.params = this.iranFootballBlogsParams;
+                        this.dataLink = this.blogLink;
+                        this.iranFootballBlogsParams.page = page;
+                        if (this.params.page === 1 && !data) {
+                            this.iranFootballBlogs.splice(0, this.iranFootballBlogs.length);
+                        }
+                        if (data) {
+                            Array.prototype.push.apply(this.iranFootballBlogs, data.data);
+                            if (this.iranFootballBlogs.length === 0)
+                                this.noData = true;
+                            if (this.params.page > 1 && this.iranFootballBlogs.length === 0) {
+                                this.noData = false;
+                                this.iranFootballBlogsParams.page = 1;
+                                this.getData();
+                            }
+                        }
+                        break;
+                    case 'blog-world':
+                        if (this.params.total > 0 && this.params.total <= this.worldFootballBlogs.length)
+                            return false; //no data, dont try
+                        this.worldFootballBlogsParams.category = 3;
+                        this.params = this.worldFootballBlogsParams;
+                        this.dataLink = this.blogLink;
+                        this.worldFootballBlogsParams.page = page;
+                        if (this.params.page === 1 && !data) {
+                            this.worldFootballBlogs.splice(0, this.worldFootballBlogs.length);
+                        }
+                        if (data) {
+                            Array.prototype.push.apply(this.worldFootballBlogs, data.data);
+                            if (this.worldFootballBlogs.length === 0)
+                                this.noData = true;
+                            if (this.params.page > 1 && this.worldFootballBlogs.length === 0) {
+                                this.noData = false;
+                                this.worldFootballBlogsParams.page = 1;
+                                this.getData();
+                            }
+                        }
+                        break;
+                    case 'table-all':
+                        if (this.params.total > 0 && this.params.total <= this.allTables.length)
+                            return false; //no data, dont try
+                        this.params = {with_content: true};
+                        this.dataLink = this.tableLink;
+                        this.allTablesParams.page = page;
+                        if (this.params.page === 1 && !data) {
+                            this.allTables.splice(0, this.allTables.length);
+                        }
+                        if (data) {
+                            Array.prototype.push.apply(this.allTables, data.data);
+                            if (this.allTables.length === 0)
+                                this.noData = true;
+                            if (this.params.page > 1 && this.allTables.length === 0) {
+                                this.noData = false;
+                                this.allTablesParams.page = 1;
+                                this.getData();
+                            }
+                        }
+                        break;
+                    case 'conductor':
+                        if (this.params.total > 0 && this.params.total <= this.conductor.length)
+                            return false; //no data, dont try
+                        this.params = {with_content: true};
+                        this.dataLink = this.tableLink;
+                        this.conductorParams.page = page;
+                        if (this.params.page === 1 && !data) {
+                            this.conductor.splice(0, this.conductor.length);
+                        }
+                        if (data) {
+                            Array.prototype.push.apply(this.conductor, data.data);
+                            if (this.conductor.length === 0)
+                                this.noData = true;
+                            if (this.params.page > 1 && this.conductor.length === 0) {
+                                this.noData = false;
+                                this.conductorParams.page = 1;
+                                this.getData();
+                            }
+                        }
+                        break;
+                }
+
+
+            },
+            getData(page) {
+
+
+                if (scrolled) {
+
+                    this.params.page++;
+                    scrolled = false;
+                }
+                let allow = this.setParams(page);
+
+                if (allow === false) return;
+                history.replaceState(null, null, axios.getUri({url: '/blogs', params: {view: this.view}}));
+
+//                this.loading.removeClass('hide');
+                this.loading = true;
+                this.noData = false;
+
+
+                axios.get(this.dataLink, {
+                    params: this.params
+                })
+                    .then((response) => {
+
+//                            console.log(axios.getUri({url: this.url, params: response.config.params}));
+//                        this.loading.addClass('hide');
+                            if (response.status === 200) {
+
+
+//                                console.log(response.data.data);
+                                this.setParams(page, response.data);
+
+
+//                                this.page = response.data.current_page + 1;
+
+                                this.loading = false;
+
+                                this.pagination =
+                                    {
+                                        current_page: response.data.current_page,
+                                        first_page_url: response.data.first_page_url,
+                                        next_page_url: response.data.next_page_url,
+                                        prev_page_url: response.data.prev_page_url,
+                                        last_page_url: response.data.last_page_url,
+                                        last_page: response.data.last_page,
+                                        from: response.data.from,
+                                        to: response.data.to,
+                                        total: response.data.total,
+                                    };
+//
+                            }
+                        }
+                    ).catch((error) => {
+                    console.log(error);
+                    this.loading = false;
+                });
+            }
+            ,
+            log(str) {
+                console.log(str);
+            },
+        }
+    }
+</script>
+<style type="text/css">
+
+
+    .accordion-button::after {
+        /*color: white !important;*/
+        /*background-color: white;*/
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+    }
+</style>
