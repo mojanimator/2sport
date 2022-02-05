@@ -14,5 +14,8 @@ class Table extends Model
     protected $fillable = [
         'id', 'title', 'type_id', 'tournament', 'active', 'content', 'updated_at',
     ];
+    protected $casts = [
+        'active' => 'boolean'
 
+    ];
 }
