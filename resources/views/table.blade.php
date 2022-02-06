@@ -96,11 +96,17 @@
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped table-light  "
                                style="white-space: nowrap;">
-                            <thead class="">
+                            <thead class="table-primary text-primary">
                             <tr>
                                 @foreach($d->header as $h)
-                                    <th class="  py-1 font-weight-bold  ">{{$h}}
-                                    </th>
+                                    @if(str_contains($h, 'تیم') || str_contains($h, 'نام'))
+                                        <th class="py-2 px-3 text-center   font-weight-bold    "
+                                            style="min-width: 130px">{{$h}}
+                                        </th>
+                                    @else
+                                        <th class="   px-3  py-2 font-weight-bold   ">{{$h}}
+                                        </th>
+                                    @endif
                                 @endforeach
                             </tr>
                             </thead>
@@ -108,12 +114,12 @@
                             @foreach($d->body as $row)
                                 <tr class=" ">
                                     @foreach($row as $col)
-                                        <td class=" {{is_numeric($col->value)? 'text-center':'ps-1'}}  px-1 overflow-hidden"
-                                        >
+                                        <td class=" py-1    overflow-hidden"
+                                            style="font-size: 11px">
                                             @if($col->type=='img')
-                                                <img :src="col.value" alt="" style="height: 3rem;">
+                                                <img src="{{$col->value}}" alt="" style="height: 3rem;">
                                             @else
-                                                <span class=" d-inline-block  {{is_numeric($col->value)? 'text-center':'ps-1'}} ">{{$col->value}}</span>
+                                                <div class=" text-center ">{{$col->value}}</div>
                                             @endif
                                         </td>
                                     @endforeach
@@ -130,12 +136,18 @@
                 <div class="card-header bg-primary text-white">{{$data->title}}</div>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-light  "
-                           style="white-space: nowrap;">
-                        <thead class="">
+                           style="white-space: nowrap;table-layout: auto  ">
+                        <thead class="table-primary text-primary">
                         <tr>
                             @foreach($header as $h)
-                                <th class="  py-1 font-weight-bold  ">{{$h}}
-                                </th>
+                                @if(str_contains($h, 'تیم') || str_contains($h, 'نام'))
+                                    <th class="py-2 px-3 text-center   font-weight-bold    "
+                                        style="min-width: 130px">{{$h}}
+                                    </th>
+                                @else
+                                    <th class="   px-3  py-2  text-center  font-weight-bold   ">{{$h}}
+                                    </th>
+                                @endif
                             @endforeach
                         </tr>
                         </thead>
@@ -143,12 +155,12 @@
                         @foreach($body as $row)
                             <tr class=" ">
                                 @foreach($row as $col)
-                                    <td class=" {{is_numeric($col->value)? 'text-center':'ps-1'}}  px-1 overflow-hidden"
-                                    >
+                                    <td class="   py-1  overflow-hidden"
+                                        style="font-size: 11px">
                                         @if($col->type=='img')
-                                            <img :src="col.value" alt="" style="height: 3rem;">
+                                            <img src="{{$col->value}}" alt="" style="height: 3rem;">
                                         @else
-                                            <span class=" d-inline-block  {{is_numeric($col->value)? 'text-center':'ps-1'}} ">{{$col->value}}</span>
+                                            <div class=" text-center py-1   ">{{$col->value}}</div>
                                         @endif
                                     </td>
                                 @endforeach

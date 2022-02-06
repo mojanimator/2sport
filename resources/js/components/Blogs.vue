@@ -203,9 +203,9 @@
                             <div class="table-responsive">
                                 <table class="table  table-striped table-light  "
                                        style="white-space: nowrap;">
-                                    <thead class="">
+                                    <thead class="table-primary text-primary">
                                     <tr>
-                                        <th class="  py-1 font-weight-bold  "
+                                        <th class=" text-center  py-1 font-weight-bold  "
 
                                             v-for="h,idx in JSON.parse(d.header).filter(get3Index)">
                                             {{h}}
@@ -215,10 +215,10 @@
                                     <tbody>
                                     <tr v-for="row,idx in JSON.parse(d.body).map(function(el){return el.filter(get3Index);})"
                                         class=" ">
-                                        <td v-for="col,idx in row" class=" py-1   overflow-hidden"
-                                        >
+                                        <td v-for="col,idx in row" class=" py-1  text-center  overflow-hidden"
+                                            style="font-size: 11px">
                                             <img v-if="col.type=='img'" :src="col.value" alt="" style="height: 3rem;">
-                                            <span v-else="">{{col.value}}</span>
+                                            <div v-else="">{{col.value}}</div>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -250,20 +250,22 @@
                                             <div class="table-responsive">
                                                 <table class="table table-striped table-light"
                                                        style="white-space: nowrap;">
-                                                    <thead class="">
+                                                    <thead class="table-primary text-primary">
                                                     <tr>
-                                                        <th scope="col" class="py-1   font-weight-bold"
+                                                        <th scope="col" class="py-1 text-center   font-weight-bold"
                                                             v-for="h,idx in JSON.parse(table.header).filter(get3Index)">
                                                             {{h}}
                                                         </th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr v-for="row,idx in JSON.parse(table.body).map(function(row){return row.filter(get3Index)})">
-                                                        <td v-for="col,idx in row" class="py-1   overflow-hidden">
+                                                    <tr v-for="row,idx in JSON.parse(table.body).map(function(row){return row.filter(get3Index)})"
+                                                        style="font-size: 11px">
+                                                        <td v-for="col,idx in row"
+                                                            class="py-1 text-center  overflow-hidden">
                                                             <img v-if="col.type=='img'" :src="col.value" alt=""
                                                                  style="height: 3rem;">
-                                                            <span v-else="">{{col.value}}</span>
+                                                            <div v-else="">{{col.value}}</div>
                                                         </td>
                                                     </tr>
                                                     </tbody>

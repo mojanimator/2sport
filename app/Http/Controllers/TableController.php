@@ -79,7 +79,7 @@ class TableController extends Controller
 
         $request->validate([
             'id' => ['required', 'exists:tables,id'],
-            'title' => 'required|string|max:100|unique:tables,title,id',
+            'title' => 'required|string|max:100|unique:tables,title,' . $request->id,
             'data' => 'required|array',
             'category_id' => 'required|in:' . implode(',', array_values(\Helper::$tableType)),
             'tournament' => [Rule::requiredIf($request->category_id == \Helper::$tableType['تورنومنت'], 'max:100')],
