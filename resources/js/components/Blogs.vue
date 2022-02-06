@@ -320,6 +320,7 @@
     //    import 'masonry-layout';
     let scrolled = false;
     let self;
+    let page;
     export default {
         props: ['tableLink', 'blogLink', 'categoryData', 'urlParams'],
         data() {
@@ -327,16 +328,16 @@
                 view: 'blog-all',
                 loading: false,
                 allBlogs: [],
-                allBlogsParams: {},
+                allBlogsParams: {page: 0},
                 iranFootballBlogs: [],
-                iranFootballBlogsParams: {},
+                iranFootballBlogsParams: {page: 0},
                 worldFootballBlogs: [],
-                worldFootballBlogsParams: {},
+                worldFootballBlogsParams: {page: 0},
                 allTables: [],
-                allTablesParams: {},
+                allTablesParams: {page: 0},
                 conductor: [],
-                conductorParams: {},
-                params: {},
+                conductorParams: {page: 0},
+                params: {page: 0},
                 dataLink: null,
                 loader: null,
                 categories: this.categoryData ? JSON.parse(this.categoryData) : [],
@@ -345,7 +346,7 @@
         },
         watch: {
             view(val) {
-                this.getData(1);
+                this.getData(0);
             }
         },
         created() {
@@ -354,6 +355,9 @@
                 if (this.params.view) {
                     this.view = this.params.view;
                 }
+                if (!this.params.page) {
+                    this.params.page = 0;
+                }
             }
         },
         mounted() {
@@ -361,7 +365,7 @@
             this.loader = document.querySelector('.progress-line');
 
             this.setScroll(this.loader);
-            this.getData(1);
+            this.getData(0);
         },
         methods: {
             get3Index(el, idx, array) {
@@ -406,8 +410,8 @@
 
 
                     if ((bottom_of_screen + 300 > top_of_element) && (top_of_screen < bottom_of_element + 200) && !self.loading) {
-                        self.getData();
                         scrolled = true;
+                        self.getData();
 //                        console.log('visible')
                         // the element is visible, do something
                     } else {
@@ -450,117 +454,151 @@
                 else
                     return this.assetLink + "/noimage.png";
             },
-            setParams(page, data) {
-                if (page)
-                    this.params.page = page;
-                if (data)
-                    this.params.total = data.total;
+            setParams(data) {
+
+                if (isNaN(this.params.page))
+                    page = 0;
 
 
                 switch (this.view) {
                     case 'blog-all':
+                        if (!data)
+                            page = ++this.allBlogsParams.page;
 
-                        if (this.params.total > 0 && this.params.total <= this.allBlogs.length)
+                        if (this.allBlogsParams.total == 0 || (this.allBlogsParams.total > 0 && this.allBlogsParams.total <= this.allBlogs.length))
                             return false; //no data, dont try
+
                         this.allBlogsParams.category = null;
                         this.params = this.allBlogsParams;
                         this.dataLink = this.blogLink;
                         this.allBlogsParams.page = page;
-                        if (this.params.page === 1 && !data) {
+
+                        if (page == 1 && !data) {
                             this.allBlogs.splice(0, this.allBlogs.length);
+
                         }
                         if (data) {
-
                             Array.prototype.push.apply(this.allBlogs, data.data);
+                            this.allBlogsParams.total = data.total;
 
-                            if (this.allBlogs.length === 0)
+                            if (this.allBlogs.length == 0)
                                 this.noData = true;
-                            if (this.params.page > 1 && this.allBlogs.length === 0) {
+                            if (this.allBlogsParams.page > 1 && this.allBlogs.length == 0) {
                                 this.noData = false;
                                 this.allBlogsParams.page = 1;
-                                this.getData();
+                                this.getData(0);
                             }
                         }
                         break;
                     case 'blog-iran':
-                        if (this.params.total > 0 && this.params.total <= this.iranFootballBlogs.length)
+                        if (!data)
+                            page = ++this.iranFootballBlogsParams.page;
+                        if (this.iranFootballBlogsParams.total == 0 || (this.iranFootballBlogsParams.total > 0 && this.iranFootballBlogsParams.total <= this.iranFootballBlogs.length))
                             return false; //no data, dont try
+
                         this.iranFootballBlogsParams.category = 2;
                         this.params = this.iranFootballBlogsParams;
                         this.dataLink = this.blogLink;
                         this.iranFootballBlogsParams.page = page;
-                        if (this.params.page === 1 && !data) {
+
+                        if (page == 1 && !data) {
                             this.iranFootballBlogs.splice(0, this.iranFootballBlogs.length);
+
                         }
                         if (data) {
                             Array.prototype.push.apply(this.iranFootballBlogs, data.data);
-                            if (this.iranFootballBlogs.length === 0)
+                            this.iranFootballBlogsParams.total = data.total;
+
+                            if (this.iranFootballBlogs.length == 0)
                                 this.noData = true;
-                            if (this.params.page > 1 && this.iranFootballBlogs.length === 0) {
+                            if (this.iranFootballBlogsParams.page > 1 && this.iranFootballBlogs.length == 0) {
                                 this.noData = false;
                                 this.iranFootballBlogsParams.page = 1;
-                                this.getData();
+                                this.getData(0);
                             }
                         }
                         break;
                     case 'blog-world':
-                        if (this.params.total > 0 && this.params.total <= this.worldFootballBlogs.length)
+                        if (!data)
+                            page = ++this.worldFootballBlogsParams.page;
+                        if (this.worldFootballBlogsParams.total == 0 || (this.worldFootballBlogsParams.total > 0 && this.worldFootballBlogsParams.total <= this.worldFootballBlogs.length))
                             return false; //no data, dont try
+
                         this.worldFootballBlogsParams.category = 3;
                         this.params = this.worldFootballBlogsParams;
                         this.dataLink = this.blogLink;
                         this.worldFootballBlogsParams.page = page;
-                        if (this.params.page === 1 && !data) {
+
+                        if (page == 1 && !data) {
                             this.worldFootballBlogs.splice(0, this.worldFootballBlogs.length);
+
                         }
                         if (data) {
                             Array.prototype.push.apply(this.worldFootballBlogs, data.data);
-                            if (this.worldFootballBlogs.length === 0)
+                            this.worldFootballBlogsParams.total = data.total;
+
+                            if (this.worldFootballBlogs.length == 0)
                                 this.noData = true;
-                            if (this.params.page > 1 && this.worldFootballBlogs.length === 0) {
+                            if (this.worldFootballBlogsParams.page > 1 && this.worldFootballBlogs.length == 0) {
                                 this.noData = false;
                                 this.worldFootballBlogsParams.page = 1;
-                                this.getData();
+                                this.getData(0);
                             }
                         }
                         break;
                     case 'table-all':
-                        if (this.params.total > 0 && this.params.total <= this.allTables.length)
+                        if (!data)
+                            page = ++this.allTablesParams.page;
+                        if (this.allTablesParams.total == 0 || (this.allTablesParams.total > 0 && this.allTablesParams.total <= this.allTables.length))
                             return false; //no data, dont try
-                        this.params = {with_content: true};
+
+                        this.allTablesParams.category = null;
+                        this.params = {...this.allTablesParams, with_content: true};
                         this.dataLink = this.tableLink;
                         this.allTablesParams.page = page;
-                        if (this.params.page === 1 && !data) {
+
+                        if (page == 1 && !data) {
                             this.allTables.splice(0, this.allTables.length);
+
                         }
                         if (data) {
                             Array.prototype.push.apply(this.allTables, data.data);
-                            if (this.allTables.length === 0)
+                            this.allTablesParams.total = data.total;
+
+                            if (this.allTables.length == 0)
                                 this.noData = true;
-                            if (this.params.page > 1 && this.allTables.length === 0) {
+                            if (this.allTablesParams.page > 1 && this.allTables.length == 0) {
                                 this.noData = false;
                                 this.allTablesParams.page = 1;
-                                this.getData();
+                                this.getData(0);
                             }
                         }
                         break;
                     case 'conductor':
-                        if (this.params.total > 0 && this.params.total <= this.conductor.length)
+                        if (!data)
+                            page = ++this.conductorParams.page;
+                        if (this.conductorParams.total == 0 || (this.conductorParams.total > 0 && this.conductorParams.total <= this.conductor.length))
                             return false; //no data, dont try
-                        this.params = {with_content: true};
+
+                        this.conductorParams.category = null;
+                        this.params = {...this.conductorParams, with_content: true};
                         this.dataLink = this.tableLink;
                         this.conductorParams.page = page;
-                        if (this.params.page === 1 && !data) {
+
+                        if (page == 1 && !data) {
                             this.conductor.splice(0, this.conductor.length);
+
                         }
                         if (data) {
                             Array.prototype.push.apply(this.conductor, data.data);
-                            if (this.conductor.length === 0)
+                            this.conductorParams.total = data.total;
+
+                            if (this.conductor.length == 0)
                                 this.noData = true;
-                            if (this.params.page > 1 && this.conductor.length === 0) {
+                            if (this.conductorParams.page > 1 && this.conductor.length == 0) {
                                 this.noData = false;
                                 this.conductorParams.page = 1;
-                                this.getData();
+                                this.getData(0);
                             }
                         }
                         break;
@@ -569,16 +607,13 @@
 
             },
             getData(page) {
-
-
-                if (scrolled) {
-
-                    this.params.page++;
-                    scrolled = false;
+                if (page) {
+                    this.params.page = page;
                 }
-                let allow = this.setParams(page);
 
-                if (allow === false) return;
+                let allow = this.setParams();
+
+                if (allow == false) return;
                 history.replaceState(null, null, axios.getUri({url: '/blogs', params: {view: this.view}}));
 
 //                this.loading.removeClass('hide');
@@ -593,12 +628,13 @@
 
 //                            console.log(axios.getUri({url: this.url, params: response.config.params}));
 //                        this.loading.addClass('hide');
-                            if (response.status === 200) {
+                            if (response.status == 200) {
 
 
 //                                console.log(response.data.data);
-                                this.setParams(page, response.data);
 
+
+                                this.setParams(response.data);
 
 //                                this.page = response.data.current_page + 1;
 
