@@ -242,8 +242,14 @@
                     </a>
                 </div>
                 <hr class="horizontal   ">
-
             </div>
+            <a href="https://zil.ink/varta"
+               class="start-0 hoverable-cyan text-light text-center bg-dark end-0 small bg-transparent position-absolute">
+                <span class="">طراحی با </span>
+                <span><i class="fa fa-heart text-danger" aria-hidden="true"></i></span>
+                <span>توسط</span>
+                <span> ورتا </span>
+            </a>
         </div>
     </footer>
 @endif
