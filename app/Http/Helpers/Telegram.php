@@ -115,7 +115,7 @@ class Telegram
         return $string;
     }
 
-    static function log($to, $type, stdClass $data)
+    static function log($to, $type, $data)
     {
 
         $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
