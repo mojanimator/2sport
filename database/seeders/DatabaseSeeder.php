@@ -117,8 +117,8 @@ class DatabaseSeeder extends Seeder
         Coupon::truncate();
         for ($i = 0; $i < 10; $i++)
             Coupon::create([
-                'code' => str_random(3),
-                'discount_percent' => $faker->randomElement([10, 13, 24, 100]),
+                'code' => str_random(8),
+                'discount_percent' => $faker->randomElement([10, 13, 24, 25]),
                 'created_at' => Carbon::now(),
                 'used_at' => null,
                 'expires_at' => null,

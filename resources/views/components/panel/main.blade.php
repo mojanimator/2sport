@@ -6,7 +6,7 @@
 
 @endphp
 
-<div class="row mt-3   ">
+<div class="row mt-3  mx-auto ">
     @if($admin)
         <div class="col-md-6   ">
             <a href="{{url('panel/system-setting')}}" class="my-1  d-block ">
