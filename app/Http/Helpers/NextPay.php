@@ -58,7 +58,7 @@ class  NextPay
                 $c->used_at = \Carbon\Carbon::now();
                 $c->save();
             }
-            \App\Models\Payment::create([
+            $payment = \App\Models\Payment::create([
                 'token_id' => null,
                 'order_id' => $order_id,
                 'amount' => 0,
@@ -70,7 +70,7 @@ class  NextPay
 
             ]);
             \App\Models\Ref::where('invited_id', $user->id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
-
+            Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'payment', $payment);
             redirect("/panel/$type/edit/$id")->with('success-alert', 'پرداخت شما با موفقیت انجام شد');
             return response()->json(['url' => "/panel/$type/edit/$id"], 200);
 

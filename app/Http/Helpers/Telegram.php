@@ -1,5 +1,10 @@
 <?php
 
+use App\Models\County;
+use App\Models\Province;
+use App\Models\Sport;
+use Morilog\Jalali\Jalalian;
+
 class Telegram
 {
 
@@ -110,4 +115,144 @@ class Telegram
         return $string;
     }
 
+    static function log($to, $type, stdClass $data)
+    {
+
+        $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
+        $time = $now->format('%A, %d %B %Y ⏰ H:i');
+        $msg = $time . PHP_EOL;
+        $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+        switch ($type) {
+            case 'user_created':
+                $msg .= " 🔴 " . "یک کاربر ساخته شد" . PHP_EOL;
+                $msg .= " 👤 " . "نام کاربری" . PHP_EOL;
+                $msg .= $data->username . PHP_EOL;
+                $msg .= " 📱 " . "شماره تماس" . PHP_EOL;
+                $msg .= $data->phone . PHP_EOL;
+                break;
+
+            case 'player_created':
+                $msg .= " 🔴 " . "یک بازیکن ساخته شد" . PHP_EOL;
+                $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                $msg .= " 👤 " . "نام: " . PHP_EOL;
+                $msg .= $data->name . ' ' . $data->family . PHP_EOL;
+                $msg .= " 📱 " . "شماره تماس: " . PHP_EOL;
+                $msg .= $data->phone . PHP_EOL;
+                $msg .= " 🧬 " . "جنسیت: " . ($data->is_man ? 'مرد' : 'زن') . PHP_EOL;
+                $msg .= " 📅 " . "تاریخ تولد: " . Jalalian::fromDateTime($data->born_at)->format('%Y/%m/%d') . PHP_EOL;
+                $msg .= " 📏 " . "قد: " . $data->height . PHP_EOL;
+                $msg .= " ⚓ " . "وزن: " . $data->weight . PHP_EOL;
+                $msg .= " ⭐ " . "رشته ورزشی: " . Sport::firstOrNew(['id' => $data->sport_id])->name . PHP_EOL;
+                $msg .= " 🚩 " . "استان: " . Province::firstOrNew(['id' => $data->province_id])->name . PHP_EOL;
+                $msg .= " 🚩 " . "شهر: " . County::firstOrNew(['id' => $data->county_id])->name . PHP_EOL;
+                $msg .= " 📱 " . "توضیحات: " . $data->description . PHP_EOL;
+
+                break;
+
+            case 'coach_created':
+                $msg .= " 🔴 " . "یک مربی ساخته شد" . PHP_EOL;
+                $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                $msg .= " 👤 " . "نام: " . PHP_EOL;
+                $msg .= $data->name . ' ' . $data->family . PHP_EOL;
+                $msg .= " 📱 " . "شماره تماس: " . PHP_EOL;
+                $msg .= $data->phone . PHP_EOL;
+                $msg .= " 🧬 " . "جنسیت: " . ($data->is_man ? 'مرد' : 'زن') . PHP_EOL;
+                $msg .= " 📅 " . "تاریخ تولد: " . Jalalian::fromDateTime($data->born_at)->format('%Y/%m/%d') . PHP_EOL;
+                $msg .= " ⭐ " . "رشته ورزشی: " . Sport::firstOrNew(['id' => $data->sport_id])->name . PHP_EOL;
+                $msg .= " 🚩 " . "استان: " . Province::firstOrNew(['id' => $data->province_id])->name . PHP_EOL;
+                $msg .= " 🚩 " . "شهر: " . County::firstOrNew(['id' => $data->county_id])->name . PHP_EOL;
+                $msg .= " 📱 " . "توضیحات: " . $data->description . PHP_EOL;
+
+                break;
+
+            case 'club_created':
+                $msg .= " 🔴 " . "یک باشگاه ساخته شد" . PHP_EOL;
+                $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                $msg .= " 👤 " . "نام: " . PHP_EOL;
+                $msg .= $data->name . PHP_EOL;
+                $msg .= " 📱 " . "شماره تماس: " . PHP_EOL;
+                $msg .= $data->phone . PHP_EOL;
+                $msg .= " ⭐ " . "رشته ورزشی: " . implode(', ', collect(json_decode($data->times))->map(function ($el) {
+                        return Sport::firstOrNew(['id' => $el->id])->name;
+                    })->toArray()) . PHP_EOL;
+                $msg .= " 🚩 " . "استان: " . Province::firstOrNew(['id' => $data->province_id])->name . PHP_EOL;
+                $msg .= " 🚩 " . "شهر: " . County::firstOrNew(['id' => $data->county_id])->name . PHP_EOL;
+                $msg .= " 🚩 " . "آدرس: " . $data->address . PHP_EOL;
+                $msg .= " 📱 " . "توضیحات: " . $data->description . PHP_EOL;
+
+                break;
+
+            case 'shop_created':
+                $msg .= " 🔴 " . "یک فروشگاه ساخته شد" . PHP_EOL;
+                $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                $msg .= " 👤 " . "نام: " . PHP_EOL;
+                $msg .= $data->name . PHP_EOL;
+                $msg .= " 📱 " . "شماره تماس: " . PHP_EOL;
+                $msg .= $data->phone . PHP_EOL;
+                $msg .= " 🚩 " . "استان: " . Province::firstOrNew(['id' => $data->province_id])->name . PHP_EOL;
+                $msg .= " 🚩 " . "شهر: " . County::firstOrNew(['id' => $data->county_id])->name . PHP_EOL;
+                $msg .= " 🚩 " . "آدرس: " . $data->address . PHP_EOL;
+                $msg .= " 📱 " . "توضیحات: " . $data->description . PHP_EOL;
+
+                break;
+
+            case 'product_created':
+                $shop = \App\Models\Shop::firstOrNew(['id' => $data->shop_id]);
+                $msg .= " 🔴 " . "یک محصول ساخته شد" . PHP_EOL;
+                $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                $msg .= " 👤 " . "نام: " . PHP_EOL;
+                $msg .= $data->name . PHP_EOL;
+                $msg .= " 👤 " . "قیمت اصلی: " . PHP_EOL;
+                $msg .= $data->price . PHP_EOL;
+                $msg .= " 👤 " . "قیمت با تخفیف: " . PHP_EOL;
+                $msg .= $data->discount_price . PHP_EOL;
+                $msg .= " 👤 " . "تعداد: " . PHP_EOL;
+                $msg .= $data->count . PHP_EOL;
+                $msg .= " 🚩 " . "دسته بندی: " . Sport::firstOrNew(['id' => $data->group_id])->name . PHP_EOL;
+                $msg .= " 🛒 " . "فروشگاه: " . PHP_EOL;
+                $msg .= $shop->name . PHP_EOL;
+                $msg .= " 📱 " . "شماره تماس: " . PHP_EOL;
+                $msg .= $shop->phone . PHP_EOL;
+                $msg .= " 📱 " . "توضیحات: " . $data->description . PHP_EOL;
+
+                break;
+
+            case 'blog_created':
+                $user = \App\Models\User::firstOrNew(['id' => $data->user_id]);
+                $msg .= " 🔴 " . "یک خبر اضافه شد" . PHP_EOL;
+                $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                $msg .= " 👤 " . "نویسنده: " . PHP_EOL;
+                $msg .= ($user->name ? "$user->name $user->family" : "$user->username") . PHP_EOL;
+                $msg .= " 📱 " . "شماره تماس: " . PHP_EOL;
+                $msg .= $user->phone . PHP_EOL;
+                $msg .= " 📌 " . url('blog') . "/$data->id/" . str_replace(' ', '-', $data->title) . PHP_EOL;
+
+                break;
+
+            case 'payment':
+                $user = \App\Models\User::firstOrNew(['id' => $data->user_id]);
+                $msg .= " 💰 " . "یک پرداخت انجام شد" . PHP_EOL;
+                $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                $msg .= " 🆔 " . "شماره سفارش: " . PHP_EOL . $data->order_id . PHP_EOL;
+                $msg .= " 💸 " . "مبلغ(ت): " . PHP_EOL . $data->amount . PHP_EOL;
+                $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                $msg .= ($user->name ? "$user->name $user->family" : "$user->username") . PHP_EOL;
+                $msg .= " 📱 " . "شماره تماس: " . PHP_EOL;
+                $msg .= $user->phone . PHP_EOL;
+                $msg .= " 🧾 " . "پیگیری شاپرک: " . PHP_EOL;
+                $msg .= $data->Shaparak_Ref_Id . PHP_EOL;
+                $msg .= " 📦 " . "محصول: " . PHP_EOL;
+                $msg .= $data->pay_for . PHP_EOL;
+
+                break;
+
+        }
+        self::sendMessage($to, $msg, null);
+    }
 }

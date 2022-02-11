@@ -157,6 +157,8 @@ class CoachController extends Controller
             $user->setRefferal();
             if (!auth()->user())
                 auth()->login($user);
+            \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'coach_created', $coach);
+
             return redirect(url('panel/coach'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
 
         });

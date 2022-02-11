@@ -161,6 +161,9 @@ class PlayerController extends Controller
             $user->setRefferal();
             if (!auth()->user())
                 auth()->login($user);
+
+            \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'player_created', $player);
+
             return redirect(url('panel/player'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
 
         });

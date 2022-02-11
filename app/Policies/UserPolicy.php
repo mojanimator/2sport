@@ -68,7 +68,7 @@ class UserPolicy
                     $item = Shop::find($id);
                     break;
                 case 'product':
-                    $item = Product::find($id);
+                    $item = Shop::find(Product::firstOrNew(['id' => $id])->shop_id);
                     break;
             }
         }

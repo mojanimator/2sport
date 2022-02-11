@@ -11,6 +11,7 @@ use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Telegram;
 
 class BlogController extends Controller
 {
@@ -100,7 +101,9 @@ class BlogController extends Controller
             $blog->content = json_encode($blocks);
             $blog->save();
 
-            //make title image
+            if ($blog->active)
+                Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'blog_created', $blog);
+
 
             return redirect(url('panel/blog'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
 

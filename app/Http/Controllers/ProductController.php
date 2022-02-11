@@ -167,9 +167,8 @@ class ProductController extends Controller
 
 //            $img->storeAs("public/shops", "$shop->id.jpg");
 
-//        $shop = Shop::findOrNew($shop_id);
-//        \Telegram::logAdmins(" ✅🛒 " . " یک محصول اضافه شد " . PHP_EOL . "فروشگاه: $shop->name" . PHP_EOL . "محصول: $product->name" . PHP_EOL . Channel::where('chat_id', "$shop->channel_address")->firstOrNew()->chat_username);
-//
+        \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'product_created', $shop);
+
 //        $this->sendProductBanner($product);
 
         return redirect()->to('panel/products')->with('success-alert', 'محصول شما با موفقیت ساخته شد!');

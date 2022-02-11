@@ -177,6 +177,8 @@ class ShopController extends Controller
             $user->setRefferal();
             if (!auth()->user())
                 auth()->login($user);
+            \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'shop_created', $shop);
+
             return redirect(url('panel/shop'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
 
         });
