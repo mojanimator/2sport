@@ -42,7 +42,7 @@ class RefController extends Controller
                     $levels[1]['paid']['sum'] += $level1->payed_1;
                 } elseif ($level1->invited_purchase_type != null && $level1->payed_1_at == null) {
                     $levels[1]['unpaid']['count']++;
-                    $levels[1]['unpaid']['sum'] += $ref1_percent * ($settings->where('key', \Helper::$refMap[$level1->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                    $levels[1]['unpaid']['sum'] += round($ref1_percent * ($settings->where('key', \Helper::$refMap[$level1->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                 }
                 foreach ($refs->where('inviter_id', $level1->invited_id)->all() as $level2) {
                     if ($level2->invited_purchase_type != null && $level2->payed_2_at != null) {
@@ -50,7 +50,7 @@ class RefController extends Controller
                         $levels[2]['paid']['sum'] += $level2->payed_2;
                     } elseif ($level2->invited_purchase_type != null && $level2->payed_2_at == null) {
                         $levels[2]['unpaid']['count']++;
-                        $levels[2]['unpaid']['sum'] += $ref2_percent * ($settings->where('key', \Helper::$refMap[$level2->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                        $levels[2]['unpaid']['sum'] += round($ref2_percent * ($settings->where('key', \Helper::$refMap[$level2->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                     }
                     foreach ($refs->where('inviter_id', $level2->invited_id)->all() as $level3) {
                         if ($level3->invited_purchase_type != null && $level3->payed_3_at != null) {
@@ -58,7 +58,7 @@ class RefController extends Controller
                             $levels[3]['paid']['sum'] += $level3->payed_3;
                         } elseif ($level3->invited_purchase_type != null && $level3->payed_3_at == null) {
                             $levels[3]['unpaid']['count']++;
-                            $levels[3]['unpaid']['sum'] += $ref3_percent * ($settings->where('key', \Helper::$refMap[$level3->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                            $levels[3]['unpaid']['sum'] += round($ref3_percent * ($settings->where('key', \Helper::$refMap[$level3->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                         }
                         foreach ($refs->where('inviter_id', $level3->invited_id)->all() as $level4) {
                             if ($level4->invited_purchase_type != null && $level4->payed_4_at != null) {
@@ -66,7 +66,7 @@ class RefController extends Controller
                                 $levels[4]['paid']['sum'] += $level4->payed_4;
                             } elseif ($level4->invited_purchase_type != null && $level4->payed_4_at == null) {
                                 $levels[4]['unpaid']['count']++;
-                                $levels[4]['unpaid']['sum'] += $ref4_percent * ($settings->where('key', \Helper::$refMap[$level4->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                                $levels[4]['unpaid']['sum'] += round($ref4_percent * ($settings->where('key', \Helper::$refMap[$level4->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                             }
                             foreach ($refs->where('inviter_id', $level4->invited_id)->all() as $level5) {
                                 if ($level5->invited_purchase_type != null && $level5->payed_5_at != null) {
@@ -74,7 +74,7 @@ class RefController extends Controller
                                     $levels[5]['paid']['sum'] += $level5->payed_5;
                                 } elseif ($level5->invited_purchase_type != null && $level5->payed_5_at == null) {
                                     $levels[5]['unpaid']['count']++;
-                                    $levels[5]['unpaid']['sum'] += $ref5_percent * ($settings->where('key', \Helper::$refMap[$level5->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                                    $levels[5]['unpaid']['sum'] += round($ref5_percent * ($settings->where('key', \Helper::$refMap[$level5->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                                 }
                             }
                         }
@@ -83,12 +83,11 @@ class RefController extends Controller
             }
 
             $user['levels'] = $levels;
-            foreach ($levels as $level) {
+            foreach ($levels as $idx => $level) {
                 $bestan_count += $level['unpaid']['count'];
-                $bestan_sum += $level['unpaid']['sum'];
+                $bestan_sum += $levels[$idx]['unpaid']['sum'];
             }
             $user['bestan'] = ['count' => $bestan_count, 'sum' => $bestan_sum];
-
         }
         return $users;
 
@@ -112,31 +111,31 @@ class RefController extends Controller
 
             foreach ($refs->where('inviter_id', $user->id)->all() as $level1) {
                 if ($level1->invited_purchase_type != null && $level1->payed_1_at == null) {
-                    $level1->payed_1 = $ref1_percent * ($settings->where('key', \Helper::$refMap[$level1->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                    $level1->payed_1 = round($ref1_percent * ($settings->where('key', \Helper::$refMap[$level1->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                     $level1->payed_1_at = Carbon::now();
                     $level1->save();
                 }
                 foreach ($refs->where('inviter_id', $level1->invited_id)->all() as $level2) {
                     if ($level2->invited_purchase_type != null && $level2->payed_2_at == null) {
-                        $level2->payed_2 = $ref2_percent * ($settings->where('key', \Helper::$refMap[$level2->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                        $level2->payed_2 = round($ref2_percent * ($settings->where('key', \Helper::$refMap[$level2->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                         $level2->payed_2_at = Carbon::now();
                         $level2->save();
                     }
                     foreach ($refs->where('inviter_id', $level2->invited_id)->all() as $level3) {
                         if ($level3->invited_purchase_type != null && $level3->payed_3_at == null) {
-                            $level3->payed_3 = $ref3_percent * ($settings->where('key', \Helper::$refMap[$level3->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                            $level3->payed_3 = round($ref3_percent * ($settings->where('key', \Helper::$refMap[$level3->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                             $level3->payed_3_at = Carbon::now();
                             $level3->save();
                         }
                         foreach ($refs->where('inviter_id', $level3->invited_id)->all() as $level4) {
                             if ($level4->invited_purchase_type != null && $level4->payed_4_at == null) {
-                                $level4->payed_4 = $ref4_percent * ($settings->where('key', \Helper::$refMap[$level4->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                                $level4->payed_4 = round($ref4_percent * ($settings->where('key', \Helper::$refMap[$level4->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                                 $level4->payed_4_at = Carbon::now();
                                 $level4->save();
                             }
                             foreach ($refs->where('inviter_id', $level4->invited_id)->all() as $level5) {
                                 if ($level5->invited_purchase_type != null && $level5->payed_5_at == null) {
-                                    $level5->payed_5 = $ref5_percent * ($settings->where('key', \Helper::$refMap[$level5->invited_purchase_type] . '_price')->first() ?: new Setting())->value ?: 0;
+                                    $level5->payed_5 = round($ref5_percent * ($settings->where('key', \Helper::$refMap[$level5->invited_purchase_type] . '_' . $level1->invited_purchase_months . '_price')->first() ?: new Setting())->value ?: 0);
                                     $level5->payed_5_at = Carbon::now();
                                     $level5->save();
                                 }

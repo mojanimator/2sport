@@ -1,12 +1,4 @@
-@php
-    $user=auth()->user();
-    $admin= $user && ($user->role=='ad' || $user->role=='go');
 
-if(!$admin){
-header("Location: " . URL::to('/panel'), true, 302);
-        exit();
-}
-@endphp
 
 
 <div class="row mt-3 mx-auto   ">

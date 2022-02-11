@@ -160,6 +160,50 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-10 mx-auto   border border-primary rounded-3    py-3 my-2">
+                                <div class="  mx-auto  ">
+                                    <div class=" my-2 form-outline input-group  ">
+
+                                        <input id="sheba" type="text"
+                                               class="  px-4 form-control @error('sheba') is-invalid @enderror"
+                                               name="sheba"
+                                               value="{{ $user->sheba }}" autocomplete="sheba" autofocus>
+                                        <label for="sheba"
+                                               class="col-md-12    form-label  text-md-right">شماره شبا (بدون
+                                            IR)</label>
+                                        <button class="btn btn-secondary rounded" type="button"
+                                                id="sheba-addon"
+                                                onclick=" submitWithFiles(event,{'sheba':document.getElementById('sheba').value})">
+                                            ویرایش
+                                        </button>
+
+                                    </div>
+                                    <div class=" text-danger text-start small     " role="alert">
+                                        <strong id="err-sheba"> </strong>
+                                    </div>
+                                </div>
+                                <div class="mt-4   mx-auto  ">
+                                    <div class=" my-2 form-outline input-group  ">
+
+                                        <input id="cart" type="text"
+                                               class="  px-4 form-control @error('cart') is-invalid @enderror"
+                                               name="cart"
+                                               value="{{ $user->cart }}" autocomplete="cart" autofocus>
+                                        <label for="cart"
+                                               class="col-md-12    form-label  text-md-right">شماره کارت </label>
+                                        <button class="btn btn-secondary rounded" type="button"
+                                                id="cart-addon"
+                                                onclick=" submitWithFiles(event,{'cart':document.getElementById('cart').value})">
+                                            ویرایش
+                                        </button>
+
+                                    </div>
+                                    <div class=" text-danger text-start small     " role="alert">
+                                        <strong id="err-cart"> </strong>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-10 mx-auto    py-3">
 
                                 <a href="{{ route('password.request') }}"

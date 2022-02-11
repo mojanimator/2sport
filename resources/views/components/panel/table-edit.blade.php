@@ -1,5 +1,6 @@
 @php
-    $table=\App\Models\Table::where('id',$param)->first();
+
+      $table=\App\Models\Table::where('id',$param)->first();
 
 
 @endphp

@@ -20,6 +20,7 @@ class CreateRefsTable extends Migration
             //if invited make a purchase ->pay to inviters
 //            $table->timestamp('invited_purchased_at')->nullable();
             $table->tinyInteger('invited_purchase_type')->unsigned()->nullable();
+            $table->tinyInteger('invited_purchase_months')->unsigned()->nullable();
             $table->timestamp('payed_1_at')->nullable();
             $table->integer('payed_1')->unsigned()->nullable();
             $table->timestamp('payed_2_at')->nullable();

@@ -371,13 +371,18 @@ class ClubController extends Controller
 
         $this->authorize('ownItem', [User::class, $club, true]);
 
-        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go')) {
+        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
             $club->active = $request->active;
             $club->save();
         } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true && $club->active == false) {
+            if ($request->active == true) {
+                if (Carbon::now()->timestamp < $club->expires_at) {
+                    $club->active = true;
+                    $club->save();
+                } else {
+                    return response()->json(['errors' => ['ابتدا باشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
 
-                Helper::makePay('club',$club);
+                }
             }
 
         } elseif ($request->name) {

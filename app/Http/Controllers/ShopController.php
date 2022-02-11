@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Shop;
 use App\Models\Sport;
 use App\Models\User;
+use Carbon\Carbon;
 use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -336,13 +337,18 @@ class ShopController extends Controller
         $this->authorize('ownItem', [User::class, $shop, true]);
         $user = auth()->user();
 
-        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go')) {
+        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
             $shop->active = $request->active;
             $shop->save();
         } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true && $shop->active == false) {
+            if ($request->active == true) {
+                if (Carbon::now()->timestamp < $shop->expires_at) {
+                    $shop->active = true;
+                    $shop->save();
+                } else {
+                    return response()->json(['errors' => ['ابتدا فروشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
 
-                Helper::makePay('shop', $shop);
+                }
             }
 
         } elseif ($request->name) {

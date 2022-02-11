@@ -70,23 +70,23 @@
                     <ul class="navbar-nav w-100    mb-lg-0">
                         <li class="nav-item small ms-1  my-1">
                             <a class="nav-link px-1 px-md-2  hoverable-cyan rounded {{str_contains( url()->current(),'/players')? 'text-primary bg-cyan':'text-white'}} "
-                               aria-current="page" href="/players">بازیکنان</a>
+                               aria-current="page" href="/players">بازیکن</a>
                         </li>
                         <li class="nav-item   small ms-1 ms-sm-0 ms-md-1 my-1">
                             <a class="nav-link px-1 px-md-2  hoverable-cyan rounded {{str_contains( url()->current(),'/coaches')? 'text-primary bg-cyan':'text-white'}} "
-                               aria-current="page" href="/coaches">مربیان</a>
+                               aria-current="page" href="/coaches">مربی</a>
                         </li>
                         <li class="nav-item  small ms-1 ms-sm-0 ms-md-1 my-1">
                             <a class="nav-link px-1 px-md-2  hoverable-cyan rounded {{str_contains( url()->current(),'/clubs')? 'text-primary bg-cyan':'text-white'}} "
-                               aria-current="page" href="/clubs">مراکز ورزشی</a>
+                               aria-current="page" href="/clubs">مرکز ورزشی</a>
                         </li>
                         <li class="nav-item  small ms-1 ms-sm-0 ms-md-1 my-1">
                             <a class="nav-link px-1 px-md-2  hoverable-cyan rounded {{str_contains( url()->current(),'/shops')? 'text-primary bg-cyan':'text-white'}} "
-                               aria-current="page" href="/shops">فروشگاهها</a>
+                               aria-current="page" href="/shops">فروشگاه ورزشی</a>
                         </li>
                         <li class="nav-item  small ms-1 ms-sm-0 ms-md-1 my-1">
                             <a class="nav-link px-1 px-md-2  hoverable-cyan rounded {{str_contains( url()->current(),'/blogs')? 'text-primary bg-cyan':'text-white'}} "
-                               aria-current="page" href="/blogs">اخبار ورزشی</a>
+                               aria-current="page" href="/blogs">خبر ورزشی</a>
                         </li>
 
 
@@ -218,17 +218,17 @@
                         <ul class="flex-column  nav  pr-0  ">
                             <li class="nav-item hoverable-text-teal">
                                 <a class="nav-link text-white" href="{{route('players.view')}}" target="_blank">
-                                    بازیکنان
+                                    بازیکن
                                 </a>
                             </li>
                             <li class="nav-item hoverable-text-teal">
                                 <a class="nav-link text-white" href="{{route('coaches.view')}}" target="_blank">
-                                    مربیان
+                                    مربی
                                 </a>
                             </li>
                             <li class="nav-item hoverable-text-teal">
                                 <a class="nav-link text-white" href="{{route('blogs.view')}}" target="_blank">
-                                    اخبار ورزشی
+                                    خبر ورزشی
                                 </a>
                             </li>
 

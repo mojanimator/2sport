@@ -1,3 +1,12 @@
+{{--@php--}}
+{{--$user=auth()->user();--}}
+{{--$admin= $user && ($user->role=='bl' || $user->role=='go');--}}
+{{--if(!$admin){--}}
+{{--header("Location: " . URL::to('/panel'), true, 302);--}}
+{{--exit();--}}
+{{--}--}}
+{{--@endphp--}}
+
 <div class="  my-3  mx-auto ">
     <div id="form-create" class=" mx-auto  col-lg-10  ">
 

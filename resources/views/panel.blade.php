@@ -84,7 +84,7 @@
                         </div>
                         <hr class="m-0">
                     @endif
-                    @can('editItem',[\App\Models\User::class,\App\Models\Blog::class,false])
+                    @can('createItem',[\App\Models\User::class,\App\Models\Blog::class,false])
                         <a href="/panel/blog"
                            class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/blog') ?'bg-cyan text-primary':''}}"
                            data-bs-toggle="tooltip">
@@ -101,8 +101,6 @@
                                 <span class="item-text">خبر</span>
                             </div>
                         </a>
-                    @endcan
-                    @can('editItem',[\App\Models\User::class,\App\Models\Table::class,false])
                         <a href="/panel/table"
                            class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/table') ?'bg-cyan text-primary':''}}"
                            data-bs-toggle="tooltip">
@@ -120,10 +118,12 @@
                             </div>
                         </a>
                     @endcan
-                    <a href="/panel/player"
-                       class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/player') ?'bg-cyan text-primary':''}}"
-                       data-bs-toggle="tooltip">
-                        <div class=" align-content-end">
+                    @can('createItem',[\App\Models\User::class,\App\Models\Player::class,false])
+
+                        <a href="/panel/player"
+                           class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/player') ?'bg-cyan text-primary':''}}"
+                           data-bs-toggle="tooltip">
+                            <div class=" align-content-end">
                           <span class=" d-inline-block  item-icon  " data-bs-placement="left" data-bs-toggle="tooltip"
                                 title="بازیکن">
                               <x-icons src="player.svg"
@@ -133,14 +133,14 @@
                             </x-icons>
                           </span>
 
-                            <span class="item-text">بازیکن</span>
-                        </div>
-                    </a>
-                    <hr class="m-0">
-                    <a href="/panel/coach"
-                       class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/coach') ?'bg-cyan text-primary':''}}"
-                       data-bs-toggle="tooltip">
-                        <div class=" align-content-end">
+                                <span class="item-text">بازیکن</span>
+                            </div>
+                        </a>
+                        <hr class="m-0">
+                        <a href="/panel/coach"
+                           class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/coach') ?'bg-cyan text-primary':''}}"
+                           data-bs-toggle="tooltip">
+                            <div class=" align-content-end">
                           <span class=" d-inline-block  item-icon  " data-bs-placement="left" data-bs-toggle="tooltip"
                                 title="مربی">
                               <x-icons src="coach.svg"
@@ -150,14 +150,14 @@
                             </x-icons>
                           </span>
 
-                            <span class="item-text">مربی</span>
-                        </div>
-                    </a>
-                    <hr class="m-0">
-                    <a href="/panel/club"
-                       class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/club') ?'bg-cyan text-primary':''}}"
-                       data-bs-toggle="tooltip">
-                        <div class=" align-content-end">
+                                <span class="item-text">مربی</span>
+                            </div>
+                        </a>
+                        <hr class="m-0">
+                        <a href="/panel/club"
+                           class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/club') ?'bg-cyan text-primary':''}}"
+                           data-bs-toggle="tooltip">
+                            <div class=" align-content-end">
                           <span class=" d-inline-block  item-icon  " data-bs-placement="left" data-bs-toggle="tooltip"
                                 title="باشگاه">
                               <x-icons src="club.svg"
@@ -167,14 +167,14 @@
                             </x-icons>
                           </span>
 
-                            <span class="item-text">باشگاه</span>
-                        </div>
-                    </a>
-                    <hr class="m-0">
-                    <a href="/panel/shop"
-                       class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/shop') ?'bg-cyan text-primary':''}}"
-                       data-bs-toggle="tooltip">
-                        <div class=" align-content-end">
+                                <span class="item-text">باشگاه</span>
+                            </div>
+                        </a>
+                        <hr class="m-0">
+                        <a href="/panel/shop"
+                           class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/shop') ?'bg-cyan text-primary':''}}"
+                           data-bs-toggle="tooltip">
+                            <div class=" align-content-end">
                           <span class=" d-inline-block  item-icon  " data-bs-placement="left" data-bs-toggle="tooltip"
                                 title="فروشگاه">
                               <x-icons src="shop.svg"
@@ -184,14 +184,14 @@
                             </x-icons>
                           </span>
 
-                            <span class="item-text">فروشگاه</span>
-                        </div>
-                    </a>
-                    <hr class="m-0">
-                    <a href="/panel/product"
-                       class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/product') ?'bg-cyan text-primary':''}}"
-                       data-bs-toggle="tooltip">
-                        <div class=" align-content-end">
+                                <span class="item-text">فروشگاه</span>
+                            </div>
+                        </a>
+                        <hr class="m-0">
+                        <a href="/panel/product"
+                           class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/product') ?'bg-cyan text-primary':''}}"
+                           data-bs-toggle="tooltip">
+                            <div class=" align-content-end">
                           <span class=" d-inline-block  item-icon  " data-bs-placement="left" data-bs-toggle="tooltip"
                                 title="محصولات">
                               <x-icons src="product.svg"
@@ -201,9 +201,25 @@
                             </x-icons>
                           </span>
 
-                            <span class="item-text">محصول</span>
-                        </div>
-                    </a>
+                                <span class="item-text">محصول</span>
+                            </div>
+                        </a>
+                        <hr class="m-0">
+                        <a href="{{url('panel/referral')}}"
+                           class="sidebar-item py-2 px-0 px-sm-3 text-white hoverable-dark {{str_contains( url()->current(),'/referral') ?'bg-cyan text-primary':''}}"
+                           data-bs-toggle="tooltip">
+                            <div class="">
+                          <span class=" item-icon align-middle ms-sm-2" data-bs-placement="left"
+                                data-bs-toggle="tooltip"
+                                title="بازاریابی">
+                             <i class="fa fa-dollar-sign fa-2x  item-icon  " aria-hidden="true"
+                             ></i>
+                          </span>
+
+                                <span class="item-text  ms-3">بازاریابی</span>
+                            </div>
+                        </a>
+                    @endcan
                     <hr class="m-0">
                     <a href="{{url('panel/setting')}}"
                        class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/setting') ?'bg-cyan text-primary':''}}"
@@ -219,21 +235,7 @@
                             <span class="item-text  ms-3">تنظیمات</span>
                         </div>
                     </a>
-                    <hr class="m-0">
-                    <a href="{{url('panel/referral')}}"
-                       class="sidebar-item py-2 px-0 px-sm-3 text-white hoverable-dark {{str_contains( url()->current(),'/referral') ?'bg-cyan text-primary':''}}"
-                       data-bs-toggle="tooltip">
-                        <div class="">
-                          <span class=" item-icon align-middle ms-sm-2" data-bs-placement="left"
-                                data-bs-toggle="tooltip"
-                                title="بازاریابی">
-                             <i class="fa fa-dollar-sign fa-2x  item-icon  " aria-hidden="true"
-                             ></i>
-                          </span>
 
-                            <span class="item-text  ms-3">بازاریابی</span>
-                        </div>
-                    </a>
                 </div>
             </div>
 

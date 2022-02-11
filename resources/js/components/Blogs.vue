@@ -75,7 +75,8 @@
                     <div v-if="view=='blog-all'" v-for="d,idx in allBlogs"
                          class="col-ms-12 col-sm-6 col-md-6 col-lg-5 col-xl-4 mx-auto    "
                     >
-                        <a :href="'/blog/'+d.id+'/'+replaceAll(d.title,' ','-')" class="  d-block  mx-auto  "
+                        <a :href="'/blog/'+d.id+'/'+replaceAll(replaceAll(d.title,' ','-'),'/','')"
+                           class="  d-block  mx-auto  "
                            style="height: 95%;max-width: 28rem">
                             <div class="  move-on-hover h-100 card shadow-3-primary ">
                                 <div class="card-body  p-3 ">
@@ -114,7 +115,8 @@
                     <div v-if="view=='blog-iran'" v-for="d,idx in iranFootballBlogs"
                          class="col-ms-12 col-sm-6 col-md-6 col-lg-5 col-xl-4 mx-auto    "
                     >
-                        <a :href="'/blog/'+d.id+'/'+replaceAll(d.title,' ','-')" class="  d-block  mx-auto  "
+                        <a :href="'/blog/'+d.id+'/'+replaceAll(replaceAll(d.title,' ','-'),'/','')"
+                           class="  d-block  mx-auto  "
                            style="height: 95%;max-width: 28rem">
                             <div class="  move-on-hover h-100 card shadow-3-primary ">
                                 <div class="card-body  p-3 ">

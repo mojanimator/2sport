@@ -1,11 +1,8 @@
 @php
     $user=auth()->user();
-    $admin= $user && ($user->role=='ad' || $user->role=='go');
+    $admin= $user && ($user->role=='bl' || $user->role=='go');
 
-if(!$admin){
-header("Location: " . URL::to('/panel'), true, 302);
-        exit();
-}
+
 @endphp
 
 

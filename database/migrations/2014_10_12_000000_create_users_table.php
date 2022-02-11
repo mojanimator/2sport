@@ -28,6 +28,8 @@ class CreateUsersTable extends Migration
             $table->integer('score')->default(0);
             $table->string('role', 2)->default("us");
             $table->boolean('active')->default(false);
+            $table->string('sheba', 24)->default(null)->nullable();
+            $table->string('cart', 16)->default(null)->nullable();
             $table->rememberToken();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

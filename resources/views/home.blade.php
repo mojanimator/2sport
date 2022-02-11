@@ -3,8 +3,7 @@
 
 @php
     if ($r=request()->ref ) {
-    session(['ref'=>$r])  ;
-
+    session(['ref'=>$r]) ;
     }
 @endphp
 @section('content')
@@ -12,7 +11,6 @@
 
         <div class="position-absolute  w-100 h-100 opacity-30  "
              style="background-image: url({{asset('img/texture.jpg')}});  "></div>
-
 
         <nav class="navbar navbar-expand navbar-dark shadow-0  " aria-label="classjo navbar">
             <div class="container-fluid">
@@ -145,7 +143,7 @@
 
                             </x-icons>
 
-                            <h5 class="font-weight-bold">بازیکنان</h5>
+                            <h5 class="font-weight-bold">بازیکن</h5>
 
                         </a>
 
@@ -154,7 +152,7 @@
                                      class="'w-100  px-4    px-lg-5 text-white'">
 
                             </x-icons>
-                            <h5 class="font-weight-bold">مربیان</h5>
+                            <h5 class="font-weight-bold">مربی</h5>
 
 
                         </a>
@@ -166,7 +164,7 @@
                                      class="'w-100  px-4    px-lg-5 text-white'">
 
                             </x-icons>
-                            <h5 class="font-weight-bold">مراکز ورزشی</h5>
+                            <h5 class="font-weight-bold">مرکز ورزشی</h5>
 
                         </a>
                         <a class="col-ms-6 col-sm-4 col-md-3 col-xl-2 move-on-hover  "
@@ -175,7 +173,7 @@
                                      class="'w-100  px-4    px-lg-5 text-white'">
 
                             </x-icons>
-                            <h5 class="font-weight-bold">فروشگاهها</h5>
+                            <h5 class="font-weight-bold">فروشگاه ورزشی</h5>
                         </a>
                         <div class="d-none d-md-block d-xl-none col-ms-6 col-sm-4 col-md-3 col-xl-2"></div>
                         <a class="col-ms-6 col-sm-4 col-md-3 col-xl-2 move-on-hover " href="{{route('blogs.view')}}">
@@ -183,7 +181,7 @@
                                      class="'w-100  px-4   px-lg-5 text-white'">
 
                             </x-icons>
-                            <h5 class="font-weight-bold">اخبار ورزشی</h5>
+                            <h5 class="font-weight-bold">خبر ورزشی</h5>
                         </a>
                         <a class="col-ms-6 col-sm-4 col-md-3 col-xl-2 move-on-hover  "
                            href="{{route('blogs.view',['view'=>'table-all'])}}">

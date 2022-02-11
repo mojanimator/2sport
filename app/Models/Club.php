@@ -14,10 +14,11 @@ class Club extends Model
 //    public $timestamps = false;
     protected $table = 'clubs';
     protected $fillable = [
-        'id', 'user_id', 'province_id', 'county_id', 'name', 'address', 'location', 'description', 'phone', 'times', 'created_at', 'updated_at', 'active','hidden',
+        'id', 'user_id', 'province_id', 'county_id', 'expires_at', 'name', 'address', 'location', 'description', 'phone', 'times', 'created_at', 'updated_at', 'active', 'hidden',
     ];
     protected $casts = [
         'born_at' => 'timestamp',
+        'expires_at' => 'timestamp',
         'active' => 'boolean',
         'hidden' => 'boolean',
 

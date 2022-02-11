@@ -1,8 +1,12 @@
 <?php
 
+use App\Models\Coupon;
+use App\Models\Setting;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
-
+use Faker\Factory as Faker;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +20,6 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('test', function () {
 
-//    return (new SMS())->getCredit();
-    $now = Morilog\Jalali\Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
-    return $now->format('%A, %d %B %Y ⏰ H:i');
 });
 
 Route::get('club/search', [App\Http\Controllers\ClubController::class, 'search'])->name('club.search');
@@ -125,22 +126,26 @@ Route::middleware(['auth'])->prefix('panel')->group(function () {
         })->name('panel.panel');
 
 
-        Route::get('checkout', function () {
-            return view('panel');
-        })->name('checkout.view')->middleware('verify');
-
-        Route::get('create', function ($route) {
-
-            return view('panel');
-        })->name('create.view');
+        Route::prefix('')->middleware('can:createItem,' . App\Models\User::class . ',' . 'route' . ',' . false)->group(function ($route1) {
+            Route::get('', function ($route1) {
+                return view('panel', ['param' => $route1]);
+            });
+        });
 
 
-        Route::prefix('edit')->group(function ($route2) {
+        Route::prefix('create')->middleware('can:createItem,' . App\Models\User::class . ',' . 'route' . ',' . false)->group(function ($route1) {
+            Route::get('{route1?}', function ($route1) {
+                return view('panel', ['param' => $route1]);
+            });
+        });
 
 
-            Route::get('{route2?}', function ($route1, $route2) {
+        Route::prefix('edit')->middleware('can:ownItem,' . App\Models\User::class . ',' . 'route' . ',' . false . ',' . 'route1')->group(function ($route2) {
 
-                return view('panel', ['param' => $route2]);
+
+            Route::get('{route1?}', function ($route, $route1) {
+
+                return view('panel', ['param' => $route1]);
             })->name('edit.view');
 
 
@@ -149,7 +154,7 @@ Route::middleware(['auth'])->prefix('panel')->group(function () {
 //
 //                return view('panel', ['param' => $route5]);
 //            })->name('panel.view');
-//
+////
 //
 
         });
@@ -192,4 +197,10 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::get('latest', [App\Http\Controllers\Controller::class, 'latest'])->name('latest');
 
+
+Route::get('payment', [App\Http\Controllers\PaymentController::class, 'confirmPay'])->name('payment');
+
+Route::post('payment/create', [App\Http\Controllers\PaymentController::class, 'makePay'])->name('payment.create');
+
+Route::post('coupon/calculate', [App\Http\Controllers\CouponController::class, 'calculate'])->name('coupon.calculate');
 

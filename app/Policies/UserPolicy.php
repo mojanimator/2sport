@@ -3,9 +3,13 @@
 namespace App\Policies;
 
 use App\Models\Blog;
+use App\Models\Club;
 use App\Models\Player;
 use App\Models\Product;
+use App\Models\Shop;
+use App\Models\Table;
 use App\Models\User;
+use Facade\Ignition\Tabs\Tab;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
@@ -46,31 +50,69 @@ class UserPolicy
         else return false;
     }
 
-    public function createItem(User $user, $item, $abort)
+
+    public function ownItem(User $user, $item, $abort, $id = null)
     {
+        if ($id) {
+            switch ($item) {
+                case 'player':
+                    $item = Player::find($id);
+                    break;
+                case 'coach':
+                    $item = Club::find($id);
+                    break;
+                case 'club':
+                    $item = Club::find($id);
+                    break;
+                case 'shop':
+                    $item = Shop::find($id);
+                    break;
+                case 'product':
+                    $item = Product::find($id);
+                    break;
+            }
+        }
 
-        if ($user->role == 'go' || $user->role == 'ad')
-            return true;
-
-        if ($abort)
-            return abort(403, 'اجازه ساخت را ندارید');
-        else return false;
-    }
-
-    public function ownItem(User $user, $item, $abort)
-    {
-
-        if (!$item)
+        if (!$item && $abort)
             return abort(403, 'این مورد وجود ندارد!');
-        if (($item && $item->user_id == $user->id) || $user->role == 'go' || $user->role == 'ad')
+        if (!$item && !$abort)
+            return false;
+        if ((($item && isset($item->user_id) && $item->user_id == $user->id) || $user->role == 'go'))
             return true;
+        $item_is_blog_table = ($item instanceof Blog || $item instanceof Table || $item == Blog::class || $item == Table::class || $item == 'blog' || $item == 'table');
+        if ($item_is_blog_table && $user->role == 'bl')
+            return true;
+
+        if (!$item_is_blog_table && $user->role == 'ad')
+            return true;
+
 
         if ($abort)
             return abort(403, 'این مورد متعلق به شما نیست!');
         else return false;
     }
 
-    public function editItem(User $user,$item, $abort)
+    public function createItem(User $user, $item, $abort)
+    {
+
+        if ($user->role == 'go')
+            return true;
+        $item_is_blog_table = ($item == Blog::class || $item == Table::class || $item == 'blog' || $item == 'table');
+        if ($item_is_blog_table && $user->role == 'bl')
+            return true;
+        if (!$item_is_blog_table && $user->role == 'bl')
+            return false;
+
+        if (!$item_is_blog_table)
+            return true;
+
+
+        if ($abort)
+            return abort(403, 'مجاز نیستید!');
+        else return false;
+    }
+
+    public function editItem(User $user, $item, $abort)
     {
         if ($user->role == 'ad' || $user->role == 'go')
             return true;

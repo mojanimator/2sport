@@ -312,13 +312,18 @@ class CoachController extends Controller
         $this->authorize('ownItem', [User::class, $coach, true]);
 
         $user = auth()->user();
-        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go')) {
+        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
             $coach->active = $request->active;
             $coach->save();
         } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true && $coach->active == false) {
+            if ($request->active == true) {
+                if (Carbon::now()->timestamp < $coach->expires_at) {
+                    $coach->active = true;
+                    $coach->save();
+                } else {
+                    return response()->json(['errors' => ['ابتدا مربی را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
 
-                Helper::makePay('coach',$coach);
+                }
             }
 
         } elseif ($request->name) {

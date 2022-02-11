@@ -1,4 +1,5 @@
 @php
+
     $blog=\App\Models\Blog::where('id',$param)->with('docs:id,type_id,docable_id')->first();
 if ($blog){
 $docs=$blog->getRelation(  'docs' );

@@ -30,6 +30,7 @@ class CreateCoachesTable extends Migration
             $table->string('description', 2048)->nullable(); //resume
 
             $table->timestamps();
+            $table->timestamp('expires_at')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('no action');
             $table->foreign('sport_id')->references('id')->on('sports')->onDelete('no action');

@@ -13,10 +13,10 @@ class Shop extends Model
     public $timestamps = true;
     protected $table = 'shops';
     protected $fillable = [
-        'id', 'user_id', 'province_id', 'county_id', 'groups', 'name', 'location', 'address', 'phone', 'description', 'created_at', 'updated_at', 'active', 'hidden',
+        'id', 'user_id', 'province_id', 'county_id', 'groups', 'name', 'location', 'address', 'phone', 'description', 'created_at', 'updated_at', 'expires_at', 'active', 'hidden',
     ];
     protected $casts = [
-
+        'expires_at' => 'timestamp',
         'active' => 'boolean',
         'hidden' => 'boolean',
 

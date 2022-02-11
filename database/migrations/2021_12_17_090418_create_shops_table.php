@@ -27,6 +27,7 @@ class CreateShopsTable extends Migration
             $table->string('location', 100)->nullable();
             $table->json('groups')->nullable();
 
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('no action');

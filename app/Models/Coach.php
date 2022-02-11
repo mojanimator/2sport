@@ -13,10 +13,11 @@ class Coach extends Model
 //    public $timestamps = false;
     protected $table = 'coaches';
     protected $fillable = [
-        'id', 'user_id', 'sport_id', 'province_id', 'county_id', 'name', 'family', 'born_at', 'is_man', 'phone', 'description', 'created_at', 'updated_at', 'active','hidden',
+        'id', 'user_id', 'sport_id', 'province_id', 'county_id', 'name', 'family', 'born_at', 'is_man', 'phone', 'description', 'created_at', 'updated_at', 'expires_at', 'active', 'hidden',
     ];
     protected $casts = [
         'born_at' => 'timestamp',
+        'expires_at' => 'timestamp',
         'is_man' => 'boolean',
         'active' => 'boolean',
         'hidden' => 'boolean',
@@ -37,14 +38,17 @@ class Coach extends Model
     {
         return $this->belongsTo(County::class);
     }
+
     public function sport()
     {
         return $this->belongsTo(Sport::class);
     }
+
     public function docs()
     {
         return $this->hasMany(Doc::class, 'docable_id')->where('docable_type', \Helper::$typesMap['coaches']);
     }
+
     public function alldocs()
     {
         return $this->hasMany(Doc::class, 'docable_id');

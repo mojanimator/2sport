@@ -30,6 +30,7 @@ class CreatePlayersTable extends Migration
             $table->boolean('hidden')->default(false);
             $table->string('phone', 50)->nullable();
             $table->string('description', 2048)->nullable(); //resume
+            $table->timestamp('expires_at')->nullable();
 
             $table->timestamps();
 

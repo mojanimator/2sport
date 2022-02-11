@@ -14,7 +14,7 @@ class Ref extends Model
     public $timestamps = true;
     protected $table = 'refs';
     protected $fillable = [
-        'id', 'invited_id', 'inviter_id', 'invited_purchase_type', 'payed_1_at', 'payed_1', 'payed_2_at', 'payed_2', 'payed_3_at', 'payed_3', 'payed_4_at', 'payed_4', 'payed_5_at', 'payed_5', 'created_at', 'updated_at'
+        'id', 'invited_id', 'inviter_id', 'invited_purchase_type', 'invited_purchase_months', 'payed_1_at', 'payed_1', 'payed_2_at', 'payed_2', 'payed_3_at', 'payed_3', 'payed_4_at', 'payed_4', 'payed_5_at', 'payed_5', 'created_at', 'updated_at'
     ];
 
 

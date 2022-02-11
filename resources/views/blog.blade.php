@@ -65,7 +65,7 @@
         @if (! isset($data))
             <div class="text-center font-weight-bold mt-5 ">
                 <div class="   text-danger ">خبر یافت نشد</div>
-                <a href="{{url('blogs').'?view=table-all'}}" class="list-item d-block hoverable-text-primary">بازگشت</a>
+                <a href="{{url()->previous()}}" class="list-item d-block hoverable-text-primary">بازگشت</a>
             </div>
 
         @else

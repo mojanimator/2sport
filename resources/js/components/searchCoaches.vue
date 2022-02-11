@@ -487,23 +487,10 @@
                 };
             },
             toggleActivate(d) {
-                if (!this.admin && d.active) //user cant deactivate
-                    return;
-                if (this.admin || this.price == 0) {
-                    this.showDialog('confirm', 'از ' + (d.active ? 'غیر فعال سازی' : 'فعال سازی') + ' اطمینان دارید؟', this.edit, {
-                        'id': d.id,
-                        'active': !d.active
-                    });
-                }
-                else if (!d.active) {
-
-                    this.showDialog('pay', 'جهت پرداخت هزینه فعالسازی وارد درگاه پرداخت شوید' + '\n' + this.price + ' تومان ', this.edit, {
-                        'active': true,
-                        'id': d.id,
-
-                    });
-
-                }
+                this.showDialog('confirm', 'از ' + (d.active ? 'غیر فعال سازی' : 'فعال سازی') + ' اطمینان دارید؟', this.edit, {
+                    'id': d.id,
+                    'active': !d.active
+                });
 
             },
             getAge(timestamp) {

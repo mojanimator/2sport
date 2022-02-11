@@ -19,6 +19,8 @@ class UserController extends Controller
 
             'name' => 'sometimes|string|min:3|max:50',
             'family' => 'sometimes|string|min:3|max:50',
+            'sheba' => 'sometimes|nullable|numeric|digits:24',
+            'cart' => 'sometimes|nullable|numeric|digits:16',
             'username' => 'sometimes|min:5|max:50|regex:/^[A-Za-z]+[A-Za-z0-9_][A-Za-z0-9]{1,28}$/|unique:users,username',
             'email' => ['sometimes', 'email', 'min:6', 'max:50', Rule::unique('users')->ignore(auth()->user())],
             'phone' => 'sometimes|numeric|digits:11|regex:/^09[0-9]+$/' . '|unique:users,phone,' . auth()->user()->id,
@@ -58,7 +60,10 @@ class UserController extends Controller
                 'phone_verify.required_if' => 'کد تایید شماره همراه ضروری است',
                 'phone_verify.exists' => 'کد تایید شماره همراه نامعتبر است',
 
-
+                'sheba.numeric' => 'شماره شبا باید عدد باشد',
+                'sheba.digits' => 'شماره شبا 24 رقم باشد',
+                'cart.numeric' => 'شماره کارت باید عدد باشد',
+                'cart.digits' => 'شماره کارت 16 رقم باشد',
             ]);
 
 //
@@ -97,6 +102,14 @@ class UserController extends Controller
             (new SMS())->deleteActivationSMS($request->phone);
             $user->save();
 
+        } elseif ($request->sheba) {
+            $user->sheba = $request->sheba;
+            $user->save();
+            return redirect()->back()->with('success-alert', 'شماره شبا با موفقیت ویرایش شد!');
+        } elseif ($request->cart) {
+            $user->cart = $request->cart;
+            $user->save();
+            return redirect()->back()->with('success-alert', 'شماره کارت با موفقیت ویرایش شد!');
         }
 
 

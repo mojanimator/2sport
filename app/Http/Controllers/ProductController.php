@@ -302,8 +302,10 @@ class ProductController extends Controller
 
 
         if (isset($request->active)) {
+            //cant activate deactivated shops
             if ($product->active == false && $shop->active == false)
-                return; //cant activate deactivated shops
+                return response()->json(['errors' => ['ابتدا فروشگاه این محصول را فعال کنید']], 422);
+
             $product->active = $request->active;
             $product->save();
         } elseif ($name) {

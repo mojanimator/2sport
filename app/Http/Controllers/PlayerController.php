@@ -352,13 +352,18 @@ class PlayerController extends Controller
         $user = auth()->user();
         $this->authorize('ownItem', [User::class, $player, true]);
 
-        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go')) {
+        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
             $player->active = $request->active;
             $player->save();
         } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true && $player->active == false) {
+            if ($request->active == true) {
+                if (Carbon::now()->timestamp < $player->expires_at) {
+                    $player->active = true;
+                    $player->save();
+                } else {
+                    return response()->json(['errors' => ['ابتدا بازیکن را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
 
-                Helper::makePay('player',$player);
+                }
             }
 
         } elseif ($request->name) {

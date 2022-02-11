@@ -37,7 +37,7 @@ class User extends Authenticatable implements /*Auditable,*/
 
     protected $table = 'users';
     protected $fillable = [
-        'id', 'name', 'family', 'is_man', 'username', 'email', 'email_verified', 'phone_verified', 'phone', 'password', 'score',
+        'id', 'name', 'family', 'is_man', 'username', 'email', 'sheba', 'cart', 'email_verified', 'phone_verified', 'phone', 'password', 'score',
         'expires_at', 'created_at', 'updated_at', 'active', 'role',
     ];
 

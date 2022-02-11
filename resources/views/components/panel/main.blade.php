@@ -1,12 +1,13 @@
 @php
     $user=auth()->user();
     $admin= $user && ($user->role=='ad' || $user->role=='go');
+    $user= $user && ($user->role=='ad' || $user->role=='go'|| $user->role=='us');
 
 
 @endphp
 
-@if($admin)
-    <div class="row mt-3   ">
+<div class="row mt-3   ">
+    @if($admin)
         <div class="col-md-6   ">
             <a href="{{url('panel/system-setting')}}" class="my-1  d-block ">
                 <div class="card move-on-hover">
@@ -15,7 +16,7 @@
                             <div class="col-8">
                                 <div class="numbers">
                                     <h5 class="  mb-0 text-primary font-weight-bold">
-                                        تنظیمات
+                                        تنظیمات سیستم
                                     </h5>
                                     <h5 class=" text-sm text-black-50 font-weight-bolder mb-0">
 
@@ -34,7 +35,9 @@
                 </div>
             </a>
         </div>
-        @endif
+    @endif
+    @if($user)
+
         <div class="col-md-6   ">
             <a href="{{url('panel/referral')}}" class="my-1  d-block ">
                 <div class="card move-on-hover">
@@ -69,4 +72,32 @@
                 </div>
             </a>
         </div>
+    @endif
+    <div class="col-md-6   ">
+        <a href="{{url('panel/system-setting')}}" class="my-1  d-block ">
+            <div class="card move-on-hover">
+                <div class="card-body  p-3  blur">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <h5 class="  mb-0 text-primary font-weight-bold">
+                                    تنظیمات کاربری
+                                </h5>
+                                <h5 class=" text-sm text-black-50 font-weight-bolder mb-0">
+
+
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="  ">
+                                <i class="fa fa-3x fa-cog text-primary m-1"
+                                   aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
     </div>
+</div>

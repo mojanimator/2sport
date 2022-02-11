@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Club;
 use App\Models\Coach;
 use App\Models\County;
+use App\Models\Coupon;
 use App\Models\Doc;
 use App\Models\Player;
 use App\Models\Product;
@@ -64,16 +65,25 @@ class DatabaseSeeder extends Seeder
 
         Setting::truncate();
         DB::table('settings')->insert([
-            ['name' => 'درصد رفرال اول', 'key' => 'ref_1', 'value' => '25'],
-            ['name' => 'درصد رفرال دوم', 'key' => 'ref_2', 'value' => '20'],
-            ['name' => 'درصد رفرال سوم', 'key' => 'ref_3', 'value' => '15'],
-            ['name' => 'درصد رفرال چهارم', 'key' => 'ref_4', 'value' => '10'],
+            ['name' => 'درصد رفرال اول', 'key' => 'ref_1', 'value' => '17'],
+            ['name' => 'درصد رفرال دوم', 'key' => 'ref_2', 'value' => '14'],
+            ['name' => 'درصد رفرال سوم', 'key' => 'ref_3', 'value' => '11'],
+            ['name' => 'درصد رفرال چهارم', 'key' => 'ref_4', 'value' => '8'],
             ['name' => 'درصد رفرال پنجم', 'key' => 'ref_5', 'value' => '5'],
 
-            ['name' => 'قیمت ساخت بازیکن (ت)', 'key' => 'player_price', 'value' => '5000'],
-            ['name' => 'قیمت ساخت مربی (ت)', 'key' => 'coach_price', 'value' => '5000'],
-            ['name' => 'قیمت ساخت مرکز ورزشی (ت)', 'key' => 'club_price', 'value' => '5000'],
-            ['name' => 'قیمت ساخت فروشگاه (ت)', 'key' => 'shop_price', 'value' => '5000'],
+            ['name' => 'قیمت بازیکن ۱ ماه(ت)', 'key' => 'player_1_price', 'value' => '5000'],
+            ['name' => 'قیمت بازیکن ۳ ماه(ت)', 'key' => 'player_3_price', 'value' => '6000'],
+            ['name' => 'قیمت بازیکن ۶ ماه(ت)', 'key' => 'player_6_price', 'value' => '7000'],
+            ['name' => 'قیمت مربی ۱ ماه(ت)', 'key' => 'coach_1_price', 'value' => '5000'],
+            ['name' => 'قیمت مربی ۳ ماه(ت)', 'key' => 'coach_3_price', 'value' => '6000'],
+            ['name' => 'قیمت مربی ۶ ماه(ت)', 'key' => 'coach_6_price', 'value' => '7000'],
+            ['name' => 'قیمت مرکزورزشی ۱ ماه(ت)', 'key' => 'club_1_price', 'value' => '5000'],
+            ['name' => 'قیمت مرکزورزشی ۲ ماه(ت)', 'key' => 'club_3_price', 'value' => '6000'],
+            ['name' => 'قیمت مرکزورزشی ۶ ماه(ت)', 'key' => 'club_6_price', 'value' => '7000'],
+            ['name' => 'قیمت فروشگاه ۱ ماه(ت)', 'key' => 'shop_1_price', 'value' => '5000'],
+            ['name' => 'قیمت فروشگاه ۳ ماه(ت)', 'key' => 'shop_3_price', 'value' => '6000'],
+            ['name' => 'قیمت فروشگاه ۶ ماه(ت)', 'key' => 'shop_6_price', 'value' => '7000'],
+            ['name' => 'قیمت پین (ت)', 'key' => 'pin_price', 'value' => '3000'],
 
         ]);
 
@@ -87,8 +97,7 @@ class DatabaseSeeder extends Seeder
             Doc::truncate();
 
 
-
-
+        $this->createcoupons($faker);
         $this->createuserrefs($faker);
         $this->createplayers($faker);
 
@@ -101,6 +110,21 @@ class DatabaseSeeder extends Seeder
 
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
+    private function createcoupons($faker)
+    {
+        Coupon::truncate();
+        for ($i = 0; $i < 10; $i++)
+            Coupon::create([
+                'code' => str_random(3),
+                'discount_percent' => $faker->randomElement([10, 13, 24, 100]),
+                'created_at' => Carbon::now(),
+                'used_at' => null,
+                'expires_at' => null,
+                'limit_price' => null,
+                'user_id' => null
+            ]);
     }
 
     private function createuserrefs($faker)
@@ -116,6 +140,8 @@ class DatabaseSeeder extends Seeder
             'phone_verified' => true,
             'password' => Hash::make('123123'),
             'score' => 0,
+            'sheba' => $faker->numerify("########################"),
+            'cart' => $faker->numerify("################"),
             'role' => 'go',
             'active' => true,
             'remember_token' => bin2hex(openssl_random_pseudo_bytes(30)),
@@ -132,6 +158,8 @@ class DatabaseSeeder extends Seeder
             'phone_verified' => true,
             'password' => Hash::make('d4815'),
             'score' => 0,
+            'sheba' => $faker->numerify("########################"),
+            'cart' => $faker->numerify("################"),
             'role' => 'ad',
             'active' => true,
             'remember_token' => bin2hex(openssl_random_pseudo_bytes(30)),
@@ -144,6 +172,8 @@ class DatabaseSeeder extends Seeder
                 'family' => "$faker->lastName",
                 'username' => "$faker->username",
                 'active' => true,
+                'sheba' => $faker->numerify("########################"),
+                'cart' => $faker->numerify("################"),
                 'phone_verified' => true,
                 'phone' => '09' . $faker->numberBetween(124654211, 987898978),
             ]);
@@ -155,6 +185,7 @@ class DatabaseSeeder extends Seeder
                 'inviter_id' => $faker->numberBetween(1, 30),
                 'invited_id' => $faker->numberBetween(1, 30),
                 'invited_purchase_type' => $faker->numberBetween(1, 4),
+                'invited_purchase_months' => $faker->randomElement([1, 3, 6]),
             ]);
         }
     }
@@ -476,4 +507,6 @@ class DatabaseSeeder extends Seeder
             }
         }
     }
+
+
 }

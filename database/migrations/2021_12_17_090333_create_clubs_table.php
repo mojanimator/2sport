@@ -27,6 +27,7 @@ class CreateClubsTable extends Migration
             $table->json('times');
             $table->string('location', 100)->nullable();
             $table->timestamps();
+            $table->timestamp('expires_at')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('no action');
             $table->foreign('county_id')->references('id')->on('county')->onDelete('no action');

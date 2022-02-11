@@ -5,6 +5,7 @@ use App\Models\Setting;
 
 require_once 'SMS.php';
 require_once 'Telegram.php';
+require_once 'NextPay.php';
 
 
 class Helper
@@ -65,13 +66,6 @@ class Helper
 
     ];
 
-    public static function makePay($type, $data)
-    {
-        $price = Setting::firstOrNew(['key' => "${type}_price"])->value ?: 0;
-        if ($price == 0)
-            $data->update(['active' => true]);
-
-    }
 
 }
 

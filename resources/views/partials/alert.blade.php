@@ -1,6 +1,6 @@
 @if (session()->has('error-alert'))
 
-    <div class="alert alert-danger alert-dismissible fade show top-5 left-2 z-index-3 text-right position-absolute"
+    <div class="alert alert-danger alert-dismissible fade show top-0 start-0 m-3 z-index-3 text-right position-absolute"
          role="alert" style="z-index: 1000 !important;">
         <strong>  {{session()->get('error-alert')}}</strong>
         <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
@@ -11,7 +11,7 @@
 
 @elseif (session()->has('success-alert'))
 
-    <div class="alert alert-success alert-dismissible fade show top-5 left-2 z-index-3 text-right position-absolute"
+    <div class="alert alert-success alert-dismissible fade show top-0 start-0 m-3 z-index-3 text-right position-absolute"
          role="alert" style="z-index: 1000 !important;">
         <strong>   {!! session()->get('success-alert') !!}</strong>
         <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
