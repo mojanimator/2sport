@@ -131,7 +131,8 @@ class PlayerController extends Controller
                         'phone_verified' => true,
                     ]);
                 }
-            }
+            } else
+                $user = auth()->user();
 
             $player = Player::create([
                 'user_id' => $user->id,
