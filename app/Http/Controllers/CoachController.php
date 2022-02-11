@@ -316,10 +316,11 @@ class CoachController extends Controller
             $coach->active = $request->active;
             $coach->save();
         } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true) {
+            if ($request->active == true && $coach->active == false) {
                 if (Carbon::now()->timestamp < $coach->expires_at) {
-                    $coach->active = true;
-                    $coach->save();
+                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
+//                    $coach->active = true;
+//                    $coach->save();
                 } else {
                     return response()->json(['errors' => ['ابتدا مربی را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
 

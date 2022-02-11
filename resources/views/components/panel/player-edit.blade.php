@@ -22,6 +22,7 @@
         $expire_days= $now->diffInDays(\Carbon\Carbon::createFromTimestamp($player->expires_at),false);
      if($expire_days<0)
         $expire_days=0;
+
     }
    }
 

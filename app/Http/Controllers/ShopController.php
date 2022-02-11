@@ -341,10 +341,11 @@ class ShopController extends Controller
             $shop->active = $request->active;
             $shop->save();
         } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true) {
+            if ($request->active == true && $shop->active == false) {
                 if (Carbon::now()->timestamp < $shop->expires_at) {
-                    $shop->active = true;
-                    $shop->save();
+                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
+//                    $shop->active = true;
+//                    $shop->save();
                 } else {
                     return response()->json(['errors' => ['ابتدا فروشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
 

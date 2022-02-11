@@ -253,7 +253,7 @@
         </div>
     </footer>
 @endif
-<script src="{{ mix('js/app.js').'?id='.rand(1000,9000)}}" defer></script>
+<script src="{{ mix('js/app.js')/*.'?id='.rand(1000,9000)*/}}" defer></script>
 @yield('scripts')
 </body>
 </html>

@@ -375,10 +375,12 @@ class ClubController extends Controller
             $club->active = $request->active;
             $club->save();
         } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true) {
+            if ($request->active == true && $club->active == false) {
                 if (Carbon::now()->timestamp < $club->expires_at) {
-                    $club->active = true;
-                    $club->save();
+                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
+
+//                    $club->active = true;
+//                    $club->save();
                 } else {
                     return response()->json(['errors' => ['ابتدا باشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
 
