@@ -69,6 +69,8 @@ class  NextPay
                 'coupon_id' => isset($c->id) ? $c->id : null,
 
             ]);
+            \App\Models\Ref::where('invited_id', $user->id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
+
             redirect("/panel/$type/edit/$id")->with('success-alert', 'پرداخت شما با موفقیت انجام شد');
             return response()->json(['url' => "/panel/$type/edit/$id"], 200);
 
