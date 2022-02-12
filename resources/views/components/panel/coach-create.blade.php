@@ -1,5 +1,5 @@
 <div class="  my-3 ">
-    <div class="row justify-content-center">
+    <div class="row mx-auto justify-content-center">
         <div class="col-md-10 mx-auto  ">
             <div class="card bg-light">
                 <h5 class="card-header text-center text-white bg-primary">ثبت مربی</h5>

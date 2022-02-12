@@ -205,12 +205,11 @@
                     src: src ? src : this.doc, type: "video/mp4"
                 });
                 videojs.hook('beforeerror', function (player, err) {
-                    const error = player.error();
+//                    const error = player.error();
 
                     if (err === null) {
-                        return error;
+                        return null /*error*/;
                     }
-
 
                     return {
                         'code': 1,
@@ -221,17 +220,19 @@
                 this.player.on('error', function (e) {
 
                     document.querySelector('.vjs-error-display').addEventListener('click', function (e) {
-                        self.resetPlayer();
+                        self.refresh();
 
                     });
-
+//
                 });
             },
             resetPlayer(src) {
+
                 if (!this.player)
                     this.initPlayer(src);
                 else {
                     this.player.reset();
+
 //                this.player.pause().currentTime(0).trigger('loadstart');
 
 //                this.player.bigPlayButton.show();
@@ -240,7 +241,8 @@
                     });
                     this.player.trigger('loadstart');
                 }
-            },
+            }
+            ,
 
             removeFile() {
 
@@ -309,18 +311,20 @@
                 });
 
 
-            },
+            }
+            ,
 
             refresh() {
                 this.uploadContainer.classList.remove('d-none');
+
                 this.player.pause();
                 this.uploader.files = null;
                 this.uploader.value = null;
                 doc = null;
                 this.doc = null;
                 this.before = null;
-
-            },
+            }
+            ,
 
 
             openFileChooser(event, from) {

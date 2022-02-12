@@ -117,6 +117,8 @@ class Telegram
 
     static function log($to, $type, $data)
     {
+        if (str_contains(url('/'), 'localhost'))
+            return;
 
         $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
         $time = $now->format('%A, %d %B %Y ⏰ H:i');

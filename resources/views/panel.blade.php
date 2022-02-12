@@ -314,10 +314,12 @@
                 {{--loading--}}
                 <div class="    m-2  position-absolute w-100 " style="z-index: 10;">
                     <div id="loading" class="spinner-border position-fixed  text-danger d-none
-               right-0 bottom-0  "
+                 bottom-0  "
                          role="status">
                         <span class="sr-only"></span>
                     </div>
+                    <span id="percent"
+                          class=" small font-weight-bold position-fixed bottom-0 px-2 py-1   text-danger">  </span>
                 </div>
 
                 <div class="container-fluid    px-3 px-sm-2   my-2">

@@ -1,5 +1,5 @@
 <div class="  my-3 ">
-    <div class="row justify-content-center">
+    <div class="row mx-auto justify-content-center">
         <div class="col-md-10 mx-auto  ">
             <div class="card bg-light">
                 <h5 class="card-header text-center text-white bg-primary">ثبت بازیکن</h5>
@@ -316,6 +316,7 @@
                 "{{auth()->user()->family}}",
                 "{{auth()->user()->phone}}"
             );
+
         });
 
         function submitWithFiles(event) {
@@ -344,7 +345,8 @@
             axios.post("{{route('player.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
                     var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    console.log(percentCompleted);
+                    if (percentCompleted > 0)
+                        document.querySelector('#percent').innerHTML = percentCompleted;
                 }
             })
 

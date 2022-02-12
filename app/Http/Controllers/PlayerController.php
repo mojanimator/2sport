@@ -48,7 +48,7 @@ class PlayerController extends Controller
             'd' => 'required|numeric|min:1|max:31',
 
             'img' => 'required|base64_image|base64_size:10240',
-            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
+            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:20480'
         ], [
             'name.required' => 'نام  نمی تواند خالی باشد',
             'name.string' => 'نام  نامعتبر است',
@@ -114,7 +114,7 @@ class PlayerController extends Controller
 
             'video.required' => 'ویدیو ضروری است',
             'video.mimes' => 'ویدیو ارسالی با فرمت mp4 باشد',
-            'video.max' => 'حجم ویدیو حداکثر 10 مگابایت باشد',
+            'video.max' => 'حجم ویدیو حداکثر 20 مگابایت باشد',
 
         ]);
 
@@ -197,7 +197,7 @@ class PlayerController extends Controller
             }) : '',],
             'description' => 'sometimes|string|max:2048',
             'img' => 'sometimes|base64_image'/*.'|base64_size:2048'*/,
-            'video' => 'sometimes|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
+            'video' => 'sometimes|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:20480'
         ], [
             'name.required' => 'نام  نمی تواند خالی باشد',
             'name.string' => 'نام  نامعتبر است',
@@ -284,7 +284,7 @@ class PlayerController extends Controller
 
             'video.required' => 'ویدیو ضروری است',
             'video.mimes' => 'ویدیو ارسالی با فرمت mp4 باشد',
-            'video.max' => 'حجم ویدیو حداکثر 10 مگابایت باشد',
+            'video.max' => 'حجم ویدیو حداکثر 20 مگابایت باشد',
 
         ]);
 

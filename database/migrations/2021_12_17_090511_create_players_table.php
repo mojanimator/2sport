@@ -24,7 +24,7 @@ class CreatePlayersTable extends Migration
             $table->string('family', 100);
             $table->smallInteger('height')->unsigned(); //cm
             $table->smallInteger('weight')->unsigned(); //kg
-            $table->timestamp('born_at');
+            $table->dateTime('born_at');
             $table->boolean('is_man'); //man:true woman:false
             $table->boolean('active')->default(false);
             $table->boolean('hidden')->default(false);

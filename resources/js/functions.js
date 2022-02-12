@@ -184,7 +184,7 @@ window.invalidInputs = function (data) {
         }
 
     }
-
+    document.querySelector('#percent').innerHTML = "";
 
 };
 window.validInputs = function () {
@@ -203,6 +203,7 @@ window.validInputs = function () {
             data2[d].innerHTML = '';
 
     }
+
 };
 import videojs from 'video.js';
 
