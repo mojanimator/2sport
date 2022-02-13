@@ -50,7 +50,7 @@ class  NextPay
             if (!isset($data))
                 return;
             $time = $data->expires_at != null && $now->timestamp < $data->expires_at ? \Carbon\Carbon::parse($data->expires_at)->addDays($month * 30) : $now->addDays($month * 30);
-            $data->active = true;
+            $data->active = false;
             $data->expires_at = $time;
             $data->save();
 
@@ -187,7 +187,7 @@ class  NextPay
             $now = \Carbon\Carbon::now();
             $time = $data->expires_at != null && $now->timestamp < $data->expires_at ? \Carbon\Carbon::parse($data->expires_at)->addDays($month * 30) : $now->addDays($month * 30);
             $data->expires_at = $time;
-            $data->active = true;
+            $data->active = false;
             $data->save();
             \App\Models\Ref::where('invited_id', $payment->user_id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
             Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'payment', $payment);

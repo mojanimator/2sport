@@ -120,7 +120,7 @@
                         <div class="col-md-10 mx-auto row   ">
                             <div class="my-2   form-outline col-3">
                                 <input id="d" type="number"
-                                       class="  px-4 form-control @error('d') is-invalid @enderror"
+                                       class="  px-1 form-control @error('d') is-invalid @enderror"
                                        value="{{ old('d') }}"
                                        name="d"
                                        autocomplete="d">
@@ -132,7 +132,7 @@
                             <div class="col-auto  "></div>
                             <div class="my-2   form-outline col-3">
                                 <input id="m" type="number"
-                                       class="  px-4 form-control @error('m') is-invalid @enderror"
+                                       class="  px-1 form-control @error('m') is-invalid @enderror"
                                        value="{{ old('m') }}"
                                        name="m"
                                        autocomplete="m">
@@ -144,7 +144,7 @@
                             <div class="col-auto   "></div>
                             <div class="my-2   form-outline col-4">
                                 <input id="y" type="number"
-                                       class="  px-4 form-control @error('y') is-invalid @enderror"
+                                       class="  px-1 form-control @error('y') is-invalid @enderror"
                                        value="{{ old('y') }}"
                                        name="y"
                                        autocomplete="y">

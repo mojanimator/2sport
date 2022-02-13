@@ -305,8 +305,8 @@ class CoachController extends Controller
                 Doc::createImage($request->img, $doc->docable_id, $doc->docable_type, $doc->type_id, $doc->id);
 
             }
+            $this->dataEdited($coach, 'coach_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-            return redirect()->back()->with('success-alert', 'تصویر با موفقیت اضافه شد!');
 
         }
         $coach = Coach::where('id', $request->id)->first();
@@ -330,12 +330,14 @@ class CoachController extends Controller
             }
 
         } elseif ($request->name) {
+            if ($coach->name == $request->name) return null;
             $coach->name = $request->name;
-            $coach->save();
+            $this->dataEdited($coach, 'coach_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         } elseif ($request->family) {
+            if ($coach->family == $request->family) return null;
             $coach->family = $request->family;
-            $coach->save();
+            $this->dataEdited($coach, 'coach_edited', 'نام خانوادگی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         } elseif ($request->phone && $request->phone_verify) {
             $coach->phone = $request->phone;
@@ -344,23 +346,29 @@ class CoachController extends Controller
 
         } elseif (($request->is_man !== null) && $request->d && $request->y && $request->m) {
 
+            $date = (new Jalalian($request->y, $request->m, $request->d))->toCarbon();
+            if ($date->timestamp == $coach->born_at && $coach->is_man == $request->is_man) return null;
             $coach->is_man = $request->is_man;
-            $coach->born_at = (new Jalalian($request->y, $request->m, $request->d))->toCarbon();
-            $coach->save();
+            $coach->born_at = $date;
+            $this->dataEdited($coach, 'coach_edited', 'جنسیت/تاریخ تولد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         } elseif ($request->sport_id !== null) {
+            if ($coach->sport_id == $request->sport_id) return null;
             $coach->sport_id = $request->sport_id;
-            $coach->save();
+            $this->dataEdited($coach, 'coach_edited', 'رشته ورزشی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
 
         } elseif ($request->province_id && $request->county_id) {
-
+            if ($coach->province_id == $request->province_id && $coach->county_id = $request->county_id) return null;
             $coach->province_id = $request->province_id;
             $coach->county_id = $request->county_id;
-            $coach->save();
-        } elseif ($request->description) {
+            $this->dataEdited($coach, 'coach_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
+        } elseif ($request->description) {
+            if ($coach->description == $request->description) return null;
             $coach->description = $request->description;
-            $coach->save();
+            $this->dataEdited($coach, 'coach_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
         }
     }
 

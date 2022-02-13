@@ -73,18 +73,19 @@ class UserController extends Controller
 
 
         if ($request->name) {
+            if ($user->name == $request->name) return null;
             $user->name = $request->name;
-            $user->save();
-            return redirect()->back()->with('success-alert', 'نام با موفقیت ویرایش شد!');
+            $this->dataEdited($user, 'user_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
         }
         if ($request->family) {
+            if ($user->family == $request->family) return null;
             $user->family = $request->family;
-            $user->save();
-            return redirect()->back()->with('success-alert', 'نام خانوادگی با موفقیت ویرایش شد!');
+            $this->dataEdited($user, 'user_edited', 'نام خانوادگی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
         } elseif ($request->username) {
+            if ($user->username == $request->username) return null;
             $user->username = $request->username;
-            $user->save();
-            return redirect()->back()->with('success-alert', 'نام کاربری با موفقیت ویرایش شد!');
+            $this->dataEdited($user, 'user_edited', 'نام کاربری با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
         } elseif ($request->email) {
             $emailChanged = $user->email != $request->email ? true : false;
             if ($emailChanged || !$user->email_verified) {
@@ -103,13 +104,13 @@ class UserController extends Controller
             $user->save();
 
         } elseif ($request->sheba) {
+            if ($user->sheba == $request->sheba) return null;
             $user->sheba = $request->sheba;
-            $user->save();
-            return redirect()->back()->with('success-alert', 'شماره شبا با موفقیت ویرایش شد!');
+            $this->dataEdited($user, 'user_edited', 'شبا با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
         } elseif ($request->cart) {
+            if ($user->cart == $request->cart) return null;
             $user->cart = $request->cart;
-            $user->save();
-            return redirect()->back()->with('success-alert', 'شماره کارت با موفقیت ویرایش شد!');
+            $this->dataEdited($user, 'user_edited', 'کارت با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
         }
 
 

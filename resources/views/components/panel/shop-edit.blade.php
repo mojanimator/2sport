@@ -318,7 +318,7 @@
                                     <div class=" input-group my-1">
 
                                         <button class="btn btn-secondary rounded ms-auto" type="button"
-                                                id="times-addon"
+                                                id="description-addon"
                                                 onclick=" submitWithFiles(event,{
                                             'description':document.getElementById('description').value,
                                            })">ویرایش

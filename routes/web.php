@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\County;
 use App\Models\Coupon;
 use App\Models\Setting;
 use Carbon\Carbon;
@@ -19,7 +20,6 @@ use Faker\Factory as Faker;
 |
 */
 Route::get('test', function () {
-
 });
 
 Route::get('club/search', [App\Http\Controllers\ClubController::class, 'search'])->name('club.search');

@@ -324,7 +324,7 @@ class PlayerController extends Controller
 
             }
 
-            return redirect()->back()->with('success-alert', 'ویدیو با موفقیت اضافه شد!');
+            $this->dataEdited($player, 'player_edited', 'ویدیو با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         } elseif ($request->cmnd == 'delete-img') {
 
@@ -348,8 +348,7 @@ class PlayerController extends Controller
                 Doc::createImage($request->img, $doc->docable_id, $doc->docable_type, $doc->type_id, $doc->id);
 
             }
-
-            return redirect()->back()->with('success-alert', 'تصویر با موفقیت اضافه شد!');
+            $this->dataEdited($player, 'player_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         }
         $player = Player::where('id', $request->id)->first();
@@ -374,12 +373,14 @@ class PlayerController extends Controller
             }
 
         } elseif ($request->name) {
+            if ($player->name == $request->name) return null;
             $player->name = $request->name;
-            $player->save();
-
+            $this->dataEdited($player, 'player_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
         } elseif ($request->family) {
+            if ($player->family == $request->family) return null;
             $player->family = $request->family;
-            $player->save();
+            $this->dataEdited($player, 'player_edited', 'نام خانوادگی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
 
         } elseif ($request->phone && $request->phone_verify) {
             $player->phone = $request->phone;
@@ -387,26 +388,32 @@ class PlayerController extends Controller
             $player->save();
 
         } elseif (($request->is_man !== null) && $request->d && $request->y && $request->m && $request->weight && $request->height) {
-
+            $date = (new Jalalian($request->y, $request->m, $request->d))->toCarbon();
+            if ($date->timestamp == $player->born_at && $player->weight == $request->weight && $player->height == $request->height && $player->is_man == $request->is_man) return null;
             $player->weight = $request->weight;
             $player->height = $request->height;
             $player->is_man = $request->is_man;
-            $player->born_at = (new Jalalian($request->y, $request->m, $request->d))->toCarbon();
-            $player->save();
+            $player->born_at = $date;
+            $this->dataEdited($player, 'player_edited', 'قد/وزن/جنسیت/تاریخ تولد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
 
         } elseif ($request->sport_id !== null) {
+            if ($player->sport_id == $request->sport_id) return null;
             $player->sport_id = $request->sport_id;
-            $player->save();
+            $this->dataEdited($player, 'player_edited', 'رشته ورزشی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
 
         } elseif ($request->province_id && $request->county_id) {
-
+            if ($player->province_id == $request->province_id && $player->county_id = $request->county_id) return null;
             $player->province_id = $request->province_id;
             $player->county_id = $request->county_id;
-            $player->save();
-        } elseif ($request->description) {
+            $this->dataEdited($player, 'player_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
+        } elseif ($request->description) {
+            if ($player->description == $request->description) return null;
             $player->description = $request->description;
-            $player->save();
+            $this->dataEdited($player, 'player_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
         }
     }
 
@@ -542,4 +549,6 @@ class PlayerController extends Controller
 
         return $data;
     }
+
+
 }

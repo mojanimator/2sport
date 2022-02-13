@@ -2,9 +2,9 @@
     $user=auth()->user();
     $shops=[];
     if($user->role=='go' || $user->role=='ad')
-    $shops=\App\Models\Shop::get(['id','name']);
+    $shops=\App\Models\Shop::where('active',true)->get(['id','name']);
     if($user->role=='us')
-    $shops=\App\Models\Shop::where('user_id',$user->id)->get(['id','name']);
+    $shops=\App\Models\Shop::where('user_id',$user->id)->where('active',true)->get(['id','name']);
 @endphp
 
 <div class="  my-3 ">

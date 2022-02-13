@@ -14,6 +14,17 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    protected function dataEdited($data, $logType, $msg)
+    {
+        if (isset($data)) {
+            if (auth()->user()->role != 'ad' && auth()->user()->role != 'go') {
+                $data->active = false;
+            }
+            \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, $logType, $data);
+            $data->save();
+            return redirect()->back()->with('success-alert', $msg);
+        }
+    }
 
     protected function latest(Request $request)
     {

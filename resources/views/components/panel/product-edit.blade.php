@@ -208,6 +208,31 @@
                             </div>
 
 
+                            <div class="col-md-12 mx-auto    ">
+                                <div class="my-2 form-outline">
+                                <textarea id="tags" rows="4"
+                                          class="  px-4 form-control @error('tags') is-invalid @enderror"
+                                          name="tags"
+                                          autocomplete="description" autofocus>{{ $product->tags }}</textarea>
+
+                                    <label for="tags"
+                                           class="col-md-12 col-form-label form-label  text-md-right">
+                                        هشتگ ها (هر کلمه در یک خط جداگانه)
+                                    </label>
+                                    <div class=" input-group my-1">
+
+                                        <button class="btn btn-secondary rounded ms-auto" type="button"
+                                                id="tags-addon"
+                                                onclick=" submitWithFiles(event,{
+                                            'tags':document.getElementById('tags').value,
+                                           })">ویرایش
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class=" text-danger text-start small  col-12   " role="alert">
+                                    <strong id="err-tags"> </strong>
+                                </div>
+                            </div>
                             <div class="row mx-auto  px-0   ">
                                 <div class="my-2 form-outline">
                                 <textarea id="description" rows="4"

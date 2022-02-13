@@ -330,8 +330,8 @@ class ShopController extends Controller
                 Doc::createImage($request->img, $shop->id, Helper::$typesMap['shops'], $request->type);
 
             }
+            $this->dataEdited($shop, 'shop_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-            return redirect()->back()->with('success-alert', 'تصویر با موفقیت اضافه شد!');
 
         }
         $shop = Shop::where('id', $request->id)->first();
@@ -355,8 +355,9 @@ class ShopController extends Controller
             }
 
         } elseif ($request->name) {
+            if ($shop->name == $request->name) return null;
             $shop->name = $request->name;
-            $shop->save();
+            $this->dataEdited($shop, 'shop_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         } elseif ($request->phone && $request->phone_verify) {
             $shop->phone = $request->phone;
@@ -364,16 +365,18 @@ class ShopController extends Controller
             $shop->save();
 
         } elseif ($request->province_id && $request->county_id && $request->address) {
-
+            if ($shop->province_id == $request->province_id && $shop->county_id == $request->county_id && $shop->location == $request->location && $shop->address == $request->address) return null;
             $shop->province_id = $request->province_id;
             $shop->location = $request->location;
             $shop->county_id = $request->county_id;
             $shop->address = $request->address;
-            $shop->save();
-        } elseif ($request->description) {
+            $this->dataEdited($shop, 'shop_edited', 'استان/شهر/آدرس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
+        } elseif ($request->description) {
+            if ($shop->description == $request->description) return null;
             $shop->description = $request->description;
-            $shop->save();
+            $this->dataEdited($shop, 'shop_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
         }
     }
 

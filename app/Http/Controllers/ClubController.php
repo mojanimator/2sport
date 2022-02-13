@@ -366,7 +366,8 @@ class ClubController extends Controller
 
             }
 
-            return redirect()->back()->with('success-alert', 'تصویر با موفقیت اضافه شد!');
+            $this->dataEdited($club, 'club_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
 
         }
         $club = Club::where('id', $request->id)->first();
@@ -390,8 +391,9 @@ class ClubController extends Controller
             }
 
         } elseif ($request->name) {
+            if ($club->name == $request->name) return null;
             $club->name = $request->name;
-            $club->save();
+            $this->dataEdited($club, 'club_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         } elseif ($request->phone && $request->phone_verify) {
             $club->phone = $request->phone;
@@ -436,20 +438,24 @@ class ClubController extends Controller
             if ($msg)
                 throw ValidationException::withMessages(['times' => "$msg"]);
 
+            if ($club->times == $request->times) return null;
             $club->times = $request->times;
-            $club->save();
+            $this->dataEdited($club, 'club_edited', 'برنامه کاری با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
 
         } elseif ($request->province_id && $request->county_id && $request->address) {
-
+            if ($club->province_id == $request->province_id && $club->county_id == $request->county_id && $club->location == $request->location && $club->address == $request->address) return null;
             $club->province_id = $request->province_id;
             $club->location = $request->location;
             $club->county_id = $request->county_id;
             $club->address = $request->address;
-            $club->save();
-        } elseif ($request->description) {
+            $this->dataEdited($club, 'club_edited', 'استان/شهر/آدرس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
+        } elseif ($request->description) {
+            if ($club->description == $request->description) return null;
             $club->description = $request->description;
-            $club->save();
+            $this->dataEdited($club, 'club_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
         }
     }
 

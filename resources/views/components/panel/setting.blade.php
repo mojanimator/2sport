@@ -31,7 +31,7 @@
                             @csrf
 
                             <div class="col-md-10  mx-auto  ">
-                                <div class=" my-2 form-outline input-group  ">
+                                <div class=" mb-2 form-outline input-group  ">
 
                                     <input id="name" type="text"
                                            class="  px-4 form-control @error('name') is-invalid @enderror"
@@ -51,7 +51,7 @@
                             </div>
 
                             <div class="col-md-10  mx-auto  ">
-                                <div class=" my-2 form-outline input-group  ">
+                                <div class=" my-4 form-outline input-group  ">
 
                                     <input id="family" type="text"
                                            class="  px-4 form-control @error('family') is-invalid @enderror"
@@ -93,7 +93,7 @@
                             </div>
 
                             <div class="col-md-10  mx-auto  ">
-                                <div class=" my-2 form-outline input-group  ">
+                                <div class=" my-4 form-outline input-group  ">
 
                                     <input id="email" type="text"
                                            class="  px-4 form-control @error('email') is-invalid @enderror"
@@ -101,7 +101,7 @@
                                            value="{{ $user->email }}" autocomplete="email" autofocus>
                                     <label for="email"
                                            class="col-md-12    form-label  text-md-right ">ایمیل
-                                        <span class="font-weight-bold {{$user->email_verified?'text-success':'text-danger'}}">
+                                        <span class="font-weight-bold {{!$user->email?'d-none':''}} {{$user->email_verified?'text-success':'text-danger'}}">
                                             ({{$user->email_verified?' فعال ':' غیر فعال '}}
                                             ) </span> </label>
                                     <button class="btn btn-secondary rounded" type="button"
@@ -118,7 +118,7 @@
 
                             <div class="col-md-10 mx-auto   border border-primary rounded-3    py-3">
 
-                                <div class="my-2   form-outline input-group">
+                                <div class="my-2 mb-4  form-outline input-group">
                                     <input id="phone" type="tel"
                                            class="  px-4 form-control @error('phone') is-invalid @enderror"
                                            name="phone"
@@ -142,7 +142,7 @@
                                 </div>
 
                                 <div class=" col-md-12 mx-auto    ">
-                                    <div class=" form-outline input-group my-2   ">
+                                    <div class=" form-outline input-group my-2 mt-4  ">
 
                                         <input id="phone_verify" type="number"
                                                class=" px-4 form-control @error('phone_verify') is-invalid @enderror"

@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Shop;
 use App\Models\Sport;
 use App\Models\User;
+use Carbon\Carbon;
 use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -124,6 +125,8 @@ class ProductController extends Controller
         $shop = Shop::find($request->shop_id);
         if (!$this->authorize('ownItem', [User::class, $shop, false]))
             throw ValidationException::withMessages(['name' => "مجاز نیستید"]);
+        if ($shop->active == false)
+            throw ValidationException::withMessages(['name' => "فروشگاه انتخابی غیر فعال است"]);
 
         $name = $request->name;
 
@@ -137,7 +140,7 @@ class ProductController extends Controller
         $group_id = $request->group_id;
 
         $product = Product::create([
-            'active' => true,
+            'active' => false,
             'name' => $name,
 
             'group_id' => $group_id,
@@ -289,8 +292,8 @@ class ProductController extends Controller
                 Doc::createImage($request->img, $product->id, Helper::$typesMap['products'], $request->type);
 
             }
+            $this->dataEdited($product, 'product_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-            return redirect()->back()->with('success-alert', 'تصویر با موفقیت اضافه شد!');
 
         }
 
@@ -300,20 +303,33 @@ class ProductController extends Controller
         $this->authorize('ownItem', [User::class, $shop, true]);
 
 
-        if (isset($request->active)) {
-            //cant activate deactivated shops
-            if ($product->active == false && $shop->active == false)
-                return response()->json(['errors' => ['ابتدا فروشگاه این محصول را فعال کنید']], 422);
+        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
+            $shop->active = $request->active;
+            $shop->save();
+        } elseif (isset($request->active) && $user->role == 'us') {
+            if ($request->active == true && $product->active == false) {
+                if (Carbon::now()->timestamp < $shop->expires_at) {
+                    return response()->json(['errors' => ['محصول در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
 
-            $product->active = $request->active;
-            $product->save();
+                } else {
+                    return response()->json(['errors' => ['ابتدا فروشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
+
+                }
+            }
+
         } elseif ($name) {
-            $product->name = $name;
-            $product->save();
+            if ($product->name == $request->name) return null;
+            $product->name = $request->$product;
+            $this->dataEdited($product, 'product_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
         } elseif ($description) {
-            $product->description = $description;
-            $product->save();
+            if ($product->description == $request->description) return null;
+            $product->description = $request->description;
+            $this->dataEdited($product, 'product_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
         } elseif (is_numeric($price) && is_numeric($discount_price) && is_numeric($count)) {
+
+            if ($product->price == $price && $product->discount_price == $discount_price && $product->count == $count && $product->group_id == $group_id) return null;
             $product->price = $price;
             $product->discount_price = $discount_price;
             $product->count = $count;
@@ -329,13 +345,13 @@ class ProductController extends Controller
                 }
 
             }
-            $product->save();
+            $this->dataEdited($product, 'product_edited', 'قیمت/دسته بندی/تعداد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
         } elseif ($tags) {
+            if ($product->tags == $tags) return null;
             $product->tags = $tags;
-            $product->save();
-        } elseif (isset($active)) {
-            $product->active = $active;
-            $product->save();
+            $this->dataEdited($product, 'product_edited', 'هشتگ با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
         }
     }
 
