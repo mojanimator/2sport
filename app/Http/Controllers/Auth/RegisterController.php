@@ -77,7 +77,7 @@ class RegisterController extends Controller
 //                'expires_at' => $data['ex_date'] ? CalendarUtils::createCarbonFromFormat('Y/m/d', $data['ex_date'])->addDays(1)->timezone('Asia/Tehran') : null,
         ]);
         $user->setRefferal();
-        \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'user_created', $user);
+        \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, 'user_created', $user);
 
         if ($user->email)
             Mail::to($user->email)->queue(new RegisterEditUserMail($token, 'register'));
