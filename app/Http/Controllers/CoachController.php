@@ -359,7 +359,7 @@ class CoachController extends Controller
 
 
         } elseif ($request->province_id && $request->county_id) {
-            if ($coach->province_id == $request->province_id && $coach->county_id = $request->county_id) return null;
+            if ($coach->province_id == $request->province_id && $coach->county_id == $request->county_id) return null;
             $coach->province_id = $request->province_id;
             $coach->county_id = $request->county_id;
             $this->dataEdited($coach, 'coach_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');

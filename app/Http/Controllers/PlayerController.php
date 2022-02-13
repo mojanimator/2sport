@@ -404,9 +404,11 @@ class PlayerController extends Controller
 
 
         } elseif ($request->province_id && $request->county_id) {
-            if ($player->province_id == $request->province_id && $player->county_id = $request->county_id) return null;
+            if ($player->province_id == $request->province_id && $player->county_id == $request->county_id) return null;
+            dd($request->county_id, $request->province_id);
             $player->province_id = $request->province_id;
             $player->county_id = $request->county_id;
+
             $this->dataEdited($player, 'player_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         } elseif ($request->description) {
