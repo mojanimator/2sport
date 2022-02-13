@@ -20,6 +20,7 @@ class RouteServiceProvider extends ServiceProvider
     const ROOT = '/';
     const HOME = '/';
     const PANEL = '/panel';
+    const LOGIN = '/login';
 
     /**
      * The controller namespace for the application.
