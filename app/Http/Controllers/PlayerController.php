@@ -405,7 +405,6 @@ class PlayerController extends Controller
 
         } elseif ($request->province_id && $request->county_id) {
             if ($player->province_id == $request->province_id && $player->county_id == $request->county_id) return null;
-            dd($request->county_id, $request->province_id);
             $player->province_id = $request->province_id;
             $player->county_id = $request->county_id;
 
