@@ -1,4 +1,4 @@
-<div class="container my-3 ">
+<div class="  my-3 ">
     <div class="row mx-auto justify-content-center">
         <div class="col-md-10 col-sm-12  ">
             <div class="card bg-light">
@@ -10,10 +10,10 @@
                     <form id="form-create" method="POST" action="{{ route('club.create') }}" class="text-right  row">
                         @csrf
 
-                        <div class="row">
+                        <div class="row mx-auto">
                             {{--   style="  width:{{.85*10}}rem;min-height:{{10}}rem" --}}
                             <image-uploader key="-1"
-                                            class=" my-1 col-6 mx-auto   overflow-auto" id="license"
+                                            class=" my-1   mx-auto   overflow-auto" id="license"
                                             label="تصویر جواز کسب"
                                             for-id="img" ref="licenseUploader"
                                             crop-ratio="{{.85}}"
@@ -23,7 +23,7 @@
 
                             </image-uploader>
                         </div>
-                        <div class="row">
+                        <div class="row mx-auto">
                             @for ($i = 0; $i < Helper::$club_image_limit; $i++)
 
                                 <image-uploader key="{{$i}}" style=" min-width:{{1*10}}rem;min-height:{{10}}rem"
@@ -90,7 +90,7 @@
                                        autocomplete="phone">
                                 <label for="phone"
                                        class="col-md-12  form-label text-md-right">شماره همراه</label>
-                                <button class="btn btn-secondary rounded" type="button"
+                                <button class="btn btn-secondary rounded px-1 px-sm-2" type="button"
                                         id="phone_verify-addon1">
 
                                     دریافت کد تایید

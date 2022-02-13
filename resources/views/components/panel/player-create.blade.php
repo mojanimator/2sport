@@ -10,7 +10,7 @@
                     <form id="form-create" method="POST" action="{{ route('player.create') }}" class="text-right  row">
                         @csrf
 
-                        <div class="row">
+                        <div class="row mx-auto">
                             <image-uploader
                                     class="col-12 col-md-6 mx-auto   overflow-x-scroll" id="img"
                                     label="تصویر چهره"
@@ -48,7 +48,7 @@
                             <label for="myinfo"
                                    class="  form-label  text-md-right">نام و شماره خودم </label>
                         </div>
-                        <div class="col-md-10 mx-auto   ">
+                        <div class="col-md-10 mx-auto my-2  ">
                             <div class="m-2 form-outline">
 
                                 <input id="name" type="text"
@@ -63,7 +63,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-10 mx-auto    ">
+                        <div class="col-md-10 mx-auto  my-2  ">
                             <div class="m-2 form-outline">
                                 <input id="family" type="text"
                                        class="  px-4 form-control @error('family') is-invalid @enderror"
@@ -80,7 +80,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-10 mx-auto   ">
+                        <div class="col-md-10 mx-auto  my-2 ">
                             <div class="m-2   form-outline input-group">
                                 <input id="phone" type="tel"
                                        class="  px-4 form-control @error('phone') is-invalid @enderror"
@@ -89,7 +89,7 @@
                                        autocomplete="phone">
                                 <label for="phone"
                                        class="col-md-12  form-label text-md-right">شماره همراه</label>
-                                <button class="btn btn-secondary rounded" type="button"
+                                <button class="btn btn-secondary rounded px-1 px-sm-2" type="button"
                                         id="phone_verify-addon1">
 
                                     دریافت کد تایید
@@ -100,8 +100,8 @@
                                 <strong id="err-phone"> </strong>
                             </div>
                         </div>
-                        <div class=" col-md-10 mx-auto  ">
-                            <div class=" form-outline m-2   ">
+                        <div class=" col-md-10 mx-auto my-2 ">
+                            <div class=" form-outline    ">
 
                                 <input id="phone_verify" type="number"
                                        class=" px-4 form-control @error('phone_verify') is-invalid @enderror"
@@ -113,7 +113,7 @@
                                 <strong id="err-phone_verify"> </strong>
                             </div>
                         </div>
-                        <div class="col-md-10 mx-auto row    ">
+                        <div class="col-md-10 mx-auto row  my-2  ">
 
                             <div class="btn-group form-check-inline my-2  shadow-0 p-0">
                                 <input type="radio" class="form-check-input  " name="is_man" value="1"
@@ -195,7 +195,7 @@
 
                         </div>
                         <div class="col-md-10 row mx-auto my-2 px-0">
-                            <div class="col-sm-6  my-1 my-sm-0">
+                            <div class="col-sm-6  my-2 my-sm-0">
                                 {{--<label for="province-input"--}}
                                 {{--class="col-12 col-form-label text-right">استان</label>--}}
                                 <select id="province_id" name="province_id" onchange="setCountyOptions(this.value)"
@@ -213,11 +213,11 @@
                                 </div>
 
                             </div>
-                            <div class="col-sm-6  my-1 my-sm-0">
+                            <div class="col-sm-6  my-2 my-sm-0">
                                 {{--<label for="county-input"--}}
                                 {{--class="col-12 col-form-label text-right">شهر </label>--}}
                                 <select id="county_id" name="county_id"
-                                        class="px-4 form-control{{ $errors->has('county_id')  ? ' is-invalid' : '' }}">
+                                        class="px-4 my-2 form-control{{ $errors->has('county_id')  ? ' is-invalid' : '' }}">
                                     @if(  $cId=\App\Models\County::find(old('county_id') ))
 
                                         <option value="{{$cId->id}}" selected>{{$cId->name}}</option>
@@ -269,7 +269,7 @@
                         </div>
 
 
-                        <div class="col-md-10 mx-auto    ">
+                        <div class="col-md-10 mx-auto  my-2  ">
                             <div class="m-2 mx-0 form-outline">
                                 <textarea id="description" rows="4"
                                           class="  px-4 form-control @error('description') is-invalid @enderror"

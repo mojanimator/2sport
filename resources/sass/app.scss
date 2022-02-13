@@ -62,6 +62,10 @@
 
 }
 
+strong[id^="err-"], .invalid-feedback {
+  font-size: .7rem;
+}
+
 .card-container {
 
   @include media-breakpoint-down-px(10000px) {

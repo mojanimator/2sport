@@ -13,7 +13,8 @@
             <div id="sidebar-container" class="      p-0    ">
                 <div class="list-group bg-primary    text-start h-100 rounded-0  ">
                     <div class="list-group-item mb-1  bg-cyan   py-5 px-0 px-sm-1    text-primary font-weight-bold">
-                        <a class="text-center my-1 d-block " href="/panel">  {{$user->username?:$user->name}}</a>
+                        <a class="text-center my-1 d-block overflow-hidden"
+                           href="/panel">  {{$user->username?:$user->name}}</a>
                         <div class="text-center bg-primary text-white rounded p-2 p-sm-0 mx-sm-0 font-weight-light"> {{'امتیاز: '.$user->score}}</div>
                     </div>
 
@@ -322,7 +323,7 @@
                           class=" small font-weight-bold position-fixed bottom-0 px-2 py-1   text-danger">  </span>
                 </div>
 
-                <div class="container-fluid    px-3 px-sm-2   my-2">
+                <div class="container-fluid    px-0 px-sm-2   my-2">
 
 
                     @if(str_contains( url()->current(),'/table/create'))

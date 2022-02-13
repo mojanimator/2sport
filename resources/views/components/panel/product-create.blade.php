@@ -20,7 +20,7 @@
                         @csrf
 
 
-                        <div class="row">
+                        <div class="row mx-auto">
                             @for ($i = 0; $i < Helper::$product_image_limit; $i++)
 
                                 <image-uploader key="{{$i}}" style=" min-width:{{1*10}}rem;min-height:{{10}}rem"

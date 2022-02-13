@@ -77,7 +77,7 @@
                                 </div>
                                 <div class="col-sm-6  my-1 ">
                                     <button id="phone_verify-addon1"
-                                            class="btn btn-secondary btn-block  ">
+                                            class="btn btn-secondary btn-block  px-1 px-sm-2">
                                         دریافت کد تایید
                                     </button>
 

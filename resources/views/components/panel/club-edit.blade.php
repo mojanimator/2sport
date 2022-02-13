@@ -30,7 +30,7 @@
 
 
     <div class="  my-3 ">
-        <div class="row justify-content-center">
+        <div class="row mx-auto justify-content-center">
             <div class="col-md-10 col-sm-12  ">
                 <div class="card bg-light">
                     <div class="  card-header   text-white bg-primary  d-flex justify-content-between  ">
@@ -252,7 +252,7 @@
                                                name="phone_verify">
                                         <label for="phone_verify"
                                                class="col-md-12  form-label text-md-right">کد ارسالی به شماره </label>
-                                        <button class="btn btn-secondary rounded" type="button"
+                                        <button class="btn btn-secondary rounded px-1 px-sm-2" type="button"
                                                 id="phone_verify-addon1">
 
                                             دریافت کد تایید

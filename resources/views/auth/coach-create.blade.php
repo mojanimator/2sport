@@ -104,7 +104,7 @@
                                            autocomplete="phone">
                                     <label for="phone"
                                            class="col-md-12  form-label text-md-right">شماره همراه</label>
-                                    <button class="btn btn-secondary rounded" type="button"
+                                    <button class="btn btn-secondary rounded px-1 px-sm-2" type="button"
                                             id="phone_verify-addon1">
 
                                         دریافت کد تایید

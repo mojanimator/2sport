@@ -25416,7 +25416,7 @@ readers do not read off random characters that represent icons */
     width: 60px !important;
   }
 }
-@media (max-width: 304px) {
+@media (max-width: 343px) {
   #sidebar-container:not(.sidebar-expanded) {
     width: 60px !important;
     flex: 1 0 0%;
@@ -33611,6 +33611,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
 * {
   font-family: Tanha, serif !important;
+}
+
+strong[id^=err-], .invalid-feedback {
+  font-size: 0.7rem;
 }
 
 @media (max-width: 10000px) {

@@ -25337,7 +25337,7 @@ readers do not read off random characters that represent icons */
     }
 }
 
-@media (max-width: 304px) {
+@media (max-width: 343px) {
     #sidebar-container:not(.sidebar-expanded) {
         width: 60px !important;
         flex: 1 0 0%;

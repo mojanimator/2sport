@@ -35,9 +35,9 @@
 
 
     <div class="  my-3 ">
-        <div class="row justify-content-center">
+        <div class="row mx-auto justify-content-center">
             <div class="col-md-10 col-sm-12  ">
-                <div class="card bg-light">
+                <div class="card bg-light   ">
                     <div class="  card-header   text-white bg-primary  d-flex justify-content-between  ">
                         <div class="    ">
                             <label for="delete-input"
@@ -244,7 +244,7 @@
                                                name="phone_verify">
                                         <label for="phone_verify"
                                                class="col-md-12  form-label text-md-right">کد تایید </label>
-                                        <button class="btn btn-secondary rounded" type="button"
+                                        <button class="btn btn-secondary rounded px-1 px-sm-2" type="button"
                                                 id="phone_verify-addon1">
 
                                             دریافت کد تایید
@@ -257,9 +257,23 @@
                             </div>
 
 
-                            <div class="col-md-10 mx-auto row  border border-primary rounded-3 my-2 ">
+                            <div class="col-md-10 mx-auto    border border-primary rounded-3 my-2 ">
+                                <div class="text-end my-1">
+                                    <button class="btn btn-secondary rounded     " type="button"
+                                            id="is_man-addon"
+                                            onclick=" submitWithFiles(event,{
+                                                    'is_man':document.getElementById('option1').checked,
+                                                    'd':f2e(document.getElementById('d').value),
+                                                    'm':f2e(document.getElementById('m').value),
+                                                    'y':f2e(document.getElementById('y').value),
+                                                    'height':f2e(document.getElementById('height').value),
+                                                    'weight':f2e(document.getElementById('weight').value),
+                                                })">
 
-                                <div class="btn-group form-check-inline my-2  shadow-0 px-0 ">
+                                        ویرایش
+                                    </button>
+                                </div>
+                                <div class="  form-check-inline my-2  shadow-0 px-0 ">
                                     <input type="radio" class="form-check-input  " name="is_man" value="1"
                                            id="option1"
                                            autocomplete="off" {{$player->is_man?'checked':''}}/>
@@ -269,21 +283,7 @@
                                            id="option2"
                                            autocomplete="off" {{!$player->is_man?'checked':''}} />
                                     <label class="form-check-label me-4  " for="option2">زن</label>
-                                    <div class="  ms-auto">
-                                        <button class="btn btn-secondary rounded    " type="button"
-                                                id="is_man-addon"
-                                                onclick=" submitWithFiles(event,{
-                                                    'is_man':document.getElementById('option1').checked,
-                                                    'd':f2e(document.getElementById('d').value),
-                                                    'm':f2e(document.getElementById('m').value),
-                                                    'y':f2e(document.getElementById('y').value),
-                                                    'height':f2e(document.getElementById('height').value),
-                                                    'weight':f2e(document.getElementById('weight').value),
-                                                })">
 
-                                            ویرایش
-                                        </button>
-                                    </div>
                                 </div>
                                 <div class="col-md-10 mx-auto row  px-0  ">
                                     <div class="my-2     col-6">

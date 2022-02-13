@@ -10,7 +10,7 @@
                     <form id="form-create" method="POST" action="{{ route('player.create') }}" class="text-right  row">
                         @csrf
 
-                        <div class="row">
+                        <div class="row mx-auto my-2">
                             <image-uploader class="col-sm-6 mx-auto" id="img" label="تصویر چهره"
                                             for-id="img" ref="imageUploader"
                                             crop-ratio="{{0.85}}"
@@ -78,7 +78,7 @@
                                        autocomplete="phone">
                                 <label for="phone"
                                        class="col-md-12  form-label text-md-right">شماره همراه</label>
-                                <button class="btn btn-secondary rounded" type="button"
+                                <button class="btn btn-secondary rounded px-1 px-sm-2" type="button"
                                         id="phone_verify-addon1">
 
                                     دریافت کد تایید

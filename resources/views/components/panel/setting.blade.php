@@ -149,7 +149,7 @@
                                                name="phone_verify">
                                         <label for="phone_verify"
                                                class="col-md-12  form-label text-md-right">کد تایید </label>
-                                        <button class="btn btn-secondary rounded" type="button"
+                                        <button class="btn btn-secondary rounded px-1 px-sm-2" type="button"
                                                 id="phone_verify-addon1">
 
                                             دریافت کد تایید
