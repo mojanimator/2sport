@@ -77,8 +77,7 @@ class RegisterController extends Controller
 //                'expires_at' => $data['ex_date'] ? CalendarUtils::createCarbonFromFormat('Y/m/d', $data['ex_date'])->addDays(1)->timezone('Asia/Tehran') : null,
         ]);
         $user->setRefferal();
-//        \Telegram::logAdmins('✨ کاربر در کلاسجو ثبت نام کرد' . PHP_EOL . PHP_EOL .
-//            "$user->name\n$user->username\n$user->email\n$user->phone");
+        \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'user_created', $user);
 
         if ($user->email)
             Mail::to($user->email)->queue(new RegisterEditUserMail($token, 'register'));
