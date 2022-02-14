@@ -357,7 +357,7 @@
             })
 
                 .then((response) => {
-                        console.log(response);
+                        console.log(response.data);
                         document.querySelector('#loading').classList.add('d-none');
 
 //                        if (response.status == 200)
