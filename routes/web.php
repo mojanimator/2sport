@@ -20,8 +20,8 @@ use Faker\Factory as Faker;
 |
 */
 Route::get('test', function () {
-//    auth()->login(\App\Models\User::find(1));
-//    echo 'hi';
+    auth()->login(\App\Models\User::find(1));
+    echo 'hi';
 });
 
 Route::get('club/search', [App\Http\Controllers\ClubController::class, 'search'])->name('club.search');
