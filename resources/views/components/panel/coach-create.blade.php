@@ -300,7 +300,7 @@
                             <div class="col-md-12  mt-2">
                                 <button onclick=" submitWithFiles(event)" type="button"
                                         class="btn btn-success btn-block font-weight-bold py-3">
-                                  پرداخت و ثبت نام
+                                    پرداخت و ثبت نام
                                 </button>
                             </div>
                         </div>
@@ -352,12 +352,12 @@
             axios.post("{{route('coach.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
                     let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    console.log(percentCompleted);
+
                 }
             })
 
                 .then((response) => {
-//                        console.log(response);
+                        console.log(response.data.url);
                         document.querySelector('#loading').classList.add('d-none');
 
                         if (response.status == 200)
@@ -367,15 +367,15 @@
                 ).catch((error) => {
                 document.querySelector('#loading').classList.add('d-none');
 //                console.log(error.response.data.errors);
-
+                let errors = '';
                 invalidInputs(error.response.data.errors);
-//                    if (error.response && error.response.status === 422)
-//                        for (let idx in error.response.data.errors)
-//                            this.errors += '' + error.response.data.errors[idx] + '<br>';
-//                    else {
-//                        this.errors = error;
-//                    }
-//                    window.showDialog('danger', this.errors, onclick = null);
+                if (error.response && error.response.status === 422)
+                    for (let idx in error.response.data.errors)
+                        errors += '' + error.response.data.errors[idx] + '<br>';
+                else {
+                    errors = error;
+                }
+                window.showToast('danger', errors);
             });
         }
 
