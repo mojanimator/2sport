@@ -11,7 +11,7 @@ class Telegram
     static function sendMessage($chat_id, $text, $mode = null, $reply = null, $keyboard = null, $disable_notification = false, $app_id = null)
     {
 
-        self::creator('sendMessage', [
+        return self::creator('sendMessage', [
             'chat_id' => $chat_id,
             'text' => $text,
             'parse_mode' => $mode,
