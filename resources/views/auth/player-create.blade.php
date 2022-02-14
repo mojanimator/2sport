@@ -425,7 +425,8 @@
             axios.post("{{route('player.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
                     var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    console.log(percentCompleted);
+                    if (percentCompleted > 0)
+                        document.querySelector('#percent').innerHTML = percentCompleted;
                 }
             })
 
