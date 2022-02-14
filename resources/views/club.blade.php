@@ -1,13 +1,13 @@
 @extends('layouts.app')
 @section('title')
-    اطلاعات باشگاه ورزشی
+    اطلاعات مرکز ورزشی
 @stop
 
 @section('content')
 
     @php
-        $data=\App\Models\Club::where('id',$id)->with('docs')->with('province')->with('county')->first();
-if ($data){
+        $data=\App\Models\Club::where('id',$id)->where('active',true)->with('docs')->with('province')->with('county')->first();
+if ($data ){
 
 $docs=$data->getRelation('docs') ;
 $docs=$docs->where('type_id',Helper::$docsMap['club'])->all() ;
@@ -35,9 +35,9 @@ $sports=\App\Models\Sport::get();
 }
     @endphp
 
-    @if ( !$data)
+    @if ( !$data  )
         <div class="text-center font-weight-bold mt-5 ">
-            <div class="   text-danger ">باشگاه یافت نشد</div>
+            <div class="   text-danger ">مرکز ورزشی یافت نشد</div>
             <a href="{{url('clubs')}}" class="list-item d-block hoverable-text-primary">بازگشت</a>
         </div>
 

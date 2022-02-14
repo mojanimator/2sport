@@ -65,25 +65,25 @@ class DatabaseSeeder extends Seeder
 
         Setting::truncate();
         DB::table('settings')->insert([
-            ['name' => 'درصد رفرال اول', 'key' => 'ref_1', 'value' => '17'],
-            ['name' => 'درصد رفرال دوم', 'key' => 'ref_2', 'value' => '14'],
-            ['name' => 'درصد رفرال سوم', 'key' => 'ref_3', 'value' => '11'],
-            ['name' => 'درصد رفرال چهارم', 'key' => 'ref_4', 'value' => '8'],
-            ['name' => 'درصد رفرال پنجم', 'key' => 'ref_5', 'value' => '5'],
+            ['name' => 'درصد رفرال اول', 'key' => 'ref_1', 'value' => '20'],
+            ['name' => 'درصد رفرال دوم', 'key' => 'ref_2', 'value' => '8'],
+            ['name' => 'درصد رفرال سوم', 'key' => 'ref_3', 'value' => '6'],
+            ['name' => 'درصد رفرال چهارم', 'key' => 'ref_4', 'value' => '4'],
+            ['name' => 'درصد رفرال پنجم', 'key' => 'ref_5', 'value' => '2'],
 
-            ['name' => 'قیمت بازیکن ۱ ماه(ت)', 'key' => 'player_1_price', 'value' => '5000'],
-            ['name' => 'قیمت بازیکن ۳ ماه(ت)', 'key' => 'player_3_price', 'value' => '6000'],
-            ['name' => 'قیمت بازیکن ۶ ماه(ت)', 'key' => 'player_6_price', 'value' => '7000'],
-            ['name' => 'قیمت مربی ۱ ماه(ت)', 'key' => 'coach_1_price', 'value' => '5000'],
-            ['name' => 'قیمت مربی ۳ ماه(ت)', 'key' => 'coach_3_price', 'value' => '6000'],
-            ['name' => 'قیمت مربی ۶ ماه(ت)', 'key' => 'coach_6_price', 'value' => '7000'],
-            ['name' => 'قیمت مرکزورزشی ۱ ماه(ت)', 'key' => 'club_1_price', 'value' => '5000'],
-            ['name' => 'قیمت مرکزورزشی ۲ ماه(ت)', 'key' => 'club_3_price', 'value' => '6000'],
-            ['name' => 'قیمت مرکزورزشی ۶ ماه(ت)', 'key' => 'club_6_price', 'value' => '7000'],
-            ['name' => 'قیمت فروشگاه ۱ ماه(ت)', 'key' => 'shop_1_price', 'value' => '5000'],
-            ['name' => 'قیمت فروشگاه ۳ ماه(ت)', 'key' => 'shop_3_price', 'value' => '6000'],
-            ['name' => 'قیمت فروشگاه ۶ ماه(ت)', 'key' => 'shop_6_price', 'value' => '7000'],
-            ['name' => 'قیمت پین (ت)', 'key' => 'pin_price', 'value' => '3000'],
+            ['name' => 'قیمت بازیکن ۱ ماه(ت)', 'key' => 'player_1_price', 'value' => '50000'],
+            ['name' => 'قیمت بازیکن ۳ ماه(ت)', 'key' => 'player_3_price', 'value' => '135000'],
+            ['name' => 'قیمت بازیکن ۶ ماه(ت)', 'key' => 'player_6_price', 'value' => '250000'],
+            ['name' => 'قیمت مربی ۱ ماه(ت)', 'key' => 'coach_1_price', 'value' => '100000'],
+            ['name' => 'قیمت مربی ۳ ماه(ت)', 'key' => 'coach_3_price', 'value' => '250000'],
+            ['name' => 'قیمت مربی ۶ ماه(ت)', 'key' => 'coach_6_price', 'value' => '450000'],
+            ['name' => 'قیمت مرکزورزشی ۱ ماه(ت)', 'key' => 'club_1_price', 'value' => '150000'],
+            ['name' => 'قیمت مرکزورزشی ۳ ماه(ت)', 'key' => 'club_3_price', 'value' => '380000'],
+            ['name' => 'قیمت مرکزورزشی ۶ ماه(ت)', 'key' => 'club_6_price', 'value' => '600000'],
+            ['name' => 'قیمت فروشگاه ۱ ماه(ت)', 'key' => 'shop_1_price', 'value' => '150000'],
+            ['name' => 'قیمت فروشگاه ۳ ماه(ت)', 'key' => 'shop_3_price', 'value' => '380000'],
+            ['name' => 'قیمت فروشگاه ۶ ماه(ت)', 'key' => 'shop_6_price', 'value' => '600000'],
+            ['name' => 'قیمت پین (ت)', 'key' => 'pin_price', 'value' => '20000'],
 
         ]);
 

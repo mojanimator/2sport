@@ -174,49 +174,49 @@ class ClubController extends Controller
         if ($msg)
             throw ValidationException::withMessages(['times' => "$msg"]);
 
-        DB::transaction(function () use ($request, & $user) {
-            if (!auth()->user()) { //user not login or register
-                $user = User::where('phone', $request->phone)->first(); //user not login
-                if (!$user) { //user not exists
-                    $user = User::create([
-                        'phone' => $request->phone,
-                        'active' => true,
-                        'name' => $request->name,
-                        'family' => $request->family, 'phone_verified' => true,
-                    ]);
-                }
-            }
 
-            $club = Club::create([
-                'user_id' => $user->id,
-                'province_id' => $request->province_id,
-                'county_id' => $request->county_id,
-                'name' => $request->name,
-                'active' => false,
-                'phone' => $request->phone,
-                'description' => $request->description,
-                'address' => $request->address,
-                'times' => $request->times,
-                'phone_verified' => true,
+        if (!auth()->user()) { //user not login or register
+            $user = User::where('phone', $request->phone)->first(); //user not login
+            if (!$user) { //user not exists
+                $user = User::create([
+                    'phone' => $request->phone,
+                    'active' => true,
+                    'name' => $request->name,
+                    'family' => $request->family, 'phone_verified' => true,
+                ]);
+            }
+        } else
+            $user = auth()->user();
+
+        $club = Club::create([
+            'user_id' => $user->id,
+            'province_id' => $request->province_id,
+            'county_id' => $request->county_id,
+            'name' => $request->name,
+            'active' => false,
+            'phone' => $request->phone,
+            'description' => $request->description,
+            'address' => $request->address,
+            'times' => $request->times,
+            'phone_verified' => true,
 //                'expires_at' => $data['ex_date'] ? CalendarUtils::createCarbonFromFormat('Y/m/d', $data['ex_date'])->addDays(1)->timezone('Asia/Tehran') : null,
-            ]);
+        ]);
 
-            //make profile image
-            Doc::createImage($request->license, $club->id, Helper::$typesMap['clubs'], Helper::$docsMap['license']);
-            foreach ($request->images as $image) {
+        //make profile image
+        Doc::createImage($request->license, $club->id, Helper::$typesMap['clubs'], Helper::$docsMap['license']);
+        foreach ($request->images as $image) {
 
-                Doc::createImage($image, $club->id, Helper::$typesMap['clubs'], Helper::$docsMap['club']);
-            }
+            Doc::createImage($image, $club->id, Helper::$typesMap['clubs'], Helper::$docsMap['club']);
+        }
 
-            (new SMS())->deleteActivationSMS($request->phone);
-            $user->setRefferal();
-            if (!auth()->user())
-                auth()->login($user);
-            \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'club_created', $club);
 
-            return redirect(url('panel/club'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
+        $user->setRefferal();
+        if (!auth()->user())
+            auth()->login($user);
+        \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'club_created', $club);
+        return \NextPay::makePay(new Request(['type' => 'club', 'id' => $club->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $club->phone]));
 
-        });
+//            return redirect(url('panel/club'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
 
 
     }
@@ -374,22 +374,18 @@ class ClubController extends Controller
 
         $this->authorize('ownItem', [User::class, $club, true]);
 
-        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
+        if (isset($request->active)) {
+            if ($request->active == true && $club->active == false) { //activate
+                if (Carbon::now()->timestamp > $club->expires_at) {
+                    return response()->json(['errors' => ['ابتدا مرکز ورزشی را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
+                }
+                if ($user->role != 'ad' && $user->role != 'go') {
+                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
+                }
+
+            }
             $club->active = $request->active;
             $club->save();
-        } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true && $club->active == false) {
-                if (Carbon::now()->timestamp < $club->expires_at) {
-                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
-
-//                    $club->active = true;
-//                    $club->save();
-                } else {
-                    return response()->json(['errors' => ['ابتدا باشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
-
-                }
-            }
-
         } elseif ($request->name) {
             if ($club->name == $request->name) return null;
             $club->name = $request->name;

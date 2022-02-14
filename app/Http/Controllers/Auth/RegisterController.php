@@ -68,7 +68,7 @@ class RegisterController extends Controller
             'family' => $data['family'],
             'email' => $data['email'],
             'phone' => f2e($data['phone']),
-            'password' => $data['password'] ? Hash::make($data['password']) : null,
+            'password' => $data['password'] ? Hash::make(f2e($data['password'])) : null,
             'score' => \Helper::$initScore,
             'remember_token' => $token,
             'active' => true,

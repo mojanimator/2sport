@@ -177,12 +177,67 @@
                                 <strong id="err-description"> </strong>
                             </div>
                         </div>
+                        {{--//payment--}}
+                        <div class="col-md-10 mx-auto  my-2  ">
+                            <div class="modal-dialog modal-dialog-centered  ">
+                                <div class="modal-content bg-light-transparent">
+                                    <div class="modal-header bg-primary py-2">
+                                        <h5 class="modal-title text-white font-weight-bold"
+                                            id="exampleModalLabel">نوع
+                                            اشتراک</h5>
 
+                                    </div>
+                                    <div class="modal-body col-md-10  mx-auto ">
+                                    @foreach(\App\Models\Setting::where('key','like','shop%')->where('key','like','%_price')->get() as $idx=> $sub)
+                                        <!-- Default radio -->
+                                            <div class="form-check ">
+                                                <input class="" type="radio"
+                                                       id="price-check-{{$idx}}"
+                                                       value="{{count( explode('_',$sub->key))>1? explode('_',$sub->key)[1]:null }}"
+                                                       name="renew-month" {{$idx==0? 'checked' : ''}} />
+                                                <label class="form-check-label text-primary small mx-2"
+                                                       for="price-check-{{$idx}}">
+                                                    <span>{{str_replace('(ت)','',$sub->name)}} </span>
+                                                    <span id="{{$sub->key}}-label"
+                                                          class="font-weight-bold mx-2">{{$sub->value .' تومان '}} </span>
+                                                </label>
+                                            </div>
+
+                                        @endforeach
+
+                                        <div class="  ">
+                                            <div class=" my-2    input-group  ">
+
+                                                <input id="coupon" type="text" placeholder="کد تخفیف"
+                                                       class="  px-4 form-control @error('coupon') is-invalid @enderror"
+                                                       name="coupon"
+                                                       autocomplete="coupon" autofocus>
+
+                                                <button class="btn btn-secondary rounded px-2 px-sm-3" type="button"
+                                                        id="coupon-addon"
+                                                        onclick=" calculateCoupon(event,{'coupon':document.getElementById('coupon').value,'type':'shop', })">
+
+                                                    اعمال
+                                                </button>
+
+                                            </div>
+                                            <div class=" text-danger text-start small     " role="alert">
+                                                <strong id="err-coupon"> </strong>
+                                            </div>
+                                            <div class=" text-danger text-start small     " role="alert">
+                                                <strong id="err-error"> </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group   mb-0">
                             <div class="col-md-12  mt-2">
                                 <button onclick=" submitWithFiles(event)" type="button"
                                         class="btn btn-success btn-block font-weight-bold py-3">
-                                    ثبت
+                                    پرداخت و ثبت
                                 </button>
                             </div>
                         </div>
@@ -233,16 +288,16 @@
             axios.post("{{route('shop.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
                     let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    console.log(percentCompleted);
+//                    console.log(percentCompleted);
                 }
             })
 
                 .then((response) => {
-                        console.log(response);
+//                        console.log(response);
                         document.querySelector('#loading').classList.add('d-none');
 
-                        if (response.status === 200)
-                            window.location = '{{url('panel/shop')}}'
+                        if (response.status == 200)
+                            window.location = response.data.url;
 
                     }
                 ).catch((error) => {

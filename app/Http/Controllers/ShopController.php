@@ -141,47 +141,45 @@ class ShopController extends Controller
         ]);
 
 
-        DB::transaction(function () use ($request, & $user) {
-            if (!auth()->user()) { //user not login or register
-                $user = User::where('phone', $request->phone)->first(); //user not login
-                if (!$user) { //user not exists
-                    $user = User::create([
-                        'phone' => $request->phone,
-                        'active' => true,
-                        'name' => $request->name,
-                        'family' => $request->family, 'phone_verified' => true,
-                    ]);
-                }
+        if (!auth()->user()) { //user not login or register
+            $user = User::where('phone', $request->phone)->first(); //user not login
+            if (!$user) { //user not exists
+                $user = User::create([
+                    'phone' => $request->phone,
+                    'active' => true,
+                    'name' => $request->name,
+                    'family' => $request->family, 'phone_verified' => true,
+                ]);
             }
+        } else
+            $user = auth()->user();
 
-            $shop = Shop::create([
-                'user_id' => $user->id,
-                'province_id' => $request->province_id,
-                'county_id' => $request->county_id,
-                'name' => $request->name,
-                'active' => false,
-                'phone' => $request->phone,
-                'description' => $request->description,
-                'address' => $request->address,
-                'phone_verified' => true,
+        $shop = Shop::create([
+            'user_id' => $user->id,
+            'province_id' => $request->province_id,
+            'county_id' => $request->county_id,
+            'name' => $request->name,
+            'active' => false,
+            'phone' => $request->phone,
+            'description' => $request->description,
+            'address' => $request->address,
+            'phone_verified' => true,
 
 //                'expires_at' => $data['ex_date'] ? CalendarUtils::createCarbonFromFormat('Y/m/d', $data['ex_date'])->addDays(1)->timezone('Asia/Tehran') : null,
-            ]);
+        ]);
 
-            //make   images
-            Doc::createImage($request->license, $shop->id, Helper::$typesMap['shops'], Helper::$docsMap['license']);
-            Doc::createImage($request->license, $shop->id, Helper::$typesMap['shops'], Helper::$docsMap['logo']);
+        //make   images
+        Doc::createImage($request->license, $shop->id, Helper::$typesMap['shops'], Helper::$docsMap['license']);
+        Doc::createImage($request->license, $shop->id, Helper::$typesMap['shops'], Helper::$docsMap['logo']);
 
 
-            (new SMS())->deleteActivationSMS($request->phone);
-            $user->setRefferal();
-            if (!auth()->user())
-                auth()->login($user);
-            \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'shop_created', $shop);
+        $user->setRefferal();
+        if (!auth()->user())
+            auth()->login($user);
+        \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'shop_created', $shop);
+        return \NextPay::makePay(new Request(['type' => 'shop', 'id' => $shop->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $shop->phone]));
 
-            return redirect(url('panel/shop'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
-
-        });
+//            return redirect(url('panel/shop'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
 
 
     }
@@ -339,21 +337,18 @@ class ShopController extends Controller
         $this->authorize('ownItem', [User::class, $shop, true]);
         $user = auth()->user();
 
-        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
+        if (isset($request->active)) {
+            if ($request->active == true && $shop->active == false) { //activate
+                if (Carbon::now()->timestamp > $shop->expires_at) {
+                    return response()->json(['errors' => ['ابتدا فروشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
+                }
+                if ($user->role != 'ad' && $user->role != 'go') {
+                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
+                }
+
+            }
             $shop->active = $request->active;
             $shop->save();
-        } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true && $shop->active == false) {
-                if (Carbon::now()->timestamp < $shop->expires_at) {
-                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
-//                    $shop->active = true;
-//                    $shop->save();
-                } else {
-                    return response()->json(['errors' => ['ابتدا فروشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
-
-                }
-            }
-
         } elseif ($request->name) {
             if ($shop->name == $request->name) return null;
             $shop->name = $request->name;

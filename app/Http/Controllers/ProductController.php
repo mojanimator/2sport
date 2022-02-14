@@ -303,20 +303,18 @@ class ProductController extends Controller
         $this->authorize('ownItem', [User::class, $shop, true]);
 
 
-        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
-            $shop->active = $request->active;
-            $shop->save();
-        } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true && $product->active == false) {
-                if (Carbon::now()->timestamp < $shop->expires_at) {
-                    return response()->json(['errors' => ['محصول در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
-
-                } else {
+        if (isset($request->active)) {
+            if ($request->active == true && $product->active == false) { //activate
+                if (Carbon::now()->timestamp > $shop->expires_at) {
                     return response()->json(['errors' => ['ابتدا فروشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
-
                 }
-            }
+                if ($user->role != 'ad' && $user->role != 'go') {
+                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
+                }
 
+            }
+            $product->active = $request->active;
+            $product->save();
         } elseif ($name) {
             if ($product->name == $request->name) return null;
             $product->name = $request->$product;

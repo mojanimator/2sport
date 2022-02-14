@@ -45,7 +45,7 @@ class  SMS
      */
     public function verifyActivationSMS($phone, $code)
     {
-        return DB::table('sms_verify')->where(['phone' => $phone, 'code' => $code])->exists();
+        return DB::table('sms_verify')->where(['phone' => $phone, 'code' => f2e($code)])->exists();
     }
 
     /**

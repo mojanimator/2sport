@@ -5,7 +5,7 @@
 @section('content')
 
     @php
-        $data=\App\Models\Coach::where('id',$id)->with('docs')->with('sport')->with('province')->with('county')->first();
+        $data=\App\Models\Coach::where('id',$id)->where('active',true)->with('docs')->with('sport')->with('province')->with('county')->first();
 if ($data){
 
 $docs=$data->getRelation('docs') ;
@@ -16,7 +16,7 @@ $tmp=Morilog\Jalali\Jalalian::fromDateTime($data->born_at);
 }
     @endphp
 
-    @if ( !$data)
+    @if ( !$data  )
         <div class="text-center font-weight-bold mt-5 ">
             <div class="   text-danger ">مربی یافت نشد</div>
             <a href="{{url('coaches')}}" class="list-item d-block hoverable-text-primary">بازگشت</a>

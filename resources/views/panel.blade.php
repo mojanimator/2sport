@@ -160,7 +160,7 @@
                            data-bs-toggle="tooltip">
                             <div class=" align-content-end">
                           <span class=" d-inline-block  item-icon  " data-bs-placement="left" data-bs-toggle="tooltip"
-                                title="باشگاه">
+                                title="مرکز ورزشی">
                               <x-icons src="club.svg"
                                        fill="{{str_contains( url()->current(),'/club') ?$primaryColor:'#fff'}}"
                                        style="max-width: 4rem"
@@ -168,7 +168,7 @@
                             </x-icons>
                           </span>
 
-                                <span class="item-text">باشگاه</span>
+                                <span class="item-text">مرکز ورزشی</span>
                             </div>
                         </a>
                         <hr class="m-0">
@@ -177,7 +177,7 @@
                            data-bs-toggle="tooltip">
                             <div class=" align-content-end">
                           <span class=" d-inline-block  item-icon  " data-bs-placement="left" data-bs-toggle="tooltip"
-                                title="فروشگاه">
+                                title="فروشگاه ورزشی">
                               <x-icons src="shop.svg"
                                        fill="{{str_contains( url()->current(),'/shop') ?$primaryColor:'#fff'}}"
                                        style="max-width: 4rem"
@@ -185,7 +185,7 @@
                             </x-icons>
                           </span>
 
-                                <span class="item-text">فروشگاه</span>
+                                <span class="item-text">فروشگاه ورزشی</span>
                             </div>
                         </a>
                         <hr class="m-0">

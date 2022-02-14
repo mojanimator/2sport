@@ -1,4 +1,3 @@
-
 @php
 
     if(auth()->user()){
@@ -10,12 +9,15 @@
 
 @section('content')
     <div class="  my-3 position-relative">
-        <div class="    m-2  position-absolute w-100   right-0 bottom-0" style="z-index: 10;">
-            <div id="loading" class="spinner-border    text-danger d-none
-               "
+        {{--loading--}}
+        <div class="    m-2  position-absolute w-100 " style="z-index: 10;">
+            <div id="loading" class="spinner-border position-fixed  text-danger d-none
+                 bottom-0  "
                  role="status">
                 <span class="sr-only"></span>
             </div>
+            <span id="percent"
+                  class=" small font-weight-bold position-fixed bottom-0 px-2 py-1   text-danger">  </span>
         </div>
         <div class="row w-100 mx-auto justify-content-center">
             <div class="col-md-8  ">
@@ -27,9 +29,11 @@
                     <a href="/register-coach"
                        class="btn px-1 {{ url()->current()==url('/register-coach') ? 'btn-primary':'btn-outline-primary' }}">مربی</a>
                     <a href="/register-club"
-                       class="btn px-1 {{ url()->current()==url('/register-club') ? 'btn-primary':'btn-outline-primary' }}">باشگاه</a>
+                       class="btn px-1 {{ url()->current()==url('/register-club') ? 'btn-primary':'btn-outline-primary' }}">مرکز
+                        ورزشی</a>
                     <a href="/register-shop"
-                       class="btn px-1 {{ url()->current()==url('/register-shop') ? 'btn-primary':'btn-outline-primary' }}">فروشگاه</a>
+                       class="btn px-1 {{ url()->current()==url('/register-shop') ? 'btn-primary':'btn-outline-primary' }}">فروشگاه
+                        ورزشی</a>
                 </div>
             </div>
             <div class="col-md-10  col-xl-6 col-xxl-6 ">
@@ -266,12 +270,67 @@
                                     <strong id="err-phone_verify"> </strong>
                                 </div>
                             </div>
+                            {{--//payment--}}
+                            <div class="col-md-10 mx-auto  my-2  ">
+                                <div class="modal-dialog modal-dialog-centered  ">
+                                    <div class="modal-content bg-light-transparent">
+                                        <div class="modal-header bg-primary py-2">
+                                            <h5 class="modal-title text-white font-weight-bold"
+                                                id="exampleModalLabel">نوع
+                                                اشتراک</h5>
 
+                                        </div>
+                                        <div class="modal-body col-md-10  mx-auto ">
+                                        @foreach(\App\Models\Setting::where('key','like','coach%')->where('key','like','%_price')->get() as $idx=> $sub)
+                                            <!-- Default radio -->
+                                                <div class="form-check ">
+                                                    <input class="" type="radio"
+                                                           id="price-check-{{$idx}}"
+                                                           value="{{count( explode('_',$sub->key))>1? explode('_',$sub->key)[1]:null }}"
+                                                           name="renew-month" {{$idx==0? 'checked' : ''}} />
+                                                    <label class="form-check-label text-primary small mx-2"
+                                                           for="price-check-{{$idx}}">
+                                                        <span>{{str_replace('(ت)','',$sub->name)}} </span>
+                                                        <span id="{{$sub->key}}-label"
+                                                              class="font-weight-bold mx-2">{{$sub->value .' تومان '}} </span>
+                                                    </label>
+                                                </div>
+
+                                            @endforeach
+
+                                            <div class="  ">
+                                                <div class=" my-2    input-group  ">
+
+                                                    <input id="coupon" type="text" placeholder="کد تخفیف"
+                                                           class="  px-4 form-control @error('coupon') is-invalid @enderror"
+                                                           name="coupon"
+                                                           autocomplete="coupon" autofocus>
+
+                                                    <button class="btn btn-secondary rounded px-2 px-sm-3" type="button"
+                                                            id="coupon-addon"
+                                                            onclick=" calculateCoupon(event,{'coupon':document.getElementById('coupon').value,'type':'coach', })">
+
+                                                        اعمال
+                                                    </button>
+
+                                                </div>
+                                                <div class=" text-danger text-start small     " role="alert">
+                                                    <strong id="err-coupon"> </strong>
+                                                </div>
+                                                <div class=" text-danger text-start small     " role="alert">
+                                                    <strong id="err-error"> </strong>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group   mb-0">
                                 <div class="col-md-12  mt-2">
                                     <button onclick=" submitWithFiles(event)" type="button"
                                             class="btn btn-success btn-block font-weight-bold py-3">
-                                        ثبت نام
+                                        پرداخت و ثبت نام
                                     </button>
                                 </div>
                             </div>

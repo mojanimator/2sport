@@ -501,65 +501,6 @@
 //                myModal.show();
             });
 
-            function calculateCoupon(event, params) {
-
-                document.querySelector('#loading').classList.remove('d-none');
-//                event.preventDefault();
-
-                axios.post("{{route('coupon.calculate')}}", params, {})
-                    .then((response) => {
-//                        console.log(response);
-                            document.querySelector('#loading').classList.add('d-none');
-                            if (response.status === 200) {
-                                for (let i in response.data) {
-                                    let el = document.getElementById(i + '-label');
-                                    if (el)
-                                        el.innerHTML = response.data[i] + ' تومان ';
-                                }
-                            }
-                        }
-                    ).catch((error) => {
-
-                    document.querySelector('#loading').classList.add('d-none');
-                    let errors = '';
-                    invalidInputs(error.response.data.errors);
-
-                    if (error.response && error.response.status === 422)
-                        for (let idx in error.response.data.errors)
-                            errors += error.response.data.errors[idx] + '<br>';
-                    else {
-                        errors = error;
-                    }
-                    window.showToast('danger', errors);
-                });
-            }
-
-            function makePayment(event, data) {
-
-                document.querySelector('#loading').classList.remove('d-none');
-//                event.preventDefault();
-
-                axios.post("{{route('payment.create')}}", data, {})
-                    .then((response) => {
-
-                            document.querySelector('#loading').classList.add('d-none');
-                            if (response.status === 200)
-                                window.location = response.data.url;
-                        }
-                    ).catch((error) => {
-                    document.querySelector('#loading').classList.add('d-none');
-
-                    let errors = '';
-                    invalidInputs(error.response.data.errors);
-                    if (error.response && error.response.status === 422)
-                        for (let idx in error.response.data.errors)
-                            errors += error.response.data.errors[idx] + '<br>';
-                    else {
-                        errors = error;
-                    }
-                    window.showToast('danger', errors);
-                });
-            }
 
             function remove(id) {
                 document.querySelector('#loading').classList.remove('d-none');
@@ -593,7 +534,7 @@
                 axios.post("{{route('player.edit')}}", data, {
                     onUploadProgress: function (progressEvent) {
                         let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                        console.log(percentCompleted);
+//                        console.log(percentCompleted);
                     }
                 })
 

@@ -217,7 +217,7 @@
                                 {{--<label for="county-input"--}}
                                 {{--class="col-12 col-form-label text-right">شهر </label>--}}
                                 <select id="county_id" name="county_id"
-                                        class="px-4 my-2 form-control{{ $errors->has('county_id')  ? ' is-invalid' : '' }}">
+                                        class="px-4   form-control{{ $errors->has('county_id')  ? ' is-invalid' : '' }}">
                                     @if(  $cId=\App\Models\County::find(old('county_id') ))
 
                                         <option value="{{$cId->id}}" selected>{{$cId->name}}</option>
@@ -286,12 +286,68 @@
                                 <strong id="err-phone_verify"> </strong>
                             </div>
                         </div>
+                        {{--//payment--}}
+                        <div class="col-md-10 mx-auto  my-2  ">
+                            <div class="modal-dialog modal-dialog-centered  ">
+                                <div class="modal-content bg-light-transparent">
+                                    <div class="modal-header bg-primary py-2">
+                                        <h5 class="modal-title text-white font-weight-bold"
+                                            id="exampleModalLabel">نوع
+                                            اشتراک</h5>
+
+                                    </div>
+                                    <div class="modal-body col-md-10  mx-auto ">
+                                    @foreach(\App\Models\Setting::where('key','like','player%')->where('key','like','%_price')->get() as $idx=> $sub)
+                                        <!-- Default radio -->
+                                            <div class="form-check ">
+                                                <input class="" type="radio"
+                                                       id="price-check-{{$idx}}"
+                                                       value="{{count( explode('_',$sub->key))>1? explode('_',$sub->key)[1]:null }}"
+                                                       name="renew-month" {{$idx==0? 'checked' : ''}} />
+                                                <label class="form-check-label text-primary small mx-2"
+                                                       for="price-check-{{$idx}}">
+                                                    <span>{{str_replace('(ت)','',$sub->name)}} </span>
+                                                    <span id="{{$sub->key}}-label"
+                                                          class="font-weight-bold mx-2">{{$sub->value .' تومان '}} </span>
+                                                </label>
+                                            </div>
+
+                                        @endforeach
+
+                                        <div class="  ">
+                                            <div class=" my-2    input-group  ">
+
+                                                <input id="coupon" type="text" placeholder="کد تخفیف"
+                                                       class="  px-4 form-control @error('coupon') is-invalid @enderror"
+                                                       name="coupon"
+                                                       autocomplete="coupon" autofocus>
+
+                                                <button class="btn btn-secondary rounded px-2 px-sm-3" type="button"
+                                                        id="coupon-addon"
+                                                        onclick=" calculateCoupon(event,{'coupon':document.getElementById('coupon').value,'type':'player', })">
+
+                                                    اعمال
+                                                </button>
+
+                                            </div>
+                                            <div class=" text-danger text-start small     " role="alert">
+                                                <strong id="err-coupon"> </strong>
+                                            </div>
+                                            <div class=" text-danger text-start small     " role="alert">
+                                                <strong id="err-error"> </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="form-group   mb-0">
                             <div class="col-md-12  mt-2">
                                 <button onclick=" submitWithFiles(event)" type="button"
                                         class="btn btn-success btn-block font-weight-bold py-3">
-                                    ثبت نام
+                                    پرداخت و ثبت نام
                                 </button>
                             </div>
                         </div>
@@ -351,25 +407,25 @@
             })
 
                 .then((response) => {
-//                        console.log(response);
+                        console.log(response);
                         document.querySelector('#loading').classList.add('d-none');
 
-                        if (response.status === 200)
-                            window.location = '{{url('panel/player')}}'
+                        if (response.status == 200)
+                            window.location = response.data.url;
 
                     }
                 ).catch((error) => {
                 document.querySelector('#loading').classList.add('d-none');
 //                console.log(error.response.data.errors);
-
+                let errors = '';
                 invalidInputs(error.response.data.errors);
-//                    if (error.response && error.response.status === 422)
-//                        for (let idx in error.response.data.errors)
-//                            this.errors += '' + error.response.data.errors[idx] + '<br>';
-//                    else {
-//                        this.errors = error;
-//                    }
-//                    window.showDialog('danger', this.errors, onclick = null);
+                if (error.response && error.response.status === 422)
+                    for (let idx in error.response.data.errors)
+                        errors += '' + error.response.data.errors[idx] + '<br>';
+                else {
+                    errors = error;
+                }
+                window.showToast('danger', errors);
             });
         }
 

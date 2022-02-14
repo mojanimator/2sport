@@ -15,15 +15,17 @@
             <div class="col-md-8  ">
                 <div class="btn-group w-100 my-2 mb-3">
                     <a href="/register"
-                       class="btn {{  url()->current()==url('/register') ? 'btn-primary':'btn-outline-primary' }}">کاربر</a>
+                       class="btn px-1 {{  url()->current()==url('/register') ? 'btn-primary':'btn-outline-primary' }}">کاربر</a>
                     <a href="/register-player"
-                       class="btn {{ url()->current()==url('/register-player') ? 'btn-primary':'btn-outline-primary' }}">بازیکن</a>
+                       class="btn px-1 {{ url()->current()==url('/register-player') ? 'btn-primary':'btn-outline-primary' }}">بازیکن</a>
                     <a href="/register-coach"
-                       class="btn {{ url()->current()==url('/register-coach') ? 'btn-primary':'btn-outline-primary' }}">مربی</a>
+                       class="btn px-1 {{ url()->current()==url('/register-coach') ? 'btn-primary':'btn-outline-primary' }}">مربی</a>
                     <a href="/register-club"
-                       class="btn {{ url()->current()==url('/register-club') ? 'btn-primary':'btn-outline-primary' }}">باشگاه</a>
+                       class="btn px-1 {{ url()->current()==url('/register-club') ? 'btn-primary':'btn-outline-primary' }}">مرکز
+                        ورزشی</a>
                     <a href="/register-shop"
-                       class="btn {{ url()->current()==url('/register-shop') ? 'btn-primary':'btn-outline-primary' }}">فروشگاه</a>
+                       class="btn px-1 {{ url()->current()==url('/register-shop') ? 'btn-primary':'btn-outline-primary' }}">فروشگاه
+                        ورزشی</a>
                 </div>
             </div>
 

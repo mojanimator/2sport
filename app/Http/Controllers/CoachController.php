@@ -46,7 +46,7 @@ class CoachController extends Controller
             'm' => 'required|numeric|min:1|max:12',
             'd' => 'required|numeric|min:1|max:31',
 
-            'img' => 'required|base64_image|base64_size:10240',
+            'img' => 'required|base64_image'/*|base64_size:10240'*/,
 //            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
         ], [
             'name.required' => 'نام  نمی تواند خالی باشد',
@@ -117,51 +117,51 @@ class CoachController extends Controller
 
         ]);
 
-        DB::transaction(function () use ($request, & $user) {
-            if (!auth()->user()) { //user not login or register
-                $user = User::where('phone', $request->phone)->first(); //user not login
-                if (!$user) { //user not exists
-                    $user = User::create([
-                        'phone' => $request->phone,
-                        'active' => true,
-                        'name' => $request->name,
-                        'family' => $request->family,
-                        'phone_verified' => true,
-                    ]);
-                }
+
+        if (!auth()->user()) { //user not login or register
+            $user = User::where('phone', $request->phone)->first(); //user not login
+            if (!$user) { //user not exists
+                $user = User::create([
+                    'phone' => $request->phone,
+                    'active' => true,
+                    'name' => $request->name,
+                    'family' => $request->family,
+                    'phone_verified' => true,
+                ]);
             }
+        } else
+            $user = auth()->user();
 
-            $coach = Coach::create([
-                'user_id' => $user->id,
-                'province_id' => $request->province_id,
-                'county_id' => $request->county_id,
-                'sport_id' => $request->sport_id,
-                'username' => $request['username'],
-                'name' => $request->name,
-                'family' => $request->family,
+        $coach = Coach::create([
+            'user_id' => $user->id,
+            'province_id' => $request->province_id,
+            'county_id' => $request->county_id,
+            'sport_id' => $request->sport_id,
+            'username' => $request['username'],
+            'name' => $request->name,
+            'family' => $request->family,
 
-                'born_at' => (new Jalalian($request->y, $request->m, $request->d))->toCarbon(),
-                'is_man' => $request->is_man,
-                'active' => false,
-                'phone' => $request->phone,
-                'description' => $request->description,
-                'phone_verified' => true,
+            'born_at' => (new Jalalian($request->y, $request->m, $request->d))->toCarbon(),
+            'is_man' => $request->is_man,
+            'active' => false,
+            'phone' => $request->phone,
+            'description' => $request->description,
+            'phone_verified' => true,
 //                'expires_at' => $data['ex_date'] ? CalendarUtils::createCarbonFromFormat('Y/m/d', $data['ex_date'])->addDays(1)->timezone('Asia/Tehran') : null,
-            ]);
+        ]);
 
-            //make profile image
-            Doc::createImage($request->img, $coach->id, Helper::$typesMap['coaches'], Helper::$docsMap['profile']);
+        //make profile image
+        Doc::createImage($request->img, $coach->id, Helper::$typesMap['coaches'], Helper::$docsMap['profile']);
 //            Doc::createVideo($request->file('video'), $coach->id, Helper::$typesMap['coaches'], Helper::$docsMap['video']);
 
-            (new SMS())->deleteActivationSMS($request->phone);
-            $user->setRefferal();
-            if (!auth()->user())
-                auth()->login($user);
-            \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'coach_created', $coach);
 
-            return redirect(url('panel/coach'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
+        $user->setRefferal();
+        if (!auth()->user())
+            auth()->login($user);
+        \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'coach_created', $coach);
+        return \NextPay::makePay(new Request(['type' => 'coach', 'id' => $coach->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $coach->phone]));
 
-        });
+//            return redirect(url('panel/coach'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
 
 
     }
@@ -314,21 +314,18 @@ class CoachController extends Controller
         $this->authorize('ownItem', [User::class, $coach, true]);
 
         $user = auth()->user();
-        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
+        if (isset($request->active)) {
+            if ($request->active == true && $coach->active == false) { //activate
+                if (Carbon::now()->timestamp > $coach->expires_at) {
+                    return response()->json(['errors' => ['ابتدا مربی را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
+                }
+                if ($user->role != 'ad' && $user->role != 'go') {
+                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
+                }
+
+            }
             $coach->active = $request->active;
             $coach->save();
-        } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true && $coach->active == false) {
-                if (Carbon::now()->timestamp < $coach->expires_at) {
-                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
-//                    $coach->active = true;
-//                    $coach->save();
-                } else {
-                    return response()->json(['errors' => ['ابتدا مربی را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
-
-                }
-            }
-
         } elseif ($request->name) {
             if ($coach->name == $request->name) return null;
             $coach->name = $request->name;

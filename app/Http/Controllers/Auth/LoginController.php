@@ -100,6 +100,7 @@ class LoginController extends Controller
 //        }
 
         request()->merge([$fieldType => $login]);
+        request()->merge(['password' => f2e(request()->input('password'))]);
 
         return $fieldType;
     }

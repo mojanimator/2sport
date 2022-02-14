@@ -84,7 +84,7 @@ class UserController extends Controller
 
         } elseif ($request->username) {
             if ($user->username == $request->username) return null;
-            $user->username = $request->username;
+            $user->username = f2e($request->username);
             $this->dataEdited($user, 'user_edited', 'نام کاربری با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
         } elseif ($request->email) {
             $emailChanged = $user->email != $request->email ? true : false;

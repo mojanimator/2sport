@@ -47,8 +47,8 @@ class PlayerController extends Controller
             'm' => 'required|numeric|min:1|max:12',
             'd' => 'required|numeric|min:1|max:31',
 
-            'img' => 'required|base64_image|base64_size:10240',
-            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:20480'
+            'img' => 'required|base64_image'/*|base64_size:10240'*/,
+            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:51200'
         ], [
             'name.required' => 'نام  نمی تواند خالی باشد',
             'name.string' => 'نام  نامعتبر است',
@@ -114,60 +114,61 @@ class PlayerController extends Controller
 
             'video.required' => 'ویدیو ضروری است',
             'video.mimes' => 'ویدیو ارسالی با فرمت mp4 باشد',
-            'video.max' => 'حجم ویدیو حداکثر 20 مگابایت باشد',
+            'video.max' => 'حجم ویدیو حداکثر 50 مگابایت باشد',
 
         ]);
 
-        DB::transaction(function () use ($request, & $user) {
+//        DB::transaction(function () use ($request, & $user) {
 
-            if (!auth()->user()) { //user not login or register
-                $user = User::where('phone', $request->phone)->first(); //user not login
-                if (!$user) { //user not exists
-                    $user = User::create([
-                        'phone' => $request->phone,
-                        'active' => true,
-                        'name' => $request->name,
-                        'family' => $request->family,
-                        'phone_verified' => true,
-                    ]);
-                }
-            } else
-                $user = auth()->user();
+        if (!auth()->user()) { //user not login or register
+            $user = User::where('phone', $request->phone)->first(); //user not login
+            if (!$user) { //user not exists
+                $user = User::create([
+                    'phone' => $request->phone,
+                    'active' => true,
+                    'name' => $request->name,
+                    'family' => $request->family,
+                    'phone_verified' => true,
+                ]);
+            }
+        } else
+            $user = auth()->user();
 
-            $player = Player::create([
-                'user_id' => $user->id,
-                'province_id' => $request->province_id,
-                'county_id' => $request->county_id,
-                'sport_id' => $request->sport_id,
-                'sport-rule_id' => $request->{'sport-rule_id'},
-                'username' => $request->username,
-                'name' => $request->name,
-                'family' => $request->family,
-                'height' => $request->height,
-                'weight' => $request->weight,
-                'born_at' => (new Jalalian($request->y, $request->m, $request->d))->toCarbon(),
-                'is_man' => $request->is_man,
-                'active' => false,
-                'phone' => $request->phone,
-                'description' => $request->description,
-                'phone_verified' => true,
+        $player = Player::create([
+            'user_id' => $user->id,
+            'province_id' => $request->province_id,
+            'county_id' => $request->county_id,
+            'sport_id' => $request->sport_id,
+            'sport-rule_id' => $request->{'sport-rule_id'},
+            'username' => $request->username,
+            'name' => $request->name,
+            'family' => $request->family,
+            'height' => $request->height,
+            'weight' => $request->weight,
+            'born_at' => (new Jalalian($request->y, $request->m, $request->d))->toCarbon(),
+            'is_man' => $request->is_man,
+            'active' => false,
+            'phone' => $request->phone,
+            'description' => $request->description,
+            'phone_verified' => true,
 //                'expires_at' => $data['ex_date'] ? CalendarUtils::createCarbonFromFormat('Y/m/d', $data['ex_date'])->addDays(1)->timezone('Asia/Tehran') : null,
-            ]);
+        ]);
 
-            //make profile image
-            Doc::createImage($request->img, $player->id, Helper::$typesMap['players'], Helper::$docsMap['profile']);
-            Doc::createVideo($request->file('video'), $player->id, Helper::$typesMap['players'], Helper::$docsMap['video']);
+        //make profile image
+        Doc::createImage($request->img, $player->id, Helper::$typesMap['players'], Helper::$docsMap['profile']);
+        Doc::createVideo($request->file('video'), $player->id, Helper::$typesMap['players'], Helper::$docsMap['video']);
 
-            (new SMS())->deleteActivationSMS($request->phone);
-            $user->setRefferal();
+
+        $user->setRefferal();
             if (!auth()->user())
                 auth()->login($user);
 
-            \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'player_created', $player);
+        \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'player_created', $player);
 
-            return redirect(url('panel/player'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
+        return \NextPay::makePay(new Request(['type' => 'player', 'id' => $player->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon,'phone'=>$player->phone]));
+//            return redirect(url('panel/player'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
 
-        });
+//        });
 
 
     }
@@ -197,7 +198,7 @@ class PlayerController extends Controller
             }) : '',],
             'description' => 'sometimes|string|max:2048',
             'img' => 'sometimes|base64_image'/*.'|base64_size:2048'*/,
-            'video' => 'sometimes|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:20480'
+            'video' => 'sometimes|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:51200'
         ], [
             'name.required' => 'نام  نمی تواند خالی باشد',
             'name.string' => 'نام  نامعتبر است',
@@ -284,7 +285,7 @@ class PlayerController extends Controller
 
             'video.required' => 'ویدیو ضروری است',
             'video.mimes' => 'ویدیو ارسالی با فرمت mp4 باشد',
-            'video.max' => 'حجم ویدیو حداکثر 20 مگابایت باشد',
+            'video.max' => 'حجم ویدیو حداکثر 50 مگابایت باشد',
 
         ]);
 
@@ -355,23 +356,18 @@ class PlayerController extends Controller
         $user = auth()->user();
         $this->authorize('ownItem', [User::class, $player, true]);
 
+        if (isset($request->active)) {
+            if ($request->active == true && $player->active == false) { //activate
+                if (Carbon::now()->timestamp > $player->expires_at) {
+                    return response()->json(['errors' => ['ابتدا بازیکن را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
+                }
+                if ($user->role != 'ad' && $user->role != 'go') {
+                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
+                }
 
-        if (isset($request->active) && ($user->role == 'ad' || $user->role == 'go' || $request->active == false)) {
+            }
             $player->active = $request->active;
             $player->save();
-        } elseif (isset($request->active) && $user->role == 'us') {
-            if ($request->active == true && $player->active == false) {
-                if (Carbon::now()->timestamp < $player->expires_at) {
-                    return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
-//
-//                    $player->active = true;
-//                    $player->save();
-                } else {
-                    return response()->json(['errors' => ['ابتدا بازیکن را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
-
-                }
-            }
-
         } elseif ($request->name) {
             if ($player->name == $request->name) return null;
             $player->name = $request->name;

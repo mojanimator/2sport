@@ -6,7 +6,7 @@
 @section('content')
 
     @php
-        $data=\App\Models\Product::where('id',$id)->with('docs')->with('shop')->first();
+        $data=\App\Models\Product::where('id',$id)->where('active',true)->with('docs')->with('shop')->first();
 if ($data){
 
 $shop=$data->getRelation('shop') ;
@@ -22,7 +22,7 @@ foreach ($docs as $doc) {
 }
     @endphp
 
-    @if ( !$data)
+    @if ( !$data || $shop->active==false)
         <div class="text-center font-weight-bold mt-5 ">
             <div class="   text-danger ">محصول یافت نشد</div>
             <a href="{{url('products')}}" class="list-item d-block hoverable-text-primary">بازگشت</a>

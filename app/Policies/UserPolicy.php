@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Blog;
 use App\Models\Club;
+use App\Models\Coach;
 use App\Models\Player;
 use App\Models\Product;
 use App\Models\Shop;
@@ -59,7 +60,7 @@ class UserPolicy
                     $item = Player::find($id);
                     break;
                 case 'coach':
-                    $item = Club::find($id);
+                    $item = Coach::find($id);
                     break;
                 case 'club':
                     $item = Club::find($id);

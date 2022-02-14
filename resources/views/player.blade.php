@@ -5,7 +5,7 @@
 @section('content')
 
     @php
-        $data=\App\Models\Player::where('id',$id)->with('docs')->with('sport')->with('province')->with('county')->first();
+        $data=\App\Models\Player::where('id',$id)->where('active',true)->with('docs')->with('sport')->with('province')->with('county')->first();
 if ($data){
 
 $docs=$data->getRelation('docs') ;

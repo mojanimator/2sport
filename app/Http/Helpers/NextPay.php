@@ -22,19 +22,25 @@ class  NextPay
      */
     public static function makePay(Request $request)
     {
+
         $type = $request->type;
         $id = $request->id;
         $month = $request->month;
         $coupon = $request->coupon;
+        $phone = $request->phone;
 
         $user = auth()->user();
         $order_id = uniqid();
         while (\App\Models\Payment::where('order_id', $order_id)->exists())
             $order_id = uniqid();
 
-        $price = Setting::firstOrNew(['key' => "${type}_${month}_price"])->value ?: 0;
+        $price = Setting::firstOrNew(['key' => "${type}_${month}_price"])->value ?: -1;
+        if ($price == -1)
+            return response()->json(['errors' => ['error' => ['نوع اشتراک نامعتبر است']]], 422);
+
         $c = \App\Models\Coupon::where('code', $coupon)->first();
         $price = self::makeDiscount($price, $c);
+
         if ($price == 0) {
             $now = \Carbon\Carbon::now();
 
@@ -48,7 +54,8 @@ class  NextPay
                 $data = Shop::find($id);
 
             if (!isset($data))
-                return;
+                return response()->json(['errors' => ['error' => ['موردی یافت نشد.']]], 422);
+
             $time = $data->expires_at != null && $now->timestamp < $data->expires_at ? \Carbon\Carbon::parse($data->expires_at)->addDays($month * 30) : $now->addDays($month * 30);
             $data->active = false;
             $data->expires_at = $time;
@@ -69,11 +76,11 @@ class  NextPay
                 'coupon_id' => isset($c->id) ? $c->id : null,
 
             ]);
+            (new SMS())->deleteActivationSMS($phone);
             \App\Models\Ref::where('invited_id', $user->id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
             Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'payment', $payment);
-            redirect("/panel/$type/edit/$id")->with('success-alert', 'پرداخت شما با موفقیت انجام شد');
+            redirect("/panel/$type/edit/$id")->with('success-alert', 'پرداخت شما با موفقیت انجام شد و در صف فعالسازی قرار گرفت');
             return response()->json(['url' => "/panel/$type/edit/$id"], 200);
-
 
         }
 
@@ -112,7 +119,10 @@ class  NextPay
             \App\Models\Payment::create([
                 'token_id' => $response->trans_id,
                 'order_id' => $order_id,
+                'pay_for' => "${type}_${month}",
+                'pay_for_id' => $id,
             ]);
+            (new SMS())->deleteActivationSMS($phone);
             return response()->json(['url' => self::PAYMENT_LINK . $response->trans_id], 200);
         } else {
             if (!$response)
@@ -192,7 +202,7 @@ class  NextPay
             \App\Models\Ref::where('invited_id', $payment->user_id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
             Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'payment', $payment);
 
-            return redirect(url("panel/$type/edit/$id"))->with('success-alert', 'پرداخت شما با موفقیت انجام شد');
+            return redirect(url("panel/$type/edit/$id"))->with('success-alert', 'پرداخت شما با موفقیت انجام شد و در صف تایید قرار گرفتید');
 
         } else {
             if (!$response) return;

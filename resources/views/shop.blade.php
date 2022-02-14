@@ -5,7 +5,7 @@
 @section('content')
 
     @php
-        $data=\App\Models\Shop::where('id',$id)->with('docs')->with('province')->with('county')->first();
+        $data=\App\Models\Shop::where('id',$id)->where('active',true)->with('docs')->with('province')->with('county')->first();
 
 if ($data){
 

@@ -30,7 +30,7 @@ class BlogController extends Controller
             'tags' => 'nullable|string|max:255',
             'is_draft' => 'required|boolean',
             'published_at' => 'required|numeric|min:0',
-            'img' => 'required|base64_image|base64_size:20480',
+            'img' => 'required|base64_image'/*|base64_size:20480'*/,
 
 //            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
         ], [
