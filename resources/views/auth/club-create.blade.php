@@ -348,7 +348,8 @@
             axios.post("{{route('club.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
                     let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    console.log(percentCompleted);
+                    if (percentCompleted > 0)
+                        document.querySelector('#percent').innerHTML = percentCompleted;
                 }
             })
 
@@ -356,22 +357,22 @@
 //                        console.log(response);
                         document.querySelector('#loading').classList.add('d-none');
 
-                        if (response.status === 200)
-                            window.location = '{{url('panel/club')}}'
+                        if (response.status == 200)
+                            window.location = response.data.url;
 
                     }
                 ).catch((error) => {
                 document.querySelector('#loading').classList.add('d-none');
 //                console.log(error.response.data.errors);
-
+                let errors = '';
                 invalidInputs(error.response.data.errors);
-//                    if (error.response && error.response.status === 422)
-//                        for (let idx in error.response.data.errors)
-//                            this.errors += '' + error.response.data.errors[idx] + '<br>';
-//                    else {
-//                        this.errors = error;
-//                    }
-//                    window.showDialog('danger', this.errors, onclick = null);
+                if (error.response && error.response.status === 422)
+                    for (let idx in error.response.data.errors)
+                        errors += '' + error.response.data.errors[idx] + '<br>';
+                else {
+                    errors = error;
+                }
+                window.showToast('danger', errors);
             });
         }
 
