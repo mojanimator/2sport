@@ -30,6 +30,8 @@ class  NextPay
         $phone = $request->phone;
 
         $user = auth()->user();
+        if (!$user)
+            $user = \App\Models\User::where('phone', $phone)->first();
         $order_id = uniqid();
         while (\App\Models\Payment::where('order_id', $order_id)->exists())
             $order_id = uniqid();
