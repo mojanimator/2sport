@@ -13,10 +13,10 @@
             <div class=" card-header bg-primary text-white  ">
                 <span class="d-inline-block  ">{{admin ? 'لیست بازاریاب ها' : 'اطلاعات بازاریابی'}}</span>
 
-                <span class="small  ms-1 ms-sm-5">
+                <span v-if="admin" class="small  ms-1 ms-sm-5">
 مجموع: {{sum}}  تومان
                 </span>
-                <span class="d-inline-block btn btn-secondary ms-1 ms-sm-5 "
+                <span v-if="admin" class="d-inline-block btn btn-secondary ms-1 ms-sm-5 "
                       @click="  showDialog('confirm','از تسویه کاربران انتخابی اطمینان دارید؟', tasvie ,null)">تسویه
                 </span>
             </div>
