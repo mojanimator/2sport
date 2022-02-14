@@ -90,6 +90,7 @@ class Telegram
         $res = curl_exec($ch);
         echo $res;
         $res = json_decode($res);
+        curl_close($ch);
 //        if ($res && $res->ok == false)
 //            self::sendMessage(Helper::$logs[0], /*"[" . $datas['chat_id'] . "](tg://user?id=" . $datas['chat_id'] . ") \n" .*/
 //                json_encode($datas) . "\n" . $res->description, null, null, null);

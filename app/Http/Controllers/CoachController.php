@@ -157,11 +157,11 @@ class CoachController extends Controller
 
 
         $user->setRefferal();
+        
 
-
-        $res = \NextPay::makePay(new Request(['type' => 'coach', 'id' => $coach->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $coach->phone]));
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'coach_created', $coach);
-        return $res;
+        return \NextPay::makePay(new Request(['type' => 'coach', 'id' => $coach->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $coach->phone]));
+
 //            return redirect(url('panel/coach'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
 
 
