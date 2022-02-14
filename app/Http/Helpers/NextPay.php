@@ -203,7 +203,8 @@ class  NextPay
             $data->save();
             \App\Models\Ref::where('invited_id', $payment->user_id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
             Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'payment', $payment);
-
+//            if (!auth()->user())
+//            auth()->login($user);
             return redirect(url("panel/$type/edit/$id"))->with('success-alert', 'پرداخت شما با موفقیت انجام شد و در صف تایید قرار گرفتید');
 
         } else {

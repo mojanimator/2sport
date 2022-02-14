@@ -150,6 +150,7 @@ class ShopController extends Controller
                     'name' => $request->name,
                     'family' => $request->family, 'phone_verified' => true,
                 ]);
+                auth()->login($user);
             }
         } else
             $user = auth()->user();
@@ -174,8 +175,7 @@ class ShopController extends Controller
 
 
         $user->setRefferal();
-        if (!auth()->user())
-            auth()->login($user);
+
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'shop_created', $shop);
         return \NextPay::makePay(new Request(['type' => 'shop', 'id' => $shop->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $shop->phone]));
 

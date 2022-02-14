@@ -130,6 +130,7 @@ class PlayerController extends Controller
                     'family' => $request->family,
                     'phone_verified' => true,
                 ]);
+                auth()->login($user);
             }
         } else
             $user = auth()->user();
@@ -160,8 +161,7 @@ class PlayerController extends Controller
 
 
         $user->setRefferal();
-            if (!auth()->user())
-                auth()->login($user);
+
 
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'player_created', $player);
 

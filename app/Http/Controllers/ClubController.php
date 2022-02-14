@@ -184,6 +184,7 @@ class ClubController extends Controller
                     'name' => $request->name,
                     'family' => $request->family, 'phone_verified' => true,
                 ]);
+                auth()->login($user);
             }
         } else
             $user = auth()->user();
@@ -211,8 +212,7 @@ class ClubController extends Controller
 
 
         $user->setRefferal();
-        if (!auth()->user())
-            auth()->login($user);
+
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'club_created', $club);
         return \NextPay::makePay(new Request(['type' => 'club', 'id' => $club->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $club->phone]));
 

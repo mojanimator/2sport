@@ -129,6 +129,7 @@ class CoachController extends Controller
                     'phone_verified' => true,
                 ]);
             }
+            auth()->login($user);
         } else
             $user = auth()->user();
 
@@ -156,9 +157,8 @@ class CoachController extends Controller
 
 
         $user->setRefferal();
-        if (!auth()->user())
-//            auth()->login($user);
-            auth()->attempt($user);
+
+
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'coach_created', $coach);
         return \NextPay::makePay(new Request(['type' => 'coach', 'id' => $coach->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $coach->phone]));
 
