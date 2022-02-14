@@ -11,7 +11,7 @@ class Telegram
     static function sendMessage($chat_id, $text, $mode = null, $reply = null, $keyboard = null, $disable_notification = false, $app_id = null)
     {
 
-        return self::creator('sendMessage', [
+        self::creator('sendMessage', [
             'chat_id' => $chat_id,
             'text' => $text,
             'parse_mode' => $mode,
@@ -359,7 +359,7 @@ class Telegram
                     break;
 
             }
-            return self::sendMessage($to, $msg, null);
+            self::sendMessage($to, $msg, null);
 
         } catch (\Exception $e) {
             self::sendMessage($to, $e->getMessage(), null);
