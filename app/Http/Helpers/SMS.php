@@ -92,11 +92,12 @@ class  SMS
     public function sendSMS($phones, $msg)
     {
 
+        if (count($phones) == 0) return;
+        echo implode(',', $phones);
         $req = new stdClass();
         $req->SmsBody = $msg;
         $req->Mobiles = $phones;
         $req->SmsNumber = $this->NUMBER;
-
         $res = $this->Exec("Message/SendSms", $req);
 
         if (!empty($res->R_Success) && $res->R_Success) {
