@@ -17,6 +17,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Morilog\Jalali\Jalalian;
 use PHPUnit\TextUI\Help;
+use SMS;
 
 class ServerOptimize extends Command
 {
@@ -32,7 +33,7 @@ class ServerOptimize extends Command
      *
      * @var string
      */
-    protected $description = 'delete empty payments and expired models in last 24 hours. ';
+    protected $description = 'delete empty payments and expired models in last 24 hours. send alert for 48 hours expiration ';
 
     /**
      * Create a new command instance.
@@ -56,6 +57,7 @@ class ServerOptimize extends Command
         $ptxt = $time . PHP_EOL;
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
         $ptxt .= " 🌍 بهینه سازی سرور: " . PHP_EOL;
+        $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
 
         $now = Carbon::now()->subDay();
         $c = Payment::where('user_id', null)->where('created_at', '<', $now)->count();
@@ -123,10 +125,59 @@ class ServerOptimize extends Command
 
 
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+        $ptxt .= "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+
+
+        //send alarm to 48 hours remained
+        $day2 = Carbon::now()->addDays(3);
+        $c = 0;
+        $phones = [];
+        $tmp = PHP_EOL . 'اشتراک شما طی 48 ساعت آینده مقضی و اطلاعات شما از سامانه حذف خواهد شد. لطفا نسبت به تمدید اقدام نمایید.' . PHP_EOL . 'با تشکر:' . PHP_EOL . url('/');
+        foreach (Player::where('expires_at', '<', $day2)->get() as $data) {
+            $c++;
+            $phones[] = $data->phone;
+        }
+        (new SMS())->sendSMS($phones, 'بازیکن عزیز دبل اسپورت: ' . $tmp);
+        $ptxt .= " 📊 ارسال پیامک حذف بازیکن در 48 ساعت آینده: " . PHP_EOL;
+        $ptxt .= " 🌍 تعداد: " . $c . PHP_EOL;
+        $c = 0;
+        $phones = [];
+        $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+
+        foreach (Coach::where('expires_at', '<', $day2)->get() as $data) {
+            $c++;
+            $phones[] = $data->phone;
+        }
+        (new SMS())->sendSMS($phones, 'مربی عزیز دبل اسپورت: ' . $tmp);
+        $ptxt .= " 📊 ارسال پیامک حذف مربی در 48 ساعت آینده: " . PHP_EOL;
+        $ptxt .= " 🌍 تعداد: " . $c . PHP_EOL;
+        $c = 0;
+        $phones = [];
+        $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+
+        foreach (Club::where('expires_at', '<', $day2)->get() as $data) {
+            $c++;
+            $phones[] = $data->phone;
+        }
+        (new SMS())->sendSMS($phones, 'باشگاه دار عزیز دبل اسپورت: ' . $tmp);
+        $ptxt .= " 📊 ارسال پیامک حذف باشگاه در 48 ساعت آینده: " . PHP_EOL;
+        $ptxt .= " 🌍 تعداد: " . $c . PHP_EOL;
+        $c = 0;
+        $phones = [];
+        $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+        foreach (Shop::where('expires_at', '<', $day2)->get() as $data) {
+            $c++;
+            $phones[] = $data->phone;
+        }
+        (new SMS())->sendSMS($phones, 'فروشگاه دار عزیز دبل اسپورت: ' . $tmp);
+        $ptxt .= " 📊 ارسال پیامک حذف فروشگاه در 48 ساعت آینده: " . PHP_EOL;
+        $ptxt .= " 🌍 تعداد: " . $c . PHP_EOL;
+
+
+        $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
         $ptxt .= "🅳🅰🅱🅴🅻 🆃🅴🅰🅼";
 
         echo $ptxt;
         \Telegram::sendMessage(\Helper::$TELEGRAM_GROUP_ID, $ptxt, null);
-
     }
 }

@@ -13,6 +13,7 @@ class  SMS
 //  $res->R_Message;
 
     private $url = "http://sms.parsgreen.ir";
+    private $NUMBER = '100002000000';
 
 
     public function getCredit()
@@ -71,12 +72,36 @@ class  SMS
 
         $res = $this->Exec("Message/SendOtp", $req);
 
-        if (!empty($res->R_Success)) {
+        if (!empty($res->R_Success) && $res->R_Success) {
 
             DB::table('sms_verify')->insert(
                 ['code' => $req->SmsCode, 'phone' => $req->Mobile]
             );
             return response()->json(['status' => 'success', 'msg' => "کد تایید به شماره همراه ارسال شد"]);
+        } else
+            return response()->json(['status' => 'danger', 'msg' => !isset($res->R_Message) ? 'ناموفق! لطفا اتصال به ایترنت را بررسی نمایید و مجدد تلاش کنید' : $res->R_Message]);
+        //R_Code,R_Error,R_Message,R_Success
+
+
+    }
+
+    /**
+     * @param $phone
+     * @return mixed|string
+     */
+    public function sendSMS($phones, $msg)
+    {
+
+        $req = new stdClass();
+        $req->SmsBody = $msg;
+        $req->Mobiles = $phones;
+        $req->SmsNumber = $this->NUMBER;
+
+        $res = $this->Exec("Message/SendSms", $req);
+
+        if (!empty($res->R_Success) && $res->R_Success) {
+
+            return response()->json(['status' => 'success', 'msg' => "پیام به شماره(های) همراه ارسال شد"]);
         } else
             return response()->json(['status' => 'danger', 'msg' => !isset($res->R_Message) ? 'ناموفق! لطفا اتصال به ایترنت را بررسی نمایید و مجدد تلاش کنید' : $res->R_Message]);
         //R_Code,R_Error,R_Message,R_Success

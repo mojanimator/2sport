@@ -83,7 +83,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'قیمت فروشگاه ۱ ماه(ت)', 'key' => 'shop_1_price', 'value' => '150000'],
             ['name' => 'قیمت فروشگاه ۳ ماه(ت)', 'key' => 'shop_3_price', 'value' => '380000'],
             ['name' => 'قیمت فروشگاه ۶ ماه(ت)', 'key' => 'shop_6_price', 'value' => '600000'],
-            ['name' => 'قیمت پین (ت)', 'key' => 'pin_price', 'value' => '20000'],
+            ['name' => 'قیمت نردبان (ت)', 'key' => 'pin_price', 'value' => '20000'],
 
         ]);
 
