@@ -135,7 +135,7 @@
         },
         created() {
 
-            this.getData();
+//            this.getData();
         }
         ,
         updated() {

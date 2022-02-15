@@ -470,35 +470,39 @@ if($table){
 
                         <div class="carousel-indicators">
                             @foreach($coaches as  $idx=>$coach)
-
-                                <button type="button" data-mdb-target="#carouselCoaches" data-mdb-slide-to="{{$idx}}"
-                                        class="{{$idx==0?  'active':''}}"
-                                        aria-current="true" aria-label="{{$coaches[$idx]->name}}"></button>
-
+                                @if (!is_array($coach))
+                                    <button type="button" data-mdb-target="#carouselCoaches"
+                                            data-mdb-slide-to="{{$idx}}"
+                                            class="{{$idx==0?  'active':''}}"
+                                            aria-current="true" aria-label="{{$coaches[$idx]->name}}"></button>
+                                @endif
                             @endforeach
                         </div>
                         <div class="carousel-inner  h-100 w-100 ">
 
                             @foreach($coaches as  $idx=>$coach)
-                                @php($doc=$coaches[$idx]['doc'])
-                                @php($img=asset("storage/$doc->type_id/$doc->id.jpg") )
-                                <div class="z-index-1 carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
-                                    <img src="{{$img}}" class=" d-block  w-100 h-100 rounded-3"
-                                         alt="{{$coaches[$idx]->name}}"
-                                         style=" object-fit:fill;object-position: 0 0;">
-                                    <div class="carousel-caption   d-md-block start-0 end-0 ">
-                                        <h5 class="bg-gradient-dark-transparent text-white  w-100 py-3 ">{{$coaches[$idx]->name.' '. $coaches[$idx]->family}}</h5>
-                                        <div class="  left-0 right-0 bg-gradient-faded-dark w-100    rounded-lg p-4">
-                                            {{--<p class="small">{{$docables[$idx]->name}}</p>--}}
+                                @if (!is_array($coach))
+                                    @php($doc=$coaches[$idx]['doc'])
+                                    @php($img=asset("storage/$doc->type_id/$doc->id.jpg") )
+                                    <div class="z-index-1 carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
+                                        <img src="{{$img}}" class=" d-block  w-100 h-100 rounded-3"
+                                             alt="{{$coaches[$idx]->name}}"
+                                             style=" object-fit:fill;object-position: 0 0;">
+                                        <div class="carousel-caption   d-md-block start-0 end-0 ">
+                                            <h5 class="bg-gradient-dark-transparent text-white  w-100 py-3 ">{{$coaches[$idx]->name.' '. $coaches[$idx]->family}}</h5>
+                                            <div class="  left-0 right-0 bg-gradient-faded-dark w-100    rounded-lg p-4">
+                                                {{--<p class="small">{{$docables[$idx]->name}}</p>--}}
+                                            </div>
+                                            <a type="button"
+                                               class="btn move-on-hover bg-secondary w-auto text-white btn-lg"
+                                               href="/coach/{{$coaches[$idx]->id}}">مشاهده جزییات
+
+                                            </a>
                                         </div>
-                                        <a type="button" class="btn move-on-hover bg-secondary w-auto text-white btn-lg"
-                                           href="/coach/{{$coaches[$idx]->id}}">مشاهده جزییات
 
-                                        </a>
+
                                     </div>
-
-
-                                </div>
+                                @endif
                             @endforeach
 
                         </div>
@@ -535,33 +539,41 @@ if($table){
 
                         <div class="carousel-indicators">
                             @foreach($players as  $idx=>$player)
-                                <button type="button" data-mdb-target="#carouselPlayers" data-mdb-slide-to="{{$idx}}"
-                                        class="{{$idx==0?  'active':''}}"
-                                        aria-current="true" aria-label="{{$players[$idx]->name}}"></button>
+
+                                @if (!is_array($player))
+
+                                    <button type="button" data-mdb-target="#carouselPlayers"
+                                            data-mdb-slide-to="{{$idx}}"
+                                            class="{{$idx==0?  'active':''}}"
+                                            aria-current="true" aria-label="{{$player->name}}"></button>
+                                @endif
                             @endforeach
                         </div>
                         <div class="carousel-inner  h-100 w-100 ">
 
                             @foreach($players as  $idx=>$player)
-                                @php($doc=$players[$idx]['doc'])
-                                @php($img=asset("storage/$doc->type_id/$doc->id.jpg") )
-                                <div class="z-index-1 carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
-                                    <img src="{{$img}}" class=" d-block  w-100 h-100 rounded-3"
-                                         alt="{{$players[$idx]->name}}"
-                                         style="  object-position: 0 0;">
-                                    <div class="carousel-caption   d-md-block start-0 end-0 ">
-                                        <h5 class="bg-gradient-dark-transparent text-white  w-100 py-3 ">{{$players[$idx]->name.' '. $players[$idx]->family}}</h5>
-                                        <div class="  left-0 right-0 bg-gradient-faded-dark w-100    rounded-lg p-4">
-                                            {{--<p class="small">{{$docables[$idx]->name}}</p>--}}
+                                @if (!is_array($player))
+                                    @php($doc=$players[$idx]['doc'])
+                                    @php($img=asset("storage/$doc->type_id/$doc->id.jpg") )
+                                    <div class="z-index-1 carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
+                                        <img src="{{$img}}" class=" d-block  w-100 h-100 rounded-3"
+                                             alt="{{$players[$idx]->name}}"
+                                             style="  object-position: 0 0;">
+                                        <div class="carousel-caption   d-md-block start-0 end-0 ">
+                                            <h5 class="bg-gradient-dark-transparent text-white  w-100 py-3 ">{{$players[$idx]->name.' '. $players[$idx]->family}}</h5>
+                                            <div class="  left-0 right-0 bg-gradient-faded-dark w-100    rounded-lg p-4">
+                                                {{--<p class="small">{{$docables[$idx]->name}}</p>--}}
+                                            </div>
+                                            <a type="button"
+                                               class="btn move-on-hover bg-secondary w-auto text-white btn-lg"
+                                               href="/player/{{$players[$idx]->id}}">مشاهده جزییات
+
+                                            </a>
                                         </div>
-                                        <a type="button" class="btn move-on-hover bg-secondary w-auto text-white btn-lg"
-                                           href="/player/{{$players[$idx]->id}}">مشاهده جزییات
 
-                                        </a>
+
                                     </div>
-
-
-                                </div>
+                                @endif
                             @endforeach
 
                         </div>

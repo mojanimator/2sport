@@ -17,7 +17,7 @@ class Controller extends BaseController
     protected function dataEdited($data, $logType, $msg)
     {
         if (isset($data)) {
-            if (auth()->user()->role != 'ad' && auth()->user()->role != 'go' && !str_contains($logType,'user')) {
+            if (auth()->user()->role != 'ad' && auth()->user()->role != 'go' && !str_contains($logType, 'user')) {
                 $data->active = false;
             }
             \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, $logType, $data);
@@ -40,9 +40,8 @@ class Controller extends BaseController
 
         $res = $p5->union($p4)->union($p1)->union($p2)->union($p3)
             ->with('alldocs')
-//            ->orderByDesc('created_at')
-
-            ->inRandomOrder()
+            ->orderByDesc('created_at')
+//            ->inRandomOrder()
             ->paginate($paginate, ['*'], 'page', $page);
 
 //        $res->setCollection($res->getCollection()->map(function ($row) {

@@ -21,7 +21,7 @@ use Faker\Factory as Faker;
 |
 */
 Route::get('test', function () {
-    Artisan::call('server:optimize');
+//    Artisan::call('server:optimize');
 
 });
 
