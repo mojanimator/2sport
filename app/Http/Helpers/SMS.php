@@ -105,7 +105,7 @@ class  SMS
             Telegram::sendMessage(Helper::$TELEGRAM_GROUP_ID, $res . PHP_EOL . implode(',', $phones));
             return response()->json(['status' => 'success', 'msg' => "پیام به شماره(های) همراه ارسال شد"]);
         } else {
-            Telegram::sendMessage(Helper::$TELEGRAM_GROUP_ID, $res->R_Message . PHP_EOL . implode(',', $phones));
+            Telegram::sendMessage(Helper::$TELEGRAM_GROUP_ID, $res->R_Message . PHP_EOL . implode(',', $phones) . PHP_EOL . $msg);
             return response()->json(['status' => 'danger', 'msg' => !isset($res->R_Message) ? 'ناموفق! لطفا اتصال به ایترنت را بررسی نمایید و مجدد تلاش کنید' : $res->R_Message]);
             //R_Code,R_Error,R_Message,R_Success
         }
