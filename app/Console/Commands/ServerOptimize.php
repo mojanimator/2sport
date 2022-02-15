@@ -133,7 +133,7 @@ class ServerOptimize extends Command
         $day1 = Carbon::now()->addDays(2);
         $c = 0;
         $phones = [];
-        $tmp = PHP_EOL . 'اشتراک شما طی 48 ساعت آینده منقضی و اطلاعات شما از سامانه حذف خواهد شد. لطفا نسبت به تمدید اقدام نمایید.' . PHP_EOL . 'با تشکر:' . PHP_EOL . 'www.2sport.ir';
+        $tmp = PHP_EOL . 'اشتراک شما طی 48 ساعت آینده منقضی و اطلاعات شما از سامانه حذف خواهد شد. لطفا نسبت به تمدید اقدام نمایید.' . PHP_EOL . 'با تشکر:' . PHP_EOL . '2sport.ir';
         foreach (Player::where('expires_at', '<', $day2)->where('expires_at', '>', $day1)->get() as $data) {
             $c++;
             $phones[] = $data->phone;
