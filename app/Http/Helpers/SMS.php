@@ -102,7 +102,7 @@ class  SMS
 
         if (!empty($res->R_Success) && $res->R_Success) {
 
-            Telegram::sendMessage(Helper::$TELEGRAM_GROUP_ID, $res . PHP_EOL . implode(',', $phones));
+            Telegram::sendMessage(Helper::$TELEGRAM_GROUP_ID, 'ارسال موفق به:' . PHP_EOL . implode(',', $phones));
             return response()->json(['status' => 'success', 'msg' => "پیام به شماره(های) همراه ارسال شد"]);
         } else {
             Telegram::sendMessage(Helper::$TELEGRAM_GROUP_ID, $res->R_Message . PHP_EOL . implode(',', $phones) . PHP_EOL . $msg);
