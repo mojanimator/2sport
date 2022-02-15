@@ -17,7 +17,7 @@ class Controller extends BaseController
     protected function dataEdited($data, $logType, $msg)
     {
         if (isset($data)) {
-            if (auth()->user()->role != 'ad' && auth()->user()->role != 'go') {
+            if (auth()->user()->role != 'ad' && auth()->user()->role != 'go' && !str_contains($logType,'user')) {
                 $data->active = false;
             }
             \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, $logType, $data);

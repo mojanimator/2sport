@@ -4,6 +4,7 @@ use App\Models\County;
 use App\Models\Coupon;
 use App\Models\Setting;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,7 @@ use Faker\Factory as Faker;
 |
 */
 Route::get('test', function () {
-    return auth()->login(\App\Models\User::find(1));
+    Artisan::call('server:optimize');
 
 });
 
@@ -192,9 +193,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('blog/remove', [App\Http\Controllers\BlogController::class, 'remove'])->name('blog.remove');
     Route::post('table/remove', [App\Http\Controllers\TableController::class, 'remove'])->name('table.remove');
     Route::post('system-setting/remove', [App\Http\Controllers\SettingController::class, 'remove'])->name('system-setting.remove');
+    Route::post('user/remove', [App\Http\Controllers\UserController::class, 'remove'])->name('user.remove');
 
     Route::post('ref/tasvie', [App\Http\Controllers\RefController::class, 'tasvie'])->name('ref.tasvie');
     Route::get('ref/search', [App\Http\Controllers\RefController::class, 'search'])->name('ref.search');
+
+    Route::get('user/search', [App\Http\Controllers\UserController::class, 'search'])->name('user.search');
 
 });
 Route::get('latest', [App\Http\Controllers\Controller::class, 'latest'])->name('latest');

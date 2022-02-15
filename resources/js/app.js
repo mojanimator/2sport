@@ -58,6 +58,7 @@ import searchTables from './components/searchTables.vue';
 import blogs from './components/Blogs.vue';
 import systemSetting from './components/SystemSetting.vue';
 import referral from './components/Referral.vue';
+import searchUsers from './components/searchUsers.vue';
 
 
 import {createApp, computed, ref} from 'vue'
@@ -83,6 +84,7 @@ const app = createApp({
         blogs,
         systemSetting,
         referral,
+        searchUsers,
 
 
     }

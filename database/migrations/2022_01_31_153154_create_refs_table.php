@@ -33,8 +33,8 @@ class CreateRefsTable extends Migration
             $table->integer('payed_5')->unsigned()->nullable();
             $table->timestamps();
 
-            $table->foreign('invited_id')->references('id')->on('users');
-            $table->foreign('inviter_id')->references('id')->on('users');
+            $table->foreign('invited_id')->references('id')->on('users')->onDelete('no action');
+            $table->foreign('inviter_id')->references('id')->on('users')->onDelete('no action');
 
         });
     }

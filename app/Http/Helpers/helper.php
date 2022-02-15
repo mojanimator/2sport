@@ -34,6 +34,7 @@ class Helper
         'products' => 'pr',
         'blogs' => 'bl',
 
+
     ];
     static $morphsMap = [
         'pl' => 'App\Models\Player',

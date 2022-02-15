@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('report:day')->dailyAt('08:00');
+        $schedule->command('server:optimize')->dailyAt('01:00');
     }
 
     /**

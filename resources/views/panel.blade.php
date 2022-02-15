@@ -205,6 +205,23 @@
                                 <span class="item-text">محصول</span>
                             </div>
                         </a>
+                        @if($user->role=='ad' || $user->role=='go')
+                            <hr class="m-0">
+                            <a href="{{url('panel/users')}}"
+                               class="sidebar-item py-2 px-0 px-sm-3 text-white hoverable-dark {{str_contains( url()->current(),'/users') ?'bg-cyan text-primary':''}}"
+                               data-bs-toggle="tooltip">
+                                <div class="">
+                          <span class=" item-icon align-middle  " data-bs-placement="left"
+                                data-bs-toggle="tooltip"
+                                title="کاربران">
+                             <i class="fa fa-users fa-2x  item-icon  " aria-hidden="true"
+                             ></i>
+                          </span>
+
+                                    <span class="item-text  ms-3">کاربران</span>
+                                </div>
+                            </a>
+                        @endif
                         <hr class="m-0">
                         <a href="{{url('panel/referral')}}"
                            class="sidebar-item py-2 px-0 px-sm-3 text-white hoverable-dark {{str_contains( url()->current(),'/referral') ?'bg-cyan text-primary':''}}"
@@ -217,7 +234,7 @@
                              ></i>
                           </span>
 
-                                <span class="item-text  ms-3">بازاریابی</span>
+                                <span class="item-text  ms-4">بازاریابی</span>
                             </div>
                         </a>
                     @endcan
@@ -309,8 +326,8 @@
 
 
                     </div>
-                </nav
-                >
+                </nav>
+
 
                 {{--loading--}}
                 <div class="    m-2  position-absolute w-100 " style="z-index: 10;">
@@ -424,6 +441,14 @@
                         <x-panel.system-setting>
 
                         </x-panel.system-setting>
+                    @elseif(str_contains( url()->current(),'/users'))
+                        <x-panel.users>
+
+                        </x-panel.users>
+                    @elseif(str_contains( url()->current(),'/user/edit'))
+                        <x-panel.user-edit param="{{$param}}">
+
+                        </x-panel.user-edit>
                     @else
                         <x-panel.main>
 
