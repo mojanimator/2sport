@@ -130,10 +130,11 @@ class ServerOptimize extends Command
 
         //send alarm to 48 hours remained
         $day2 = Carbon::now()->addDays(3);
+        $day1 = Carbon::now()->addDays(2);
         $c = 0;
         $phones = [];
-        $tmp = PHP_EOL . 'اشتراک شما طی 48 ساعت آینده مقضی و اطلاعات شما از سامانه حذف خواهد شد. لطفا نسبت به تمدید اقدام نمایید.' . PHP_EOL . 'با تشکر:' . PHP_EOL . url('/');
-        foreach (Player::where('expires_at', '<', $day2)->get() as $data) {
+        $tmp = PHP_EOL . 'اشتراک شما طی 48 ساعت آینده منقضی و اطلاعات شما از سامانه حذف خواهد شد. لطفا نسبت به تمدید اقدام نمایید.' . PHP_EOL . 'با تشکر:' . PHP_EOL . url('/');
+        foreach (Player::where('expires_at', '<', $day2)->where('expires_at', '>', $day1)->get() as $data) {
             $c++;
             $phones[] = $data->phone;
         }
@@ -144,7 +145,7 @@ class ServerOptimize extends Command
         $phones = [];
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
 
-        foreach (Coach::where('expires_at', '<', $day2)->get() as $data) {
+        foreach (Coach::where('expires_at', '<', $day2)->where('expires_at', '>', $day1)->get() as $data) {
             $c++;
             $phones[] = $data->phone;
         }
@@ -155,7 +156,7 @@ class ServerOptimize extends Command
         $phones = [];
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
 
-        foreach (Club::where('expires_at', '<', $day2)->get() as $data) {
+        foreach (Club::where('expires_at', '<', $day2)->where('expires_at', '>', $day1)->get() as $data) {
             $c++;
             $phones[] = $data->phone;
         }
@@ -165,7 +166,7 @@ class ServerOptimize extends Command
         $c = 0;
         $phones = [];
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
-        foreach (Shop::where('expires_at', '<', $day2)->get() as $data) {
+        foreach (Shop::where('expires_at', '<', $day2)->where('expires_at', '>', $day1)->get() as $data) {
             $c++;
             $phones[] = $data->phone;
         }
