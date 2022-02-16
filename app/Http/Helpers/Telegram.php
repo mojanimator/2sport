@@ -121,7 +121,10 @@ class Telegram
         try {
             if (str_contains(url('/'), 'localhost'))
                 return;
-            $us = auth()->user();
+            if (isset($data->user_id))
+                $us = \App\Models\User::find($data->user_id);
+            else
+                $us = auth()->user();
             $admin = ($us->role == 'ad' || $us->role == 'go' ? ($us->name ? "$us->name $us->family" : $us->username) : false);
             $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
             $time = $now->format('%A, %d %B %Y ⏰ H:i');
