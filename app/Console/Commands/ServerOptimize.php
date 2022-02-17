@@ -68,7 +68,7 @@ class ServerOptimize extends Command
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
         $c = 0;
         foreach (Player::where('expires_at', '<', $now)->orWhere(function ($query) use ($now) {
-            $query->where('created_at', '>', $now->subDay())->where('created_at', '<', $now)->whereNull('expires_at');
+            $query->where('created_at', '<', $now)->whereNull('expires_at');
         })->get() as $data) {
             $c++;
             foreach ($data->docs as $doc) {
@@ -80,8 +80,8 @@ class ServerOptimize extends Command
         $ptxt .= " 🗑 تعداد: " . $c . PHP_EOL;
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
         $c = 0;
-        foreach (Coach::where('expires_at', '<', $now)->where(function ($query) use ($now) {
-            $query->where('created_at', '>', $now->subDay())->where('created_at', '<', $now)->whereNull('expires_at');
+        foreach (Coach::where('expires_at', '<', $now)->orWhere(function ($query) use ($now) {
+            $query->where('created_at', '<', $now)->whereNull('expires_at');
         })->get() as $data) {
             $c++;
             foreach ($data->docs as $doc) {
@@ -94,7 +94,7 @@ class ServerOptimize extends Command
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
         $c = 0;
         foreach (Club::where('expires_at', '<', $now)->orWhere(function ($query) use ($now) {
-            $query->where('created_at', '>', $now->subDay())->where('created_at', '<', $now)->whereNull('expires_at');
+            $query->where('created_at', '<', $now)->whereNull('expires_at');
         })->get() as $data) {
             $c++;
             foreach ($data->docs as $doc) {
@@ -107,7 +107,7 @@ class ServerOptimize extends Command
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
         $c = 0;
         foreach (Shop::where('expires_at', '<', $now)->orWhere(function ($query) use ($now) {
-            $query->where('created_at', '>', $now->subDay())->where('created_at', '<', $now)->whereNull('expires_at');
+            $query->where('created_at', '<', $now)->whereNull('expires_at');
         })->get() as $data) {
             $c++;
             foreach (Product::where('shop_id', $data->id)->get() as $d) {
