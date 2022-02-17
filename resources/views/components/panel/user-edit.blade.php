@@ -8,7 +8,7 @@
 $user=\App\Models\User::find($param);
 
     $players=\App\Models\Player::select('id','name','family')->where('user_id',$user->id)->get();
-    $coaches=\App\Models\coach::select('id','name','family')->where('user_id',$user->id)->get();
+    $coaches=\App\Models\Coach::select('id','name','family')->where('user_id',$user->id)->get();
     $clubs=\App\Models\Club::select('id','name')->where('user_id',$user->id)->get();
     $shops=\App\Models\Shop::select('id','name')->where('user_id',$user->id)->get();
     $count=count($players)+count($coaches)+count($clubs)+count($shops);

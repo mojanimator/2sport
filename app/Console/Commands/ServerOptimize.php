@@ -60,7 +60,8 @@ class ServerOptimize extends Command
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
 
         $now = Carbon::now()->subDay();
-        $c = Payment::where('user_id', null)->where('created_at', '<', $now)->count();
+        DB::table('sms_verify')->where('created_at', '<', $now->subHour())->delete();
+        $c = Payment::where('user_id', null)->where('created_at', '<', $now->subHour())->count();
         Payment::where('user_id', null)->where('created_at', '<', $now)->delete();
         $ptxt .= " 📊 پاکسازی پرداخت های انجام نشده: " . PHP_EOL;
         $ptxt .= " 🌍 تعداد: " . $c . PHP_EOL;
