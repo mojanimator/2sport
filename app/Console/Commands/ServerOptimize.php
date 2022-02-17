@@ -80,7 +80,7 @@ class ServerOptimize extends Command
         $ptxt .= " 🗑 تعداد: " . $c . PHP_EOL;
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
         $c = 0;
-        foreach (Coach::where('expires_at', '<', $now)->orWhere(function ($query) use ($now) {
+        foreach (Coach::where('expires_at', '<', $now)->where(function ($query) use ($now) {
             $query->where('created_at', '>', $now->subDay())->where('created_at', '<', $now)->whereNull('expires_at');
         })->get() as $data) {
             $c++;
