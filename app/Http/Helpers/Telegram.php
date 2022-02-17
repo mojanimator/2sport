@@ -121,7 +121,9 @@ class Telegram
         try {
             if (str_contains(url('/'), 'localhost'))
                 return;
-            if (isset($data->user_id))
+            if ($data instanceof \App\Models\User)
+                $us = $data;
+            elseif (isset($data->user_id))
                 $us = \App\Models\User::find($data->user_id);
             else
                 $us = auth()->user();

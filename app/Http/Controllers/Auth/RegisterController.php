@@ -129,7 +129,7 @@ class RegisterController extends Controller
 //        flash('flash-success', 'برای تکمیل ثبت نام لطفا ایمیل خود را تایید کنید پیام تایید ایمیل  برای شما ارسال شده است');
             return redirect('login')->with('success-alert', 'برای تکمیل ثبت نام لطفا ایمیل خود را تایید کنید پیام تایید ایمیل  برای شما ارسال شده است');
         } else
-            return redirect('panel')->with('success-alert', 'ثبت نام شما با موفقیت انجام شد! میتوانید از قسمت پنل کاربری اطلاعات خود را ویرایش کنید');
+            return redirect('panel')->with('success-alert', 'ثبت نام شما با موفقیت انجام شد! میتوانید از قسمت تنظیمات اطلاعات خود را ویرایش کنید');
 
     }
 
