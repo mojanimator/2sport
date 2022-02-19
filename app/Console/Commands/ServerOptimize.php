@@ -76,7 +76,7 @@ class ServerOptimize extends Command
             }
             $data->delete();
         }
-        $ptxt .= " ✅ پاکسازی کاربران منقضی شده: " . PHP_EOL;
+        $ptxt .= " ✅ پاکسازی بازیکنان منقضی شده: " . PHP_EOL;
         $ptxt .= " 🗑 تعداد: " . $c . PHP_EOL;
         $ptxt .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
         $c = 0;

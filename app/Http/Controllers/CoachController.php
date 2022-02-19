@@ -148,6 +148,7 @@ class CoachController extends Controller
             'phone' => $request->phone,
             'description' => $request->description,
             'phone_verified' => true,
+            'expires_at' => Carbon::now()->addDays(3),
 //                'expires_at' => $data['ex_date'] ? CalendarUtils::createCarbonFromFormat('Y/m/d', $data['ex_date'])->addDays(1)->timezone('Asia/Tehran') : null,
         ]);
 
@@ -157,7 +158,7 @@ class CoachController extends Controller
 
 
         $user->setRefferal();
-        
+
 
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'coach_created', $coach);
         return \NextPay::makePay(new Request(['type' => 'coach', 'id' => $coach->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $coach->phone]));

@@ -165,7 +165,7 @@ class ShopController extends Controller
             'description' => $request->description,
             'address' => $request->address,
             'phone_verified' => true,
-
+            'expires_at' => Carbon::now()->addDays(3),
 //                'expires_at' => $data['ex_date'] ? CalendarUtils::createCarbonFromFormat('Y/m/d', $data['ex_date'])->addDays(1)->timezone('Asia/Tehran') : null,
         ]);
 
