@@ -148,7 +148,7 @@ class SettingController extends Controller
                     $query = $query->select($item['col'])
                         ->where('created_at', '>=', $from->toCarbon())
                         ->where('created_at', '<=', $to->toCarbon()->addDay());
-                    if ($province && $item['type'] != 'bl' && $item['type'] != 'pr')
+                    if ($province && $item['type'] != \Helper::$labelsMap['blogs'] && $item['type'] != \Helper::$labelsMap['products'])
                         $query = $query->where('province_id', $province);
 
                     $res['data'][$item['type']] = $query->orderBy('created_at', 'DESC')
