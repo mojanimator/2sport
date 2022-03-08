@@ -7,6 +7,7 @@ use App\Models\Club;
 use App\Models\Coach;
 use App\Models\Player;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\Shop;
 use App\Models\Table;
 use App\Models\User;
@@ -20,7 +21,7 @@ class UserPolicy
     public function before(User $user, $ability)
     {
 
-        if ($user->role == 'Go') {
+        if ($user->role == 'go') {
             return true;
         }
     }
@@ -84,7 +85,7 @@ class UserPolicy
         if ($item_is_blog_table && $user->role == 'bl')
             return true;
 
-        if (!$item_is_blog_table && $user->role == 'ad')
+        if (!$item_is_blog_table && !($item instanceof Setting) && $user->role == 'ad')
             return true;
 
 

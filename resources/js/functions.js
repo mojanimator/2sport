@@ -286,6 +286,31 @@ window.f2e = function (str) {
 
 
 };
+window.e2f = function (str) {
+    let eng = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    let per = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    if (!str) return str;
+    if (Array.isArray(str)) {
+        for (let idx in str) {
+            for (let i in per) {
+//                    str = str.replaceAll(eng[i], per[i]);
+                let re = new RegExp(eng[i], "g");
+                str[idx] = str[idx].replace(re, per[i]);
+            }
+        }
+        return str;
+    }
+    str = str.toString();
+
+    for (let i in per) {
+//                    str = str.replaceAll(eng[i], per[i]);
+        let re = new RegExp(eng[i], "g");
+        str = str.replace(re, per[i]);
+    }
+    return str;
+
+
+};
 import L from 'leaflet';
 import 'leaflet.fullscreen';
 

@@ -28,8 +28,8 @@ class CreateProductsTable extends Migration
             $table->boolean('active')->default(false);
             $table->boolean('hidden')->default(true);
 
-
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
+//            $table->timestamp('created_at')->useCurrent();
 
             $table->foreign('shop_id')->references('id')->on('shops');
 //            $table->foreign('group_id')->references('id')->on('groups');

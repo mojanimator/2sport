@@ -35,28 +35,29 @@ class  NextPay
         $order_id = uniqid();
         while (\App\Models\Payment::where('order_id', $order_id)->exists())
             $order_id = uniqid();
+        $v = Setting::firstOrNew(['key' => "${type}_${month}_price"])->value;
+        $price = $v != null ? $v : -1;
 
-        $price = Setting::firstOrNew(['key' => "${type}_${month}_price"])->value ?: -1;
         if ($price == -1)
             return response()->json(['errors' => ['error' => ['نوع اشتراک نامعتبر است']]], 422);
 
         $c = \App\Models\Coupon::where('code', $coupon)->first();
         $price = self::makeDiscount($price, $c);
 
+        if (strpos($type, 'player') !== false)
+            $data = Player::find($id);
+        elseif (strpos($type, 'coach') !== false)
+            $data = Coach::find($id);
+        elseif (strpos($type, 'club') !== false)
+            $data = Club::find($id);
+        elseif (strpos($type, 'shop') !== false)
+            $data = Shop::find($id);
+
+        if (!isset($data))
+            return response()->json(['errors' => ['error' => ['موردی یافت نشد.']]], 422);
         if ($price == 0) {
             $now = \Carbon\Carbon::now();
 
-            if (strpos($type, 'player') !== false)
-                $data = Player::find($id);
-            elseif (strpos($type, 'coach') !== false)
-                $data = Coach::find($id);
-            elseif (strpos($type, 'club') !== false)
-                $data = Club::find($id);
-            elseif (strpos($type, 'shop') !== false)
-                $data = Shop::find($id);
-
-            if (!isset($data))
-                return response()->json(['errors' => ['error' => ['موردی یافت نشد.']]], 422);
 
             $time = $data->expires_at != null && $now->timestamp < $data->expires_at ? \Carbon\Carbon::parse($data->expires_at)->addDays($month * 30) : $now->addDays($month * 30);
             $data->active = false;
@@ -68,6 +69,7 @@ class  NextPay
                 $c->save();
             }
             $payment = \App\Models\Payment::create([
+                'province_id' => $data->province_id,
                 'token_id' => null,
                 'order_id' => $order_id,
                 'amount' => 0,
@@ -119,6 +121,7 @@ class  NextPay
 
         if ($response && $response->code == -1) { //send user to bank page
             \App\Models\Payment::create([
+                'province_id' => $data->province_id,
                 'token_id' => $response->trans_id,
                 'order_id' => $order_id,
                 'pay_for' => "${type}_${month}",

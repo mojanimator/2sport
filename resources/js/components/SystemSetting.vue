@@ -118,7 +118,7 @@
 
                                 this.setting = response.data;
                                 this.param = {};
-                                window.showToast('success', 'با موفقیت اجام شد!');
+                                window.showToast('success', 'با موفقیت انجام شد!');
                             }
 //                            window.location.reload();
 
@@ -131,6 +131,8 @@
                     if (error.response && error.response.status === 422)
                         for (let idx in error.response.data.errors)
                             errors += error.response.data.errors[idx] + '<br>';
+                    else if (error.response && error.response.status === 403)
+                        errors = error.response.data.message;
                     else {
                         errors = error;
                     }

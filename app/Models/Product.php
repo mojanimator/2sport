@@ -11,7 +11,7 @@ use Symfony\Component\VarDumper\Caster\ImgStub;
 class Product extends Model
 {
     protected $appends = ['salePercent'];
-    public $timestamps = false;
+//    public $timestamps = false;
     protected $table = 'products';
     protected $fillable = [
         'id', 'shop_id', 'group_id',

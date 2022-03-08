@@ -41,6 +41,7 @@
         "@editorjs/paragraph": "^2.8.0",
         "@editorjs/table": "^2.0.1",
         "@fortawesome/fontawesome-free": "^5.15.4",
+        "chart.js": "^3.7.1",
         "cropperjs": "^1.5.12",
         "editorjs-text-alignment-blocktune": "^1.0.3",
         "leaflet": "^1.7.1",
@@ -51,6 +52,7 @@
         "rtlcss": "^3.5.0",
         "sweetalert2": "^11.3.0",
         "swiper": "^7.4.1",
+        "vue3-persian-datetime-picker": "^1.2.2",
         "vue3-sfc-loader": "^0.8.4"
     }
 }

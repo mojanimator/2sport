@@ -486,7 +486,7 @@ class DatabaseSeeder extends Seeder
                 'active' => true,
                 'tags' => $faker->randomElement(['دمبل', 'توپ', 'فوتبال', 'ورزشی', 'حراج', 'والیبال', 'مکمل', 'مکمل', 'توپ', 'لباس', 'لباس']),
                 'description' => $faker->realText(500),
-
+                'created_at' => Carbon::now()
 
             ]);
             for ($j = 0; $j < $faker->numberBetween(1, 3); $j++) {

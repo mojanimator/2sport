@@ -17,6 +17,7 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->string('order_id', 15)->index();
             $table->string('token_id', 50)->nullable();
+            $table->smallInteger('province_id')->unsigned();
             $table->integer('amount')->unsigned()->nullable();
             $table->string('card_holder', 20)->nullable();
             $table->string('Shaparak_Ref_Id', 30)->nullable();
@@ -27,6 +28,7 @@ class CreatePaymentsTable extends Migration
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('no action');
             $table->foreign('coupon_id')->references('id')->on('coupons')->onDelete('no action');
+            $table->foreign('province_id')->references('id')->on('province')->onDelete('no action');
 
         });
     }

@@ -10,7 +10,7 @@
     <div class="container-fluid">
         <div class="row  bg-light  " id="body-row">
             <!-- Sidebar -->
-            <div id="sidebar-container" class="      p-0    ">
+            <div id="sidebar-container" class="      p-0   h-100 ">
                 <div class="list-group bg-primary    text-start h-100 rounded-0  ">
                     <div class="list-group-item mb-1  bg-cyan   py-5 px-0 px-sm-1    text-primary font-weight-bold">
                         <a class="text-center my-1 d-block overflow-hidden"
@@ -441,6 +441,10 @@
                         <x-panel.system-setting>
 
                         </x-panel.system-setting>
+                    @elseif(str_contains( url()->current(),'/system-logs'))
+                        <x-panel.system-logs>
+
+                        </x-panel.system-logs>
                     @elseif(str_contains( url()->current(),'/users'))
                         <x-panel.users>
 

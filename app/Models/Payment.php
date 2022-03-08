@@ -12,7 +12,7 @@ class Payment extends Model
     public $timestamps = true;
     protected $table = 'payments';
     protected $fillable = [
-        'id', 'user_id', 'order_id', 'coupon_id', 'token_id', 'amount', 'card_holder', 'Shaparak_Ref_Id', 'pay_for', 'pay_for_id', 'created_at', 'updated_at'
+        'id', 'user_id', 'order_id', 'province_id', 'coupon_id', 'token_id', 'amount', 'card_holder', 'Shaparak_Ref_Id', 'pay_for', 'pay_for_id', 'created_at', 'updated_at'
     ];
     protected $casts = [
 

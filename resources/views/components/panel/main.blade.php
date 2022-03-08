@@ -74,14 +74,14 @@
         </div>
     @endif
     <div class="col-md-6   ">
-        <a href="{{url('panel/system-setting')}}" class="my-1  d-block ">
+        <a href="{{url('panel/system-logs')}}" class="my-1  d-block ">
             <div class="card move-on-hover">
                 <div class="card-body  p-3  blur">
                     <div class="row">
                         <div class="col-8">
                             <div class="numbers">
                                 <h5 class="  mb-0 text-primary font-weight-bold">
-                                    تنظیمات کاربری
+                                    گزارشات سیستم
                                 </h5>
                                 <h5 class=" text-sm text-black-50 font-weight-bolder mb-0">
 
@@ -91,7 +91,7 @@
                         </div>
                         <div class="col-4 text-end">
                             <div class="  ">
-                                <i class="fa fa-3x fa-cog text-primary m-1"
+                                <i class="fa fa-3x fa-list text-primary m-1"
                                    aria-hidden="true"></i>
                             </div>
                         </div>

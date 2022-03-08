@@ -66,7 +66,16 @@ class Helper
 
 
     ];
+    static $labelsMap = [
+        'players' => 'بازیکن',
+        'coaches' => 'مربی',
+        'clubs' => 'باشگاه',
+        'shops' => 'فروشگاه',
+        'products' => 'محصول',
+        'blogs' => 'خبر',
 
+
+    ];
 
 }
 

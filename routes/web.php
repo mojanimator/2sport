@@ -194,6 +194,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('table/remove', [App\Http\Controllers\TableController::class, 'remove'])->name('table.remove');
     Route::post('system-setting/remove', [App\Http\Controllers\SettingController::class, 'remove'])->name('system-setting.remove');
     Route::post('user/remove', [App\Http\Controllers\UserController::class, 'remove'])->name('user.remove');
+    Route::get('system-logs/search', [App\Http\Controllers\SettingController::class, 'log'])->name('system-logs.search');
 
     Route::post('ref/tasvie', [App\Http\Controllers\RefController::class, 'tasvie'])->name('ref.tasvie');
     Route::get('ref/search', [App\Http\Controllers\RefController::class, 'search'])->name('ref.search');

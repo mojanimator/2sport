@@ -2,10 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
+use App\Models\Club;
+use App\Models\Coach;
+use App\Models\Payment;
+use App\Models\Player;
+use App\Models\Product;
 use App\Models\Setting;
+use App\Models\Shop;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Morilog\Jalali\Jalalian;
 
 class SettingController extends Controller
 {
@@ -69,5 +79,131 @@ class SettingController extends Controller
         $this->authorize('ownItem', [User::class, new Setting(), true]);
         Setting::where('id', $request->id)->delete();
         return Setting::all();
+    }
+
+    protected function log(Request $request)
+    {
+        $user = auth()->user();
+        if ($user->role != 'go' && $user->role != 'ad')
+            return response('مجاز نیستید!', 403);
+
+
+        $type = $request->type ?: 'تعداد';
+        $types = $request->types ?: [];
+        $province = $request->province;
+        $timestamp = $request->timestamp;//y,m,d
+
+        $from = $request->dateFrom;
+        $to = $request->dateTo;
+//        $from = '1400/10/10';
+//        $to = '1401/01/03';
+        $from = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $from);
+        $to = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $to);
+
+        $X_labels = [];
+        $res = [];
+        //shift (from and to) for month or year timestamp
+        if ($timestamp == 'd' || !$timestamp) {
+
+        } elseif ($timestamp == 'm') { //from day 1 : to day 30 or 31
+            $from = $from->subDays($from->getDay() - 1);
+            $to = $to->addDays($to->getMonthDays() - $to->getDay());
+        } elseif ($timestamp == 'y') { //from day 1 : to day 30 or 31
+            $from = $from->subDays($from->getDay() - 1)->subMonths($from->getMonth() - 1);
+            $to = $to->addDays($to->getMonthDays() - $to->getDay())->addMonths(12 - $to->getMonth());
+        }
+        $tmp = $from;
+
+        while ($tmp->lessThanOrEqualsTo($to)) {
+
+            if ($timestamp == 'd' || !$timestamp) {
+                $X_labels[] = $tmp->format('Y/m/d');
+                $tmp = $tmp->addDays(1);
+            } elseif ($timestamp == 'm') {
+                $X_labels[] = $tmp->format('Y/m');
+                $tmp = $tmp->addMonths(1);
+            } elseif ($timestamp == 'y') {
+                $X_labels[] = $tmp->format('Y');
+                $tmp = $tmp->addYears(1);
+            }
+        }
+
+        DB::statement("SET SQL_MODE=''");//this is the trick use it just before your query
+
+        //get data with date group
+        if ($type == 'تعداد')
+            foreach ([
+                         ['type' => \Helper::$labelsMap['players'], 'query' => Player::query(), 'col' => [DB::raw('CONCAT(name,\' \', family) AS name'), 'id', 'province_id', 'created_at']],
+                         ['type' => \Helper::$labelsMap['coaches'], 'query' => Coach::query(), 'col' => [DB::raw('CONCAT(name,\' \', family) AS name'), 'id', 'province_id', 'created_at']],
+                         ['type' => \Helper::$labelsMap['clubs'], 'query' => Club::query(), 'col' => ['name', 'id', 'province_id', 'created_at']],
+                         ['type' => \Helper::$labelsMap['shops'], 'query' => Shop::query(), 'col' => ['name', 'id', 'province_id', 'created_at']],
+                         ['type' => \Helper::$labelsMap['products'], 'query' => Product::query(), 'col' => ['name', 'id', DB::raw('shop_id'), 'created_at']],
+                         ['type' => \Helper::$labelsMap['blogs'], 'query' => Blog::query(), 'col' => [DB::raw('title AS name'), 'id', DB::raw('category_id'), 'created_at']],
+                     ] as $item) {
+
+
+                if (in_array($item['type'], $types)) {
+
+                    $query = $item['query'];
+                    $query = $query->select($item['col'])
+                        ->where('created_at', '>=', $from->toCarbon())
+                        ->where('created_at', '<=', $to->toCarbon()->addDay());
+                    if ($province && $item['type'] != 'bl' && $item['type'] != 'pr')
+                        $query = $query->where('province_id', $province);
+
+                    $res['data'][$item['type']] = $query->orderBy('created_at', 'DESC')
+                        ->get()->groupBy(function ($data) use ($timestamp) {
+                            if ($timestamp == 'm')
+                                return Jalalian::fromCarbon($data->created_at)->format('Y/m');
+                            elseif ($timestamp == 'y')
+                                return Jalalian::fromCarbon($data->created_at)->format('Y');
+                            else
+                                return Jalalian::fromCarbon($data->created_at)->format('Y/m/d');
+                        });
+                }
+            }
+        elseif ($type == 'مالی')
+            foreach ([
+                         ['table' => 'players', 'pay_for' => 'player', 'type' => \Helper::$labelsMap['players'],],
+                         ['table' => 'coaches', 'pay_for' => 'coach', 'type' => \Helper::$labelsMap['coaches'],],
+                         ['table' => 'clubs', 'pay_for' => 'club', 'type' => \Helper::$labelsMap['clubs'],],
+                         ['table' => 'shops', 'pay_for' => 'shop', 'type' => \Helper::$labelsMap['shops'],],
+                     ] as $item) {
+
+
+                if (in_array($item['type'], $types)) {
+
+                    $query = Payment::query();
+                    $query = $query->select('order_id', 'amount', 'Shaparak_Ref_Id', 'pay_for', 'pay_for_id', 'coupon_id', 'created_at')
+                        ->where('pay_for', 'like', $item['pay_for'] . '%')
+                        ->whereNotNull('amount')
+                        ->where('created_at', '>=', $from->toCarbon())
+                        ->where('created_at', '<=', $to->toCarbon()->addDay());
+
+                    if ($province) {
+                        $query = $query->where('province_id', $province);
+                    }
+                    $res['data'][$item['type']] = $query->orderBy('created_at', 'DESC')->get();
+
+
+//                    if ($province) {
+//                        $filter = DB::table($item['table'])->where('province_id', $province)->whereIntegerInRaw('id', $res['data'][$item['type']]->pluck('pay_for_id'))->pluck('id')->toArray();
+//                        $res['data'][$item['type']] = $res['data'][$item['type']]->filter(function ($el) use ($filter) {
+//                            return in_array($el->pay_for_id, $filter);
+//                        });
+//                    }
+                    $res['data'][$item['type']] = $res['data'][$item['type']]->groupBy(function ($data) use ($timestamp) {
+                        if ($timestamp == 'm')
+                            return Jalalian::fromCarbon($data->created_at)->format('Y/m');
+                        elseif ($timestamp == 'y')
+                            return Jalalian::fromCarbon($data->created_at)->format('Y');
+                        else
+                            return Jalalian::fromCarbon($data->created_at)->format('Y/m/d');
+                    });
+                }
+            }
+        $res['dates'] = $X_labels;
+        return response($res, 200);
+
     }
 }
