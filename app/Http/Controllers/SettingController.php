@@ -133,12 +133,12 @@ class SettingController extends Controller
         //get data with date group
         if ($type == 'تعداد')
             foreach ([
-                         ['type' => \Helper::$labelsMap['players'], 'query' => Player::query(), 'col' => [DB::raw('CONCAT(name,\' \', family) AS name'), 'id', 'province_id', 'created_at']],
-                         ['type' => \Helper::$labelsMap['coaches'], 'query' => Coach::query(), 'col' => [DB::raw('CONCAT(name,\' \', family) AS name'), 'id', 'province_id', 'created_at']],
-                         ['type' => \Helper::$labelsMap['clubs'], 'query' => Club::query(), 'col' => ['name', 'id', 'province_id', 'created_at']],
-                         ['type' => \Helper::$labelsMap['shops'], 'query' => Shop::query(), 'col' => ['name', 'id', 'province_id', 'created_at']],
-                         ['type' => \Helper::$labelsMap['products'], 'query' => Product::query(), 'col' => ['name', 'id', DB::raw('shop_id'), 'created_at']],
-                         ['type' => \Helper::$labelsMap['blogs'], 'query' => Blog::query(), 'col' => [DB::raw('title AS name'), 'id', DB::raw('category_id'), 'created_at']],
+                         ['type' => \Helper::$labelsMap['players'], 'query' => Player::query(), 'col' => [DB::raw('CONCAT(name,\' \', family) AS name'), 'id', 'province_id', 'created_at', DB::raw('"بازیکن" AS type')]],
+                         ['type' => \Helper::$labelsMap['coaches'], 'query' => Coach::query(), 'col' => [DB::raw('CONCAT(name,\' \', family) AS name'), 'id', 'province_id', 'created_at', DB::raw('"مربی" AS type')]],
+                         ['type' => \Helper::$labelsMap['clubs'], 'query' => Club::query(), 'col' => ['name', 'id', 'province_id', 'created_at', DB::raw('"باشگاه" AS type')]],
+                         ['type' => \Helper::$labelsMap['shops'], 'query' => Shop::query(), 'col' => ['name', 'id', 'province_id', 'created_at', DB::raw('"فروشگاه" AS type')]],
+                         ['type' => \Helper::$labelsMap['products'], 'query' => Product::query(), 'col' => ['name', 'id', DB::raw('shop_id'), 'created_at', DB::raw('"محصول" AS type')]],
+                         ['type' => \Helper::$labelsMap['blogs'], 'query' => Blog::query(), 'col' => [DB::raw('title AS name'), 'id', DB::raw('category_id'), 'created_at', DB::raw('"خبر" AS type')]],
                      ] as $item) {
 
 
@@ -174,7 +174,7 @@ class SettingController extends Controller
                 if (in_array($item['type'], $types)) {
 
                     $query = Payment::query();
-                    $query = $query->select('order_id', 'amount', 'Shaparak_Ref_Id', 'pay_for', 'pay_for_id', 'coupon_id', 'created_at')
+                    $query = $query->select('order_id','province_id', 'amount', 'Shaparak_Ref_Id', 'pay_for', 'pay_for_id', 'coupon_id', 'created_at')
                         ->where('pay_for', 'like', $item['pay_for'] . '%')
                         ->whereNotNull('amount')
                         ->where('created_at', '>=', $from->toCarbon())

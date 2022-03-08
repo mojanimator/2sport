@@ -115,65 +115,56 @@
                     <table class="table  table-sm table-primary   table-striped table-light   "
                     >
                         <thead>
-                        <tr>
-                            <th class="small col-1 text-center" scope="col" style="white-space: nowrap;">#</th>
+                        <tr v-if="params.type=='تعداد'">
+                            <th class="small col-1 text-center" scope="col" style="white-space: nowrap;">شناسه</th>
                             <th class="col-5  text-center">نام</th>
-                            <th class="col-3  text-center">کلید</th>
-                            <th class=" col-2   text-center">مقدار</th>
-                            <th class=" col-3   text-center">عملیات</th>
+                            <th class="col-2  text-center">نوع</th>
+
+                            <th class=" col-3   text-center">استان</th>
+                            <th class=" col-3   text-center">تاریخ</th>
+                        </tr>
+                        <tr v-else="">
+                            <th class="small col-1 text-center" scope="col" style="white-space: nowrap;">#</th>
+                            <th class="  text-center">سفارش</th>
+                            <th class=" col-3   text-center">استان</th>
+                            <th class="  text-center">مبلغ(ت)</th>
+                            <th class=" text-center">شاپرک</th>
+                            <th class=" text-center">نوع</th>
+                            <th class="  text-center">شناسه نوع</th>
+                            <th class=" text-center">کوپن تخفیف</th>
+                            <th class="    text-center">زمان ساخت</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="d,idx in []" class=" " :key="d.id">
-                            <th scope="row " class=" p-0 p-sm-1 text-center">{{d.id}}
+                        <tr v-if="params.type=='تعداد'" v-for="d,idx in table" class=" ">
+                            <th scope="row" class=" p-0 p-sm-1 text-center">{{d.id}}
                             </th>
-                            <td class=" small p-0 p-sm-1 ">{{d.name}}</td>
-                            <td class="small p-0 p-sm-1 text-center align-middle" style="white-space: nowrap;">
-                                {{d.key}}
-                            </td>
-                            <td class=" small p-0 p-sm-1"><input type="text" class="form-control px-1  "
-                                                                 v-model="d.value">
-                            </td>
-                            <td class="small p-0 p-sm-1 text-center align-middle" style="white-space: nowrap;">
-                                <div class="btn-group">
-                                    <button title="ویرایش ردیف"
-                                            class="btn btn-sm bg-secondary    p-1 hoverable-primary  "
-                                            @click="  showDialog('confirm','از ویرایش اطمینان دارید؟', sendData ,param)">
-                                        <i class="fa   fa-edit  text-white   mx-2 "
-                                           aria-hidden="true"></i>
-                                    </button>
-                                    <button title="حذف ردیف" class="btn btn-sm bg-danger  p-1 hoverable-primary  "
-                                            @click="  showDialog('confirm','از حذف اطمینان دارید؟', sendData ,{id:d.id})">
-                                        <i class="fa   fa-trash  text-white   mx-2 "
-                                           aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class=" ">
-                            <th scope="row " class=" p-0 p-sm-1 text-center"> #
-                            </th>
-                            <td class=" small p-0 p-sm-1 "><input type="text" class="form-control px-1  "
-                                                                  placeholder="نام فارسی"></td>
-                            <td class="small p-0 p-sm-1 text-center align-middle" style="white-space: nowrap;">
-                                <input type="text" class="form-control px-1  "
-                                       placeholder="کلید">
-                            </td>
-                            <td class=" small p-0 p-sm-1"><input type="text" class="form-control px-1  "
-                                                                 placeholder="مقدار">
-                            </td>
-                            <td class="small p-0 p-sm-1 text-center align-middle" style="white-space: nowrap;">
-                                <div class="btn-group">
-                                    <button title="ساخت ردیف"
-                                            class="btn btn-sm bg-success    p-1 hoverable-primary  "
-                                            @click=" link=createLink; showDialog('confirm','از افزودن اطمینان دارید؟', sendData ,param)">
-                                        <i class="fa   fa-plus-circle  text-white   mx-2 "
-                                           aria-hidden="true"></i>
-                                    </button>
+                            <td class=" small p-0 p-sm-1 text-centert">{{d.name}}</td>
+                            <td class=" small p-0 p-sm-1 text-center">{{d.type}}</td>
+                            <td class=" small p-0 p-sm-1 text-center">{{getProvince(d.province_id)}}</td>
 
-                                </div>
+                            <td class=" small p-0 p-sm-1 text-center">
+                                {{new Date(d.created_at).toLocaleDateString('fa-IR')}}
                             </td>
+
                         </tr>
+                        <tr v-else="" v-for="d,idx in table" class=" ">
+                            <th scope="row" class=" p-0 p-sm-1 text-center">{{d.id}}
+                            </th>
+                            <td class=" small p-0 p-sm-1 text-centert">{{d.order_id}}</td>
+                            <td class=" small p-0 p-sm-1 text-center">{{getProvince(d.province_id)}}</td>
+                            <td class=" small p-0 p-sm-1 text-center">{{d.amount}}</td>
+                            <td class=" small p-0 p-sm-1 text-center">{{d.Shaparak_Ref_Id}}</td>
+                            <td class=" small p-0 p-sm-1 text-center">{{d.pay_for}}</td>
+                            <td class=" small p-0 p-sm-1 text-center">{{d.pay_for_id}}</td>
+                            <td class=" small p-0 p-sm-1 text-center">{{d.coupon_id ? d.coupon_id : '_'}}</td>
+
+                            <td class=" small p-0 p-sm-1 text-center">
+                                {{new Date(d.created_at).toLocaleDateString('fa-IR')}}
+                            </td>
+
+                        </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -207,6 +198,7 @@
                 provinces: JSON.parse(this.provinceData),
                 counties: JSON.parse(this.countyData),
                 chart: null,
+                table: []
 
             }
         },
@@ -335,8 +327,18 @@
                             if (response.status === 200) {
                                 this.data = response.data;
                                 this.updateChart();
+                                this.table = [];
+
+                                this.table = [];
+                                for (let i in this.data.data) {
+                                    for (let j in this.data.data[i])
+                                        this.table.push(this.data.data[i][j]);
+
+                                }
+                                this.table = this.table.flat();
+
                             }
-//                            window.location.reload();
+                            //                            window.location.reload();
 
 
                         }
@@ -367,10 +369,19 @@
 //                var yyyy = today.getFullYear();
 //                return yyyy + '/' + mm + '/' + dd;
                 return f2e(today.toLocaleDateString('fa-IR'));
-            },
+            }
+            ,
             log(str) {
                 console.log(str);
-            }
+            },
+            getProvince(pId) {
+                let p = this.provinces.find((e) => e.id == pId);
+//                let c = this.counties.find((e) => e.id == cId);
+                if (p)
+                    return p.name;
+                else
+                    return 'نامشخص'
+            },
         },
     }
 </script>
