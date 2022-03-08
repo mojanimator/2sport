@@ -18,6 +18,7 @@ class CreateCouponsTable extends Migration
             $table->string('code', 10);
             $table->tinyInteger('discount_percent')->unsigned()->default(0);
             $table->timestamp('created_at')->useCurrent();
+            $table->integer('used_times')->unsigned()->default(0);
             $table->timestamp('used_at')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->integer('limit_price')->unsigned()->nullable();

@@ -204,6 +204,10 @@ class  NextPay
             $data->expires_at = $time;
             $data->active = false;
             $data->save();
+            if ($payment->coupon_id) {
+                \App\Models\Coupon::where('id', $payment->coupon_id)->increment('used_times');
+//                \App\Models\Coupon::where('id', $payment->coupon_id)->where('user_id', $payment->user_id)->update('used_at', $now);
+            }
             \App\Models\Ref::where('invited_id', $payment->user_id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
             Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'payment', $payment);
 //            if (!auth()->user())

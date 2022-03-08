@@ -239,8 +239,8 @@
                         </a>
                     @endcan
                     <hr class="m-0">
-                    <a href="{{url('panel/setting')}}"
-                       class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/setting') ?'bg-cyan text-primary':''}}"
+                    <a href="{{url('panel')}}"
+                       class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'panel') && !str_contains( url()->current(),'panel/')   ?'bg-cyan text-primary':''}}"
                        data-bs-toggle="tooltip">
                         <div class="">
                           <span class=" item-icon align-middle ms-sm-2" data-bs-placement="left"
@@ -445,6 +445,10 @@
                         <x-panel.system-logs>
 
                         </x-panel.system-logs>
+                    @elseif(str_contains( url()->current(),'/coupons'))
+                        <x-panel.coupons>
+
+                        </x-panel.coupons>
                     @elseif(str_contains( url()->current(),'/users'))
                         <x-panel.users>
 

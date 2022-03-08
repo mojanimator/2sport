@@ -105,7 +105,33 @@
                                     </option>
                                 </select>
                             </div>
+                            <div class="btn-group  bg-transparent my-1 col-md-6">
 
+                                <input @change="params.timestamp='d';getData()" v-model="params.timestamp" value="d"
+                                       type="radio"
+                                       class="btn-check"
+                                       name="timestamp-d"
+                                       id="timestamp-d"
+                                       autocomplete="off"/>
+                                <label class="btn btn-outline-primary px-sm-3" for="timestamp-d">روزانه</label>
+                                <input @change="params.timestamp='m';getData()" v-model="params.timestamp" value="m"
+                                       type="radio"
+                                       class="btn-check"
+                                       name="timestamp-m"
+                                       id="timestamp-m"
+                                       autocomplete="off"/>
+                                <label class="btn btn-outline-primary px-sm-3" for="timestamp-m">ماهانه</label>
+
+                                <input @change="params.timestamp='y';getData()" v-model="params.timestamp" value="y"
+                                       type="radio"
+                                       class="btn-check"
+                                       name="timestamp-y"
+                                       id="timestamp-y"
+                                       autocomplete="off"/>
+                                <label class="btn btn-outline-primary px-sm-3" for="timestamp-y">سالانه</label>
+
+
+                            </div>
                         </div>
                     </div>
                     <canvas class="w-100 px-0 p-sm-4" id="myChart" height="400"></canvas>
@@ -117,47 +143,66 @@
                         <thead>
                         <tr v-if="params.type=='تعداد'">
                             <th class="small col-1 text-center" scope="col" style="white-space: nowrap;">شناسه</th>
-                            <th class="col-5  text-center">نام</th>
-                            <th class="col-2  text-center">نوع</th>
+                            <th class="col-5  text-center hoverable-dark" @click="sort('name',)">نام</th>
+                            <th class="col-2  text-center hoverable-dark" @click="sort('type',)">نوع</th>
 
-                            <th class=" col-3   text-center">استان</th>
-                            <th class=" col-3   text-center">تاریخ</th>
+                            <th class=" col-3   text-center hoverable-dark" @click="sort('province_id',)">استان</th>
+                            <th class=" col-3   text-center hoverable-dark" @click="sort('created_at',)">تاریخ</th>
                         </tr>
                         <tr v-else="">
                             <th class="small col-1 text-center" scope="col" style="white-space: nowrap;">#</th>
-                            <th class="  text-center">سفارش</th>
-                            <th class=" col-3   text-center">استان</th>
-                            <th class="  text-center">مبلغ(ت)</th>
-                            <th class=" text-center">شاپرک</th>
-                            <th class=" text-center">نوع</th>
-                            <th class="  text-center">شناسه نوع</th>
-                            <th class=" text-center">کوپن تخفیف</th>
-                            <th class="    text-center">زمان ساخت</th>
+                            <th class="  text-center hoverable-dark" @click="sort('order_id',)">سفارش</th>
+                            <th class=" col-3   text-center hoverable-dark" @click="sort('province_id',)">استان</th>
+                            <th class="  text-center hoverable-dark" @click="sort('amount',)">مبلغ(ت)</th>
+                            <th class=" text-center hoverable-dark" @click="sort('Shaparak_Ref_Id',)">شاپرک</th>
+                            <th class=" text-center hoverable-dark" @click="sort('pay_for',)">نوع</th>
+                            <th class="  text-center hoverable-dark" @click="sort('pay_for_id',)">شناسه نوع</th>
+                            <th class=" text-center hoverable-dark" @click="sort('coupon_id',)">کوپن تخفیف</th>
+                            <th class="    text-center hoverable-dark" @click="sort('created_at',)">تاریخ</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-if="params.type=='تعداد'" v-for="d,idx in table" class=" ">
+                        <tr v-if="params.type=='تعداد'" v-for="d,idx in table" class=" " :key="idx">
                             <th scope="row" class=" p-0 p-sm-1 text-center">{{d.id}}
                             </th>
-                            <td class=" small p-0 p-sm-1 text-centert">{{d.name}}</td>
-                            <td class=" small p-0 p-sm-1 text-center">{{d.type}}</td>
-                            <td class=" small p-0 p-sm-1 text-center">{{getProvince(d.province_id)}}</td>
+                            <td class=" small p-0 p-sm-1 text-centert">
+                                <a :href="getLink(d.type,d.id)">
+                                    {{d.name}}
+                                </a>
+                            </td>
+                            <td class=" small p-0 p-sm-1 text-center">{{d.type}}
+                            </td>
+                            <td class=" small p-0 p-sm-1 text-center">
+                                {{getProvince(d.province_id)}}
+                            </td>
 
                             <td class=" small p-0 p-sm-1 text-center">
                                 {{new Date(d.created_at).toLocaleDateString('fa-IR')}}
                             </td>
 
                         </tr>
-                        <tr v-else="" v-for="d,idx in table" class=" ">
+                        <tr v-else="" v-for="d,idj in table" class=" " :key="idj">
                             <th scope="row" class=" p-0 p-sm-1 text-center">{{d.id}}
                             </th>
-                            <td class=" small p-0 p-sm-1 text-centert">{{d.order_id}}</td>
-                            <td class=" small p-0 p-sm-1 text-center">{{getProvince(d.province_id)}}</td>
+                            <td class=" small p-0 p-sm-1 text-centert">
+                                {{d.order_id}}
+                            </td>
+                            <td class=" small p-0 p-sm-1 text-center">
+                                {{getProvince(d.province_id)}}
+                            </td>
                             <td class=" small p-0 p-sm-1 text-center">{{d.amount}}</td>
-                            <td class=" small p-0 p-sm-1 text-center">{{d.Shaparak_Ref_Id}}</td>
-                            <td class=" small p-0 p-sm-1 text-center">{{d.pay_for}}</td>
-                            <td class=" small p-0 p-sm-1 text-center">{{d.pay_for_id}}</td>
-                            <td class=" small p-0 p-sm-1 text-center">{{d.coupon_id ? d.coupon_id : '_'}}</td>
+                            <td class=" small p-0 p-sm-1 text-center">
+                                {{d.Shaparak_Ref_Id}}
+                            </td>
+                            <td class=" small p-0 p-sm-1 text-center">
+                                {{d.pay_for}}
+                            </td>
+                            <td class=" small p-0 p-sm-1 text-center">
+                                {{d.pay_for_id}}
+                            </td>
+                            <td class=" small p-0 p-sm-1 text-center">
+                                {{d.coupon_id ? d.coupon_id : '_'}}
+                            </td>
 
                             <td class=" small p-0 p-sm-1 text-center">
                                 {{new Date(d.created_at).toLocaleDateString('fa-IR')}}
@@ -192,13 +237,19 @@
         data() {
             return {
                 data: [],
-                params: {province: "", type: 'تعداد', types: ['بازیکن', 'مربی', 'باشگاه', 'فروشگاه', 'محصول', 'خبر',]},
+                params: {
+                    timestamp: 'd',
+                    province: "",
+                    type: 'تعداد',
+                    types: ['بازیکن', 'مربی', 'باشگاه', 'فروشگاه', 'محصول', 'خبر',]
+                },
                 link: null,
                 loading: false,
                 provinces: JSON.parse(this.provinceData),
                 counties: JSON.parse(this.countyData),
                 chart: null,
-                table: []
+                table: [],
+                toggleSort: true
 
             }
         },
@@ -229,6 +280,32 @@
                     this.params.types.push(type);
                 }
                 this.getData();
+            },
+            sort(by) {
+                this.toggleSort = !this.toggleSort;
+                this.table.sort(function (a, b) {
+                    return ('' + a[by]).localeCompare('' + b[by]);
+//                    return a[by] - b[by];
+                });
+                if (this.toggleSort)
+                    this.table.reverse();
+            },
+            getLink(type, id) {
+                let t = null;
+                if (type === 'بازیکن')
+                    t = 'player';
+                else if (type === 'مربی')
+                    t = 'coach';
+                else if (type === 'باشگاه')
+                    t = 'club';
+                else if (type === 'فروشگاه')
+                    t = 'shop';
+                else if (type === 'محصول')
+                    t = 'product';
+                else if (type === 'خبر')
+                    t = 'blog';
+
+                return '/panel/' + t + '/edit/' + id;
             },
             initChart() {
                 const ctx = document.getElementById('myChart').getContext('2d');

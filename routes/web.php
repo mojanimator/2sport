@@ -170,6 +170,7 @@ Route::post('club/create', [App\Http\Controllers\ClubController::class, 'create'
 Route::post('shop/create', [App\Http\Controllers\ShopController::class, 'create'])->name('shop.create');
 Route::middleware(['auth'])->group(function () {
 
+    Route::post('coupon/create', [App\Http\Controllers\CouponController::class, 'create'])->name('coupon.create');
     Route::post('product/create', [App\Http\Controllers\ProductController::class, 'create'])->name('product.create');
     Route::post('blog/create', [App\Http\Controllers\BlogController::class, 'create'])->name('blog.create');
     Route::post('table/create', [App\Http\Controllers\TableController::class, 'create'])->name('table.create');
@@ -185,6 +186,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('table/edit', [App\Http\Controllers\TableController::class, 'edit'])->name('table.edit');
     Route::post('system-setting/edit', [App\Http\Controllers\SettingController::class, 'edit'])->name('system-setting.edit');
 
+    Route::post('coupon/remove', [App\Http\Controllers\CouponController::class, 'remove'])->name('coupon.remove');
     Route::post('club/remove', [App\Http\Controllers\ClubController::class, 'remove'])->name('club.remove');
     Route::post('coach/remove', [App\Http\Controllers\CoachController::class, 'remove'])->name('coach.remove');
     Route::post('player/remove', [App\Http\Controllers\PlayerController::class, 'remove'])->name('player.remove');

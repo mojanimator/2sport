@@ -106,11 +106,19 @@ class SettingController extends Controller
         if ($timestamp == 'd' || !$timestamp) {
 
         } elseif ($timestamp == 'm') { //from day 1 : to day 30 or 31
-            $from = $from->subDays($from->getDay() - 1);
-            $to = $to->addDays($to->getMonthDays() - $to->getDay());
+            if ($c = $from->getDay() - 1 > 0)
+                $from = $from->subDays($c);
+            if ($c = $to->getMonthDays() - $to->getDay() > 0)
+                $to = $to->addDays($c);
         } elseif ($timestamp == 'y') { //from day 1 : to day 30 or 31
-            $from = $from->subDays($from->getDay() - 1)->subMonths($from->getMonth() - 1);
-            $to = $to->addDays($to->getMonthDays() - $to->getDay())->addMonths(12 - $to->getMonth());
+            if ($c = $from->getDay() - 1 > 0)
+                $from = $from->subDays($c);
+            if ($c = $from->getMonth() - 1 > 0)
+                $from = $from->subMonths($c);
+            if ($c = $to->getMonthDays() - $to->getDay() > 0)
+                $to = $to->addDays($c);
+            if ($c = 12 - $to->getMonth() > 0)
+                $to = $to->addMonths($c);
         }
         $tmp = $from;
 
@@ -174,7 +182,7 @@ class SettingController extends Controller
                 if (in_array($item['type'], $types)) {
 
                     $query = Payment::query();
-                    $query = $query->select('order_id','province_id', 'amount', 'Shaparak_Ref_Id', 'pay_for', 'pay_for_id', 'coupon_id', 'created_at')
+                    $query = $query->select('order_id', 'province_id', 'amount', 'Shaparak_Ref_Id', 'pay_for', 'pay_for_id', 'coupon_id', 'created_at')
                         ->where('pay_for', 'like', $item['pay_for'] . '%')
                         ->whereNotNull('amount')
                         ->where('created_at', '>=', $from->toCarbon())
