@@ -106,7 +106,7 @@ class BlogController extends Controller
                 Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'blog_created', $blog);
 
                 if ($request->published_at == 0 || $request->published_at == null) {
-                    $photo = url("/$photo");
+                    $photo = url("/") . "/$photo";
                     $link = url('/') . "blog/$blog->id/" . str_replace(' ', '-', str_replace('/', '-', $blog->title));
                     $caption = " 🚩 " . $blog->title . PHP_EOL . $link;
                     Telegram::sendPhoto(Helper::$TELEGRAM_CHANNEL_ID, $photo, $caption);
