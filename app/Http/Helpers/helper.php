@@ -13,6 +13,7 @@ class Helper
 
     static $TELEGRAM_BOT_ID = '5049830226';
     static $TELEGRAM_GROUP_ID = -1001572506441;
+    static $TELEGRAM_CHANNEL_ID = '@doublesport';
     static $admin_phone = "09906241096";
     static $logs = [72534783, /*225594412*/];
     static $initScore = 0;

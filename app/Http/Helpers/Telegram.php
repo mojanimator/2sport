@@ -363,7 +363,11 @@ class Telegram
                     $msg .= " 📃 " . "توضیحات: " . $data->description . PHP_EOL;
 
                     break;
-
+                case 'error':
+                    $msg = ' 📛 ' . ' خطای سیستم ' . PHP_EOL . $data;
+                    break;
+                default :
+                    $msg = $data;
             }
             self::sendMessage($to, $msg, null);
 

@@ -81,7 +81,7 @@ class BlogController extends Controller
             ]);
 
             //create future image first
-            BlogDoc::createImage($request->img, $blog->id, Helper::$docsMap['blog']);
+            $photo = BlogDoc::createImage($request->img, $blog->id, Helper::$docsMap['blog']);
 
 
             //save base64 images to file
@@ -101,8 +101,17 @@ class BlogController extends Controller
             $blog->content = json_encode($blocks);
             $blog->save();
 
-            if ($blog->active)
+            if ($blog->active) {
                 Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'blog_created', $blog);
+
+                if ($request->published_at == 0 || $request->published_at == null) {
+                    $photo = url($photo);
+                    $link = url() . "blog/$blog->id/" . str_replace(' ', '-', str_replace('/', '-', $blog->title));
+                    $caption = " 🚩 " . $blog->title . PHP_EOL . $link;
+                    Telegram::sendPhoto(Helper::$TELEGRAM_CHANNEL_ID, $photo, $caption);
+
+                }
+            }
 
 
             return redirect(url('panel/blog'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
