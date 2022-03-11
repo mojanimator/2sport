@@ -107,7 +107,7 @@ class BlogController extends Controller
 
                 if ($request->published_at == 0 || $request->published_at == null) {
                     $photo = url($photo);
-                    $link = url() . "blog/$blog->id/" . str_replace(' ', '-', str_replace('/', '-', $blog->title));
+                    $link = url('/') . "blog/$blog->id/" . str_replace(' ', '-', str_replace('/', '-', $blog->title));
                     $caption = " 🚩 " . $blog->title . PHP_EOL . $link;
                     Telegram::sendPhoto(Helper::$TELEGRAM_CHANNEL_ID, $photo, $caption);
 
