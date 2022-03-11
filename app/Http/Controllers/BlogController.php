@@ -102,7 +102,7 @@ class BlogController extends Controller
             $blog->save();
 
             if ($blog->active) {
-                dd('hi');
+
                 Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'blog_created', $blog);
 
                 if ($request->published_at == 0 || $request->published_at == null) {

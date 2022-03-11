@@ -12,7 +12,7 @@ class Blog extends Model
     public $timestamps = true;
     protected $table = 'blogs';
     protected $fillable = [
-        'id', 'user_id', 'category_id', 'title', 'summary', 'content', 'tags', 'is_draft', 'published_at', 'created_at', 'updated_at'
+        'id', 'user_id', 'category_id', 'title', 'summary', 'content', 'tags', 'is_draft', 'active', 'published_at', 'created_at', 'updated_at'
     ];
     protected $casts = [
         'is_draft' => 'boolean'
