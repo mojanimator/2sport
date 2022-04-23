@@ -65,7 +65,9 @@
 strong[id^="err-"], .invalid-feedback {
   font-size: .7rem;
 }
-
+input{
+  caret-color:$primary;
+}
 .card-container {
 
   @include media-breakpoint-down-px(10000px) {

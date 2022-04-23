@@ -11,6 +11,7 @@ require_once 'NextPay.php';
 class Helper
 {
 
+    static $APP_VERSION = 1;
     static $TELEGRAM_BOT_ID = '5049830226';
     static $TELEGRAM_GROUP_ID = -1001572506441;
     static $TELEGRAM_CHANNEL_ID = '@doublesport';

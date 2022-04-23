@@ -33617,6 +33617,10 @@ strong[id^=err-], .invalid-feedback {
   font-size: 0.7rem;
 }
 
+input {
+  caret-color: #343265;
+}
+
 @media (max-width: 10000px) {
   .card-container {
     width: 940px !important;

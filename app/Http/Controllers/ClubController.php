@@ -511,12 +511,27 @@ class ClubController extends Controller
             $query = $query->where('province_id', $province_id);
         if (is_numeric($county_id))
             $query = $query->where('county_id', $county_id);
+     
 
+       
 //
         if ($name) {
             foreach (explode(' ', $name) as $word) {
-                $query = $query->where(function ($query) use ($word) {
+                $query = $query->where(function ($query) use ($word,$sport_id,$province_id, $county_id) {
                     $query->orWhere('name', 'LIKE', '%' . $word . '%');
+					
+				$sport_id= json_decode($sport_id);
+				$province_id= json_decode($province_id);
+				$county_id= json_decode($county_id);
+			if (is_array($sport_id))
+				foreach ($sport_id as $id) {
+						$query = $query->whereJsonContains('times', ['id' => (int)$id]);
+					}
+				 if (is_array($province_id))
+					$query = $query->whereIn('province_id', $province_id);
+				if (is_array($county_id))
+					$query = $query->whereIn('county_id', $county_id);
+				
                 });
             }
         }

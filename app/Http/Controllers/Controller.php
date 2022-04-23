@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sport;
+use App\Models\County;
+use App\Models\Province;
 use App\Models\Shop;
+use Helper;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -26,10 +30,22 @@ class Controller extends BaseController
         }
     }
 
+    protected function settings(Request $request)
+    {
+        return response()->json([
+            'provinces' => Province::select('id', 'name')->get(),
+            'counties' => County::select('id', 'name','province_id')->get(),
+            'sports' => Sport::select('id', 'name')->get(),
+            'app_version' => Helper::$APP_VERSION,
+			'app_link' => 'test',
+            'doc_types' => Helper::$docsMap,
+        ], 200);
+    }
+
     protected function latest(Request $request)
     {
-        $paginate = $request->paginate ?: 30;
-        $page = $request->page ?: 2;
+        $paginate = $request->paginate ?: 12;
+        $page = $request->page ?: 1;
         $cols = 'id, province_id, county_id,created_at, ';
         $p1 = \App\Models\Player::selectRaw($cols . 'CONCAT(name,\' \', family) as name, "pl" as type');
         $p2 = \App\Models\Coach::selectRaw($cols . 'CONCAT(name,\' \', family) as name, "co" as type');

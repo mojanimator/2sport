@@ -427,7 +427,8 @@ class CoachController extends Controller
             $query = $query->where('province_id', $province_id);
         if (is_numeric($county_id))
             $query = $query->where('county_id', $county_id);
-
+      
+        
         if ($age_l && is_numeric($age_l) && $age_l > 0)
             $query = $query->where('born_at', '<=', Carbon::now()->subYears($age_l));
         if ($age_h && is_numeric($age_h) && $age_h < 100)
@@ -435,9 +436,20 @@ class CoachController extends Controller
 
         if ($name) {
             foreach (explode(' ', $name) as $word) {
-                $query = $query->where(function ($query) use ($word) {
+                $query = $query->where(function ($query) use ($word,$sport_id,$province_id, $county_id) {
                     $query->orWhere('name', 'LIKE', '%' . $word . '%')
                         ->orWhere('family', 'LIKE', '%' . $word . '%');
+						
+			$sport_id= json_decode($sport_id);
+			$province_id= json_decode($province_id);
+			$county_id= json_decode($county_id);			
+			if (is_array( $sport_id))
+				$query = $query->orWhereIn('sport_id', $sport_id);
+			if (is_array($province_id))
+				$query = $query->orWhereIn('province_id', $province_id);
+			if (is_array($county_id))
+				$query = $query->orWhereIn('county_id', $county_id);
+               
                 });
             }
         }
