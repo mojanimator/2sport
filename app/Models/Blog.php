@@ -17,7 +17,8 @@ class Blog extends Model
     protected $casts = [
         'is_draft' => 'boolean',
 //        'published_at' => 'timestamp'
-
+        'user_id' => 'string',
+        'category_id' => 'string',
     ];
 
     public function user()

@@ -22,7 +22,12 @@ class Player extends Model
         'is_man' => 'boolean',
         'active' => 'boolean',
         'hidden' => 'boolean',
-
+        'user_id' => 'string',
+        'province_id' => 'string',
+        'county_id' => 'string',
+        'sport_id' => 'string',
+        'height' => 'string',
+        'weight' => 'string',
     ];
 
     public function user()

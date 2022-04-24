@@ -21,6 +21,10 @@ class Coach extends Model
         'is_man' => 'boolean',
         'active' => 'boolean',
         'hidden' => 'boolean',
+        'user_id' => 'string',
+        'province_id' => 'string',
+        'county_id' => 'string',
+        'sport_id' => 'string',
 
     ];
 

@@ -21,6 +21,7 @@ use Faker\Factory as Faker;
 |
 */
 Route::get('test', function () {
+//    Artisan::call('db:seed');
 //    Artisan::call('server:optimize');
 
 });

@@ -12,6 +12,10 @@ class Province extends Model
         'name',
     ];
     protected $table = 'province';
+    protected $casts = [
+
+        'id' => 'string',
+    ];
 
     public function counties()
     {

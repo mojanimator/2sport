@@ -15,5 +15,8 @@ class Sport extends Model
     protected $fillable = [
         'id', 'name',
     ];
+    protected $casts = [
 
+        'id' => 'string',
+    ];
 }

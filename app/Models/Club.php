@@ -21,7 +21,10 @@ class Club extends Model
         'expires_at' => 'timestamp',
         'active' => 'boolean',
         'hidden' => 'boolean',
-
+        'user_id' => 'string',
+        'province_id' => 'string',
+        'county_id' => 'string',
+        'sport_id' => 'string',
     ];
 
 //    public function getLocationAttribute($value)

@@ -10,7 +10,10 @@ class County extends Model
 
     protected $fillable = ['name', 'province_id'];
     protected $table = 'county';
+    protected $casts = [
 
+        'id' => 'string',
+    ];
     public function province()
     {
         return $this->belongsTo(Province::class);

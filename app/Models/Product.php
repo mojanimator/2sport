@@ -21,7 +21,10 @@ class Product extends Model
 
         'active' => 'boolean',
         'hidden' => 'boolean',
-
+        'price' => 'string',
+        'discount_price' => 'string',
+        'province_id' => 'string',
+        'county_id' => 'string',
     ];
 //    protected static function booted()
 //    {
