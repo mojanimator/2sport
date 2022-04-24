@@ -19,7 +19,14 @@ class Doc extends Model
     protected $fillable = [
         'id', 'type_id', 'docable_type', 'docable_id', 'created_at',
     ];
+    protected $casts = [
 
+        'id' => 'string',
+        'type_id' => 'string',
+        'docable_id' => 'string',
+//        'created_at' => 'timestamp',
+
+    ];
 
     /**
      * Get all of the owning docable models.
