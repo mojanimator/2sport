@@ -356,12 +356,13 @@ class ProductController extends Controller
     protected function search(Request $request)
     {
 
-
+		$id = $request->id;
         $page = $request->page;
         $paginate = $request->paginate;
 
         $name = $request->name;
         $shop_id = $request->shop;
+        $group_id = $request->sport;
         $price_l = $request->price_l;
         $price_h = $request->price_h;
 
@@ -388,13 +389,20 @@ class ProductController extends Controller
 
 
         $query = Product::query();
-
+		
+		if (is_numeric($id))
+            $query = $query->where('id', $id);
 
         if ($name) {
             foreach (explode(' ', $name) as $word) {
                 $query = $query->where(function ($query) use ($word) {
                     $query->orWhere('name', 'LIKE', '%' . $word . '%')
                         ->orWhere('tags', 'LIKE', '%' . $word . '%');
+						
+			$group_id= json_decode($group_id);
+		 			
+			if (is_array( $group_id))
+				$query = $query->orWhereIn('group_id', $group_id);
                 });
             }
         }
@@ -417,6 +425,10 @@ class ProductController extends Controller
         if ($shop_id && is_numeric($shop_id)) {
 
             $query = $query->where('shop_id', $shop_id);
+        }
+		  if ($group_id && is_numeric($group_id)) {
+
+            $query = $query->where('group_id', $group_id);
         }
 //        if ($user_id && is_numeric($user_id)) {
 //

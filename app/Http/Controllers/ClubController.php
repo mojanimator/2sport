@@ -472,7 +472,7 @@ class ClubController extends Controller
     protected function search(Request $request)
     {
 
-
+		$id = $request->id;
         $page = $request->page;
         $paginate = $request->paginate;
         $sport_id = $request->sport;
@@ -505,6 +505,9 @@ class ClubController extends Controller
 
         $query = Club::query();
 
+		if (is_numeric($id))
+            $query = $query->where('id', $id);
+
         if (is_numeric($sport_id))
             $query = $query->whereJsonContains('times', ['id' => (int)$sport_id]);
         if (is_numeric($province_id))
@@ -525,12 +528,12 @@ class ClubController extends Controller
 				$county_id= json_decode($county_id);
 			if (is_array($sport_id))
 				foreach ($sport_id as $id) {
-						$query = $query->whereJsonContains('times', ['id' => (int)$id]);
+						$query = $query->orWhereJsonContains('times', ['id' => (int)$id]);
 					}
 				 if (is_array($province_id))
-					$query = $query->whereIn('province_id', $province_id);
+					$query = $query->orWhereIn('province_id', $province_id);
 				if (is_array($county_id))
-					$query = $query->whereIn('county_id', $county_id);
+					$query = $query->orWhereIn('county_id', $county_id);
 				
                 });
             }

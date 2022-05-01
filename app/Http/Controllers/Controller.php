@@ -34,6 +34,7 @@ class Controller extends BaseController
     {
         return response()->json([
             'provinces' => Province::select('id', 'name')->get(),
+            'shops' => Shop::select('id', 'name')->get(),
             'counties' => County::select('id', 'name','province_id')->get(),
             'sports' => Sport::select('id', 'name')->get(),
             'app_version' => Helper::$APP_VERSION,

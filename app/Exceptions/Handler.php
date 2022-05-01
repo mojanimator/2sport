@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, 'error', $e->getLine() . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString());
+          //  \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, 'error', $e->getLine() . "\n" . $e->getMessage() . "\n" . $e->getTraceAsString());
         });
     }
 }

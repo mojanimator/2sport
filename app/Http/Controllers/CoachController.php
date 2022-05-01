@@ -387,7 +387,7 @@ class CoachController extends Controller
     protected function search(Request $request)
     {
 
-
+		$id = $request->id;
         $page = $request->page;
         $paginate = $request->paginate;
         $sport_id = $request->sport;
@@ -420,6 +420,9 @@ class CoachController extends Controller
 
 
         $query = Coach::query();
+
+		if (is_numeric($id))
+            $query = $query->where('id', $id);
 
         if (is_numeric($sport_id))
             $query = $query->where('sport_id', $sport_id);

@@ -16,6 +16,7 @@ class Shop extends Model
         'id', 'user_id', 'province_id', 'county_id', 'groups', 'name', 'location', 'address', 'phone', 'description', 'created_at', 'updated_at', 'expires_at', 'active', 'hidden',
     ];
     protected $casts = [
+		//'id' => 'string',
         'expires_at' => 'timestamp',
         'active' => 'boolean',
         'hidden' => 'boolean',

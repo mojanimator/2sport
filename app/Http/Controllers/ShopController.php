@@ -397,6 +397,7 @@ class ShopController extends Controller
     {
 
 
+        $id = $request->id;
         $page = $request->page;
         $paginate = $request->paginate;
         $province_id = $request->province;
@@ -429,6 +430,9 @@ class ShopController extends Controller
 
         $query = Shop::query();
 
+		if (is_numeric($id))
+            $query = $query->where('id', $id);
+
         if (is_numeric($province_id))
             $query = $query->where('province_id', $province_id);
         if (is_numeric($county_id))
@@ -440,19 +444,20 @@ class ShopController extends Controller
         if ($name) {
             foreach (explode(' ', $name) as $word) {
                 $query = $query->where(function ($query) use ($word,$sport_id,$province_id, $county_id) {
-                    $query->orWhere('name', 'LIKE', '%' . $word . '%');
+                    $query->orWhere('name', 'LIKE', '%' . $word . '%')
+					->orWhereIn('id', Product::where('name', 'LIKE', '%' . $word . '%')->pluck('shop_id'));
 					
 		$sport_id= json_decode($sport_id);
 		$province_id= json_decode($province_id);
 		$county_id= json_decode($county_id);
 		if (is_array($sport_id))
             foreach ($sport_id as $id) {
-                $query = $query->whereJsonContains('groups', ['id' => (int)$id]);
+                $query = $query->orWhereJsonContains('groups', ['id' => (int)$id]);
             }		
 		if (is_array($province_id))
-            $query = $query->whereIn('province_id', $province_id);
+            $query = $query->orWhereIn('province_id', $province_id);
         if (is_array($county_id))
-            $query = $query->whereIn('county_id', $county_id);
+            $query = $query->orWhereIn('county_id', $county_id);
                 });
             }
         }

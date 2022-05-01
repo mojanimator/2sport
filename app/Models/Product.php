@@ -21,7 +21,11 @@ class Product extends Model
 
         'active' => 'boolean',
         'hidden' => 'boolean',
+        'sold' => 'string',
         'price' => 'string',
+        'count' => 'string',
+		 'group_id' => 'string',
+		 'shop_id' => 'integer',
         'discount_price' => 'string',
         'province_id' => 'string',
         'county_id' => 'string',
