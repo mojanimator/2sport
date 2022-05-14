@@ -146,6 +146,7 @@ class DatabaseSeeder extends Seeder
             'active' => true,
             'remember_token' => bin2hex(openssl_random_pseudo_bytes(30)),
             'expires_at' => null,
+            'ref_code' => User::makeRefCode(),
 
         ]);
         \App\Models\User::create([

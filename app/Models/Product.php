@@ -60,8 +60,9 @@ class Product extends Model
 
     public function getSalePercentAttribute()
     {
-        if (!$this->discount_price)
-            return 0;
+		 
+        if (!$this->discount_price || !$this->price   )
+            return '0%';
         return round(($this->price - $this->discount_price) * 100 / ($this->price)) . "%";
     }
 

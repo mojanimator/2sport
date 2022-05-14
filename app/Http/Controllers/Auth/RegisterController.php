@@ -38,7 +38,7 @@ class RegisterController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::ROOT;
-    private $sms;
+    public $sms;
 
     /**
      * Create a new controller instance.
@@ -59,24 +59,24 @@ class RegisterController extends Controller
      * @param  array $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
+    function create(array $data)
     {
         $token = bin2hex(openssl_random_pseudo_bytes(30));
         $user = User::create([
-            'username' => $data['username'],
-            'name' => $data['name'],
-            'family' => $data['family'],
-            'email' => $data['email'],
+            'username' => @$data['username'],
+            'name' => @$data['name'],
+            'family' => @$data['family'],
+            'email' => @$data['email'],
             'phone' => f2e($data['phone']),
-            'password' => $data['password'] ? Hash::make(f2e($data['password'])) : null,
+            'password' => isset($data['password']) ? Hash::make(f2e($data['password'])) : null,
             'score' => \Helper::$initScore,
             'remember_token' => $token,
             'active' => true,
             'phone_verified' => true,
-
+            'ref_code' => User::makeRefCode()
 //                'expires_at' => $data['ex_date'] ? CalendarUtils::createCarbonFromFormat('Y/m/d', $data['ex_date'])->addDays(1)->timezone('Asia/Tehran') : null,
         ]);
-        $user->setRefferal();
+        $user->setReferral(@$data['ref_code']);
         \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, 'user_created', $user);
 
         if ($user->email)
@@ -173,7 +173,7 @@ class RegisterController extends Controller
      * @return \Illuminate\Contracts\Validation\Validator
      */
 
-    protected function validator(array $data)
+    function validator(array $data)
     {
 
 
@@ -189,6 +189,7 @@ class RegisterController extends Controller
                 return $query->where('phone', $data['phone']);
             }),],
             'password' => 'nullable|string|min:6|max:50|confirmed',
+
         ],
 
             [

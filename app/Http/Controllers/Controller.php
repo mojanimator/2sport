@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Http;
 
 
 class Controller extends BaseController
@@ -33,12 +34,14 @@ class Controller extends BaseController
     protected function settings(Request $request)
     {
         return response()->json([
+
+            'days' => [0 => 'شنبه', 1 => 'یکشنبه', 2 => 'دوشنبه', 3 => 'سه شنبه', 4 => 'چهارشنبه', 5 => 'پنجشنبه', 6 => 'جمعه', 7 => 'هر روز',],
             'provinces' => Province::select('id', 'name')->get(),
             'shops' => Shop::select('id', 'name')->get(),
-            'counties' => County::select('id', 'name','province_id')->get(),
+            'counties' => County::select('id', 'name', 'province_id')->get(),
             'sports' => Sport::select('id', 'name')->get(),
             'app_version' => Helper::$APP_VERSION,
-			'app_link' => 'test',
+            'app_link' => 'test',
             'doc_types' => Helper::$docsMap,
         ], 200);
     }
@@ -48,11 +51,11 @@ class Controller extends BaseController
         $paginate = $request->paginate ?: 12;
         $page = $request->page ?: 1;
         $cols = 'id, province_id, county_id,created_at, ';
-        $p1 = \App\Models\Player::selectRaw($cols . 'CONCAT(name,\' \', family) as name, "pl" as type');
-        $p2 = \App\Models\Coach::selectRaw($cols . 'CONCAT(name,\' \', family) as name, "co" as type');
-        $p3 = \App\Models\Club::selectRaw($cols . 'name, "cl" as type');
-        $p4 = \App\Models\Shop::selectRaw($cols . 'name, "sh" as type');
-        $p5 = \App\Models\Product::selectRaw('id,price as province_id,discount_price as county_id,created_at,name, "pr" as type');
+        $p1 = \App\Models\Player::selectRaw($cols . 'CONCAT(name,\' \', family) as name, "pl" as type')->where('active', true)->where('hidden', false);
+        $p2 = \App\Models\Coach::selectRaw($cols . 'CONCAT(name,\' \', family) as name, "co" as type')->where('active', true)->where('hidden', false);
+        $p3 = \App\Models\Club::selectRaw($cols . 'name, "cl" as type')->where('active', true)->where('hidden', false);
+        $p4 = \App\Models\Shop::selectRaw($cols . 'name, "sh" as type')->where('active', true)->where('hidden', false);
+        $p5 = \App\Models\Product::selectRaw('id,price as province_id,discount_price as county_id,created_at,name, "pr" as type')->where('active', true)->where('hidden', false);
 
 
         $res = $p5->union($p4)->union($p1)->union($p2)->union($p3)

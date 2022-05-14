@@ -7,7 +7,7 @@
 <div class="w-100 my-2">
     <referral
             admin="{{$admin}}"
-            ref-link="{{url('').'?ref='.base64_encode($user->id)}}"
+            ref-link="{{url('').'?ref='. $user->ref_code }}"
             tasvie-link="{{route('ref.tasvie')}}"
             search-link="{{route('ref.search')}}"
 

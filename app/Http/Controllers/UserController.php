@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\RegisterController;
 use App\Mail\RegisterEditUserMail;
 use App\Models\Club;
 use App\Models\Coach;
@@ -10,15 +11,25 @@ use App\Models\Player;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
+use Laravel\Passport\Exceptions\OAuthServerException;
+use function PHPSTORM_META\type;
 use SMS;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+//        $this->middleware('api')->only('get');
+    }
+
+
     protected function remove(Request $request)
     {
         $request->validate([
@@ -247,5 +258,111 @@ class UserController extends Controller
 //        }
 
         return $data;
+    }
+
+    function get(Request $request)
+    {
+        return response()->json(['user' => auth()->user()], 200);
+    }
+
+    public function login(Request $request)
+    {
+        $data = $request->all();
+        if (!$data['phone'] || !$data['phone_verify'])
+            return response()->json(['res' => 'LOGIN_FAIL', 'status' => 400]);
+
+        $user = User::where('phone', $data['phone'])->first();
+        if (!$user)
+            $this->registerAPI($data);
+
+        $http = new
+        \GuzzleHttp\Client([/*'base_uri' => 'http://localhost:81/_laravelProjects/magnetgram/public/',*/
+        ]);
+
+        try {
+            $response = $http->post(
+//                route('passport.token')
+            // 'oauth/token'
+                'http://localhost:81/_laravelProjects/2sport/public/oauth/token'
+                , [
+
+                'headers' => ['cache-control' => 'no-cache',
+                    'Content-Type' => 'application/x-www-form-urlencoded'
+                ],
+                'form_params' => [
+                    'grant_type' => 'password',
+                    'client_id' => config('services.passport.client_id'),
+                    'client_secret' => config('services.passport.client_secret'),
+                    'password' => $data['code'],
+                    'username' => $data['phone'],
+                ]
+            ]);
+
+            $res = json_decode($response->getBody());
+            return response()->json(['access_token' => $res->access_token, 'user' => $user], 200);
+        } catch (\Guzzlehttp\Exception\BadResponseException $e) {
+//            $m = json_decode($e->getResponse()->getBody());
+            return response()->json(['res' => 'LOGIN_FAIL'], 401);
+
+        } catch (OAuthServerException $e) {
+            return response()->json(['res' => 'LOGIN_FAIL',], $e->getCode());
+
+
+        } catch (\Exception $e) {
+            return response()->json(['res' => 'LOGIN_FAIL',], $e->getCode());
+
+
+        }
+    }
+
+    public function refreshToken()
+    {
+        $http = new \GuzzleHttp\Client(['base_uri' => 'http://localhost:81/_laravelProjects/ashayer/public/',
+        ]);
+
+        $response = $http->post('oauth/token', [
+            'form_params' => [
+                'grant_type' => 'refresh_token',
+                'refresh_token' => 'the-refresh-token',
+                'client_id' => config('services.passport.client_id'),
+                'client_secret' => config('services.passport.client_secret'),
+                'scope' => '',
+            ],
+        ]);
+
+        return json_decode((string)$response->getBody(), true); //return new token and refresh token
+    }
+
+    // public function getUser()
+    // {
+    //     $user = Auth::user();
+    //     return response()->json(['success' => $user], $this->successStatus);
+    // }
+
+    public function logout()
+    {
+        if (!auth()->user())
+            return response()->json('NOT_EXISTS', 400);
+
+        auth()->user()->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+//        auth()->guard()->logout();
+        return response()->json(['message' => 'SUCCESS_LOGOUT', 'status' => 200]);
+    }
+
+    public function registerAPI(Array $data)
+    {
+        $rc = new   RegisterController();
+        $username = 'ds' . sprintf("%06d", mt_rand(1, 999999));
+        while (User::where('username', $username)->exists())
+            $username = 'ds' . sprintf("%06d", mt_rand(1, 999999));
+        $data['username'] = $username;
+        $rc->validator($data)->validate();
+
+        $user = $rc->create($data);
+
+        return $this->login(new Request(['phone' => $user->phone, 'phone_verify' => $data['phone_verify']]));
+
     }
 }

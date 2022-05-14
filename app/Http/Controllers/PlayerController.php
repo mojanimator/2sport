@@ -439,7 +439,7 @@ class PlayerController extends Controller
 //            'page' => 'sometimes|numeric',
 //        ], []);
 
-
+		$id = $request->id;
         $page = $request->page;
         $paginate = $request->paginate;
         $sport_id = $request->sport;
@@ -476,7 +476,10 @@ class PlayerController extends Controller
 
 
         $query = Player::query();
-
+		
+		if (is_numeric($id))
+            $query = $query->where('id', $id);
+		
         if (is_numeric($sport_id))
             $query = $query->where('sport_id', $sport_id);
         if (is_numeric($province_id))

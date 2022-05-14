@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::middleware('auth:api')->group(function () {
+
+    Route::get('user/get', [App\Http\Controllers\UserController::class, 'get'])->name('user.get');
+});
+Route::get('login', [App\Http\Controllers\UserController::class, 'login'])->name('user.login');
+
 Route::get('club/search', [App\Http\Controllers\ClubController::class, 'search'])->name('club.search');
 Route::get('coach/search', [App\Http\Controllers\CoachController::class, 'search'])->name('coach.search');
 Route::get('player/search', [App\Http\Controllers\PlayerController::class, 'search'])->name('player.search');

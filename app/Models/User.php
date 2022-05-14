@@ -38,7 +38,7 @@ class User extends Authenticatable implements /*Auditable,*/
     protected $table = 'users';
     protected $fillable = [
         'id', 'name', 'family', 'is_man', 'username', 'email', 'sheba', 'cart', 'email_verified', 'phone_verified', 'phone', 'password', 'score',
-        'expires_at', 'created_at', 'updated_at', 'active', 'role',
+        'expires_at', 'created_at', 'updated_at', 'active', 'role', 'ref_code',
     ];
 
     /**
@@ -57,6 +57,7 @@ class User extends Authenticatable implements /*Auditable,*/
      */
     protected $casts = [
 
+        'id' => 'string',
         'is_man' => 'boolean',
         'active' => 'boolean',
         'email_verified' => 'boolean',
@@ -65,19 +66,42 @@ class User extends Authenticatable implements /*Auditable,*/
 
     ];
 
-    public function setRefferal()
+    public static function makeRefCode()
     {
-        $ref = session('ref');
-        if ($ref)
-            $ref = base64_decode($ref);
-        if ($ref && User::find($ref)) {
+        $original = implode("", array_merge(range(0, 9), range('a', 'z')));
+        function randomString($length = 5, $original)
+        {
+            return substr(str_shuffle($original), 0, $length);
+        }
+
+        $ref = randomString(5, $original);
+        for ($i = 5; $i <= 10; $i++) {
+            for ($j = 0; $j < 100; $j++) {
+                if (User::where('ref_code', $ref)->exists())
+                    $ref = randomString($i, $original);
+                else
+                    break;
+            }
+            if ($j < 100)
+                break;
+        }
+        return $ref;
+    }
+
+    public function setReferral($re = null)
+    {
+        $ref = $re ?: session('ref');
+
+        $u = User::where('ref_code', $ref)->first();
+        $id = $u ? $u->id : null;
+        if ($ref && $id) {
             $r = Ref::where('invited_id', $this->id)->first();
             if ($r && $r->invited_purchase_type == null) {
-                $r->inviter_id = $ref;
+                $r->inviter_id = $id;
                 $r->save();
             }
             if (!$r) {
-                Ref::create(['inviter_id' => $ref, 'invited_id' => $this->id,]);
+                Ref::create(['inviter_id' => $id, 'invited_id' => $this->id,]);
             }
         }
 
@@ -133,17 +157,26 @@ class User extends Authenticatable implements /*Auditable,*/
     }
 
 
-    public function findForPassport($username)
+    public function findForPassport($phone)
     {
-        $fieldType = filter_var($username, FILTER_VALIDATE_EMAIL ? 'email' : 'username');
 
-//        dd(User::where($fieldType, $username)->first());
-        return
-            User::where($fieldType, $username)->first();
+        return User::where('phone', $phone)->first();
+
+
+    }
+
+    public function validateForPassportPasswordGrant($smsCode)
+    {
+        $sms = new \SMS();
+        $res = $sms->verifyActivationSMS($this->phone, $smsCode);
+//        if ($res)
+//            $sms->deleteActivationSMS($this->phone);
+        return $res;
     }
 
     //get all created players,coaches,clubs,shops
-    public function getOwnes()
+    public
+    function getOwnes()
     {
 
 //        $provinces = Province::get(['id', 'name',])->toArray();
@@ -154,7 +187,8 @@ class User extends Authenticatable implements /*Auditable,*/
         Player::where('user_id', $user_id)->get(['name']);
     }
 
-    public function getProducts($min = false)
+    public
+    function getProducts($min = false)
     {
         if ($min) {
             if ($this->role == 'us')

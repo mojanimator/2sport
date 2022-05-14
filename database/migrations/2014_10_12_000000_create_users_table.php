@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->boolean('active')->default(false);
             $table->string('sheba', 24)->default(null)->nullable();
             $table->string('cart', 16)->default(null)->nullable();
+            $table->string('ref_code', 10);
             $table->rememberToken();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
