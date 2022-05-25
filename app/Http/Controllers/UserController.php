@@ -303,7 +303,7 @@ class UserController extends Controller
         if (!str_contains(url('/'), '.ir'))
             $url = 'http://localhost:81/_laravelProjects/2sport/public/oauth/token';
         else
-            $url = route('passport.token');
+            $url = 'oauth/token';
         try {
             $response = $http->post(
 //                route('passport.token')
