@@ -70,7 +70,7 @@ class RouteServiceProvider extends ServiceProvider
 
             $key = 'sms' . optional($request->user())->id ?: $request->ip();
 
-            return Limit::perHour(3)->by($key)->response(function ($request, $headers) {
+            return Limit::perHour(8)->by($key)->response(function ($request, $headers) {
                 $seconds = $headers['Retry-After'] ? intval($headers['Retry-After'] / 60) : 60;
 
                 return response()->json(['errors' => ['phone' => ["در خواست بیش از حد مجاز. لطفا $seconds دقیقه دیگر اقدام کنید"]]], 429);
