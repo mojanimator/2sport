@@ -16,7 +16,7 @@
                                             class=" my-1   mx-auto   overflow-auto" id="license"
                                             label="تصویر جواز کسب"
                                             for-id="img" ref="licenseUploader"
-                                            crop-ratio="{{.85}}"
+                                            crop-ratio="{{Helper::$cropsRatio['profile']}}"
                                             link="null"
                                             preload="null"
                                             height="10" mode="create">
@@ -30,7 +30,7 @@
                                                 class="  col-sm-12 col-md-6  mx-auto my-1 overflow-auto" id="img{{$i}}"
                                                 label="تصویر محیط باشگاه"
                                                 for-id="img{{$i}}" ref="imageUploader-img{{$i}}"
-                                                crop-ratio="{{1.2}}"
+                                                crop-ratio="{{Helper::$cropsRatio['gallery']}}"
                                                 link="null"
                                                 preload="null"
                                                 height="10" mode="create">

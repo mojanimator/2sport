@@ -29,9 +29,9 @@ class PlayerController extends Controller
         $request->validate([
             'name' => 'string|min:3|max:100',
             'family' => 'string|min:3|max:100',
-            'county_id' => 'required|' . Rule::in(County::pluck('id')),
-            'province_id' => 'required|in:' . County::where('id', $request->county_id)->firstOrNew()->province_id,
-            'sport_id' => 'required|' . Rule::in(Sport::pluck('id')),
+            'county' => 'required|' . Rule::in(County::pluck('id')),
+            'province' => 'required|in:' . County::where('id', $request->county_id)->firstOrNew()->province_id,
+            'sport' => 'required|' . Rule::in(Sport::pluck('id')),
             'sport-rule_id' => 'sometimes|' . Rule::in(DB::table('sport-rules')->pluck('id')),
             'height' => 'required|numeric|min:10|max:300',
             'weight' => 'required|numeric|min:10|max:300',
@@ -60,12 +60,12 @@ class PlayerController extends Controller
             'family.min' => 'نام خانوادگی حداقل 3 حرف باشد',
             'family.max' => 'نام خانوادگی حداکثر 100 حرف باشد',
 
-            'county_id.required' => 'شهر ضروری است',
-            'county_id.in' => 'شهر نامعتبر است',
-            'province_id.required' => 'استان ضروری است',
-            'province_id.in' => 'استان نامعتبر است',
-            'sport_id.required' => 'رشته ورزشی ضروری است',
-            'sport_id.in' => 'رشته ورزشی نامعتبر است',
+            'county.required' => 'شهر ضروری است',
+            'county.in' => 'شهر نامعتبر است',
+            'province.required' => 'استان ضروری است',
+            'province.in' => 'استان نامعتبر است',
+            'sport.required' => 'رشته ورزشی ضروری است',
+            'sport.in' => 'رشته ورزشی نامعتبر است',
             'sport-rule_id.in' => 'پست رشته ورزشی نامعتبر است',
 
             'height.required' => 'قد ضروری است',
@@ -117,29 +117,44 @@ class PlayerController extends Controller
             'video.max' => 'حجم ویدیو حداکثر 50 مگابایت باشد',
 
         ]);
+//request video after validating other fields
+        if (isset($request->video_pending))
+            if ($request->video_pending == true)
+                return response()->json(['resume' => true], 200);
+        if ($request->video_pending == false) //video upload
+            $request->validate([
+
+                'video' => 'required|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:51200'
+            ], [
+
+                'video.required' => 'ویدیو ضروری است',
+                'video.mimes' => 'ویدیو ارسالی با فرمت mp4 باشد',
+                'video.max' => 'حجم ویدیو حداکثر 50 مگابایت باشد',
+
+            ]);
 
 //        DB::transaction(function () use ($request, & $user) {
 
-        if (!auth()->user()) { //user not login or register
-            $user = User::where('phone', $request->phone)->first(); //user not login
-            if (!$user) { //user not exists
-                $user = User::create([
-                    'phone' => $request->phone,
-                    'active' => true,
-                    'name' => $request->name,
-                    'family' => $request->family,
-                    'phone_verified' => true,
-                ]);
-                auth()->login($user);
-            }
-        } else
-            $user = auth()->user();
+            if (!auth()->user()) { //user not login or register
+                $user = User::where('phone', $request->phone)->first(); //user not login
+                if (!$user) { //user not exists
+                    $user = User::create([
+                        'phone' => $request->phone,
+                        'active' => true,
+                        'name' => $request->name,
+                        'family' => $request->family,
+                        'phone_verified' => true,
+                    ]);
+                    auth()->login($user);
+                }
+            } else
+                $user = auth()->user();
 
         $player = Player::create([
             'user_id' => $user->id,
-            'province_id' => $request->province_id,
-            'county_id' => $request->county_id,
-            'sport_id' => $request->sport_id,
+            'province_id' => $request->province,
+            'county_id' => $request->county,
+            'sport_id' => $request->sport,
             'sport-rule_id' => $request->{'sport-rule_id'},
             'username' => $request->username,
             'name' => $request->name,
@@ -439,7 +454,7 @@ class PlayerController extends Controller
 //            'page' => 'sometimes|numeric',
 //        ], []);
 
-		$id = $request->id;
+        $id = $request->id;
         $page = $request->page;
         $paginate = $request->paginate;
         $sport_id = $request->sport;
@@ -476,37 +491,35 @@ class PlayerController extends Controller
 
 
         $query = Player::query();
-		
-		if (is_numeric($id))
+
+        if (is_numeric($id))
             $query = $query->where('id', $id);
-		
+
         if (is_numeric($sport_id))
             $query = $query->where('sport_id', $sport_id);
         if (is_numeric($province_id))
             $query = $query->where('province_id', $province_id);
         if (is_numeric($county_id))
             $query = $query->where('county_id', $county_id);
-		
-	 
-		 
-      
+
+
 //
 //
         if ($name) {
             foreach (explode(' ', $name) as $word) {
-                $query = $query->where(function ($query) use ($word,$sport_id,$province_id, $county_id) {
+                $query = $query->where(function ($query) use ($word, $sport_id, $province_id, $county_id) {
                     $query->orWhere('name', 'LIKE', '%' . $word . '%')
                         ->orWhere('family', 'LIKE', '%' . $word . '%');
-						
-			$sport_id= json_decode($sport_id);
-			$province_id= json_decode($province_id);
-			$county_id= json_decode($county_id);			
-			if (is_array( $sport_id))
-				$query = $query->orWhereIn('sport_id', $sport_id);
-			if (is_array($province_id))
-				$query = $query->orWhereIn('province_id', $province_id);
-			if (is_array($county_id))
-				$query = $query->orWhereIn('county_id', $county_id);
+
+                    $sport_id = json_decode($sport_id);
+                    $province_id = json_decode($province_id);
+                    $county_id = json_decode($county_id);
+                    if (is_array($sport_id))
+                        $query = $query->orWhereIn('sport_id', $sport_id);
+                    if (is_array($province_id))
+                        $query = $query->orWhereIn('province_id', $province_id);
+                    if (is_array($county_id))
+                        $query = $query->orWhereIn('county_id', $county_id);
                 });
             }
         }

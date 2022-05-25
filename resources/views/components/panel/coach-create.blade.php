@@ -13,7 +13,7 @@
                         <div class="row mx-auto my-2">
                             <image-uploader class="col-sm-6 mx-auto" id="img" label="تصویر چهره"
                                             for-id="img" ref="imageUploader"
-                                            crop-ratio="{{0.85}}"
+                                            crop-ratio="{{Helper::$cropsRatio['profile']}}"
                                             link="null"
                                             preload="null"
                                             height="10" mode="create">

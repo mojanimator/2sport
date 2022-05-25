@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class RefController extends Controller
 {
-    public function search(Request $request)
+    public function search(Request $request = null)
     {
         $user = auth()->user();
         $admin = $user->role == 'ad' || $user->role == 'go';

@@ -118,8 +118,9 @@ class Telegram
 
     static function log($to, $type, $data)
     {
+
         try {
-            if (str_contains(url('/'), 'localhost'))
+            if (!str_contains(url('/'), '.ir'))
                 return;
             if ($data instanceof \App\Models\User)
                 $us = $data;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use App\Models\Sport;
 use App\Models\County;
 use App\Models\Province;
@@ -27,7 +28,10 @@ class Controller extends BaseController
             }
             \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, $logType, $data);
             $data->save();
-            return redirect()->back()->with('success-alert', $msg);
+
+            if (!str_contains(url('/'), 'api/'))
+                return redirect()->back()->with('success-alert', $msg);
+            else return response()->json(['status' => 'success']);
         }
     }
 
@@ -36,11 +40,13 @@ class Controller extends BaseController
         return response()->json([
 
             'days' => [0 => 'شنبه', 1 => 'یکشنبه', 2 => 'دوشنبه', 3 => 'سه شنبه', 4 => 'چهارشنبه', 5 => 'پنجشنبه', 6 => 'جمعه', 7 => 'هر روز',],
+            'prices' => Setting::get(),
             'provinces' => Province::select('id', 'name')->get(),
             'shops' => Shop::select('id', 'name')->get(),
             'counties' => County::select('id', 'name', 'province_id')->get(),
             'sports' => Sport::select('id', 'name')->get(),
             'app_version' => Helper::$APP_VERSION,
+            'crop_ratio' => Helper::$cropsRatio,
             'app_link' => 'test',
             'doc_types' => Helper::$docsMap,
         ], 200);

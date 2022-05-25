@@ -169,8 +169,8 @@ class User extends Authenticatable implements /*Auditable,*/
     {
         $sms = new \SMS();
         $res = $sms->verifyActivationSMS($this->phone, $smsCode);
-//        if ($res)
-//            $sms->deleteActivationSMS($this->phone);
+        if ($res)
+            $sms->deleteActivationSMS($this->phone);
         return $res;
     }
 

@@ -15,7 +15,7 @@
                                             class="col-sm-12 col-md-6  my-1    overflow-auto" id="license"
                                             label="تصویر جواز کسب"
                                             for-id="license" ref="licenseUploader"
-                                            crop-ratio="{{.85}}"
+                                            crop-ratio="{{Helper::$cropsRatio['profile']}}"
                                             link="null"
                                             preload="null"
                                             height="10" mode="create">
@@ -27,7 +27,7 @@
                                             class="  col-sm-12 col-md-6 my-1     overflow-auto" id="logo"
                                             label="تصویر لوگو فروشگاه (اختیاری)"
                                             for-id="logo" ref="logoUploader"
-                                            crop-ratio="{{1}}"
+                                            crop-ratio="{{Helper::$cropsRatio['logo']}}"
                                             link="null"
                                             preload="null"
                                             height="10" mode="create">

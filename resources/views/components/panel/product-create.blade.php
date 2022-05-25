@@ -27,7 +27,7 @@
                                                 class="  col-sm-12 col-md-6  mx-auto my-1 overflow-auto" id="img{{$i}}"
                                                 label="تصویر محصول"
                                                 for-id="img{{$i}}" ref="imageUploader-img{{$i}}"
-                                                crop-ratio="{{1}}"
+                                                crop-ratio="{{Helper::$crops['product']}}"
                                                 link="null"
                                                 preload="null"
                                                 height="10" mode="create">

@@ -18,7 +18,20 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->group(function () {
 
     Route::get('user/get', [App\Http\Controllers\UserController::class, 'get'])->name('user.get');
+
+    Route::post('user/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('user.edit');
+    Route::post('club/edit', [App\Http\Controllers\ClubController::class, 'edit'])->name('club.edit');
+    Route::post('coach/edit', [App\Http\Controllers\CoachController::class, 'edit'])->name('coach.edit');
+    Route::post('player/edit', [App\Http\Controllers\PlayerController::class, 'edit'])->name('player.edit');
+    Route::post('shop/edit', [App\Http\Controllers\ShopController::class, 'edit'])->name('shop.edit');
+    Route::post('product/edit', [App\Http\Controllers\ProductController::class, 'edit'])->name('product.edit');
+    Route::post('blog/edit', [App\Http\Controllers\BlogController::class, 'edit'])->name('blog.edit');
+
 });
+
+Route::post('coupon/calculate', [App\Http\Controllers\CouponController::class, 'calculate'])->name('coupon.calculate');
+
+
 Route::get('login', [App\Http\Controllers\UserController::class, 'login'])->name('user.login');
 
 Route::get('club/search', [App\Http\Controllers\ClubController::class, 'search'])->name('club.search');
@@ -41,4 +54,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('getactivationcode', function () {
 
     return (new SMS())->sendActivationSMS(request()->phone);
-});
+})->middleware('throttle:sms_limit');

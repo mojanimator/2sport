@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Mail\RegisterEditUserMail;
+use App\Models\Blog;
 use App\Models\Club;
 use App\Models\Coach;
 use App\Models\Doc;
@@ -191,7 +192,7 @@ class UserController extends Controller
 
         }
 
-
+        return response()->json(['status' => 'success']);
     }
 
     protected function search(Request $request)
@@ -262,7 +263,27 @@ class UserController extends Controller
 
     function get(Request $request)
     {
-        return response()->json(['user' => auth()->user()], 200);
+        $user = auth()->user();
+        $info = [];
+        $ref = [];
+        if ($user) {
+            $info = [
+
+                'player' => Player::where('user_id', $user->id)->count(),
+                'coach' => Coach::where('user_id', $user->id)->count(),
+                'club' => Club::where('user_id', $user->id)->count(),
+                'shop' => Shop::where('user_id', $user->id)->count(),
+            ];
+            if (in_array($user->role, ['go', 'ad', 'bl']))
+                $info = ['blog' => Blog::where('user_id', $user->id)->count()] + $info;
+
+            if (!in_array($user->role, ['go', 'ad'])) {
+                $rf = new RefController();
+                $ref = $rf->search();
+            }
+        }
+
+        return response()->json(['user' => $user, 'info' => $info, 'ref' => $ref,], 200);
     }
 
     public function login(Request $request)
@@ -273,7 +294,7 @@ class UserController extends Controller
 
         $user = User::where('phone', $data['phone'])->first();
         if (!$user)
-            $this->registerAPI($data);
+            return $this->registerAPI($data);
 
         $http = new
         \GuzzleHttp\Client([/*'base_uri' => 'http://localhost:81/_laravelProjects/magnetgram/public/',*/
@@ -293,8 +314,8 @@ class UserController extends Controller
                     'grant_type' => 'password',
                     'client_id' => config('services.passport.client_id'),
                     'client_secret' => config('services.passport.client_secret'),
-                    'password' => $data['code'],
-                    'username' => $data['phone'],
+                    'password' => @$data['phone_verify'],
+                    'username' => @$data['phone'],
                 ]
             ]);
 
@@ -354,9 +375,9 @@ class UserController extends Controller
     public function registerAPI(Array $data)
     {
         $rc = new   RegisterController();
-        $username = 'ds' . sprintf("%06d", mt_rand(1, 999999));
+        $username = 'd' . sprintf("%09d", mt_rand(1, 999999999));
         while (User::where('username', $username)->exists())
-            $username = 'ds' . sprintf("%06d", mt_rand(1, 999999));
+            $username = 'd' . sprintf("%09d", mt_rand(1, 999999999));
         $data['username'] = $username;
         $rc->validator($data)->validate();
 

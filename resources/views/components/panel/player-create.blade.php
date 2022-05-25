@@ -15,7 +15,7 @@
                                     class="col-12 col-md-6 mx-auto   overflow-x-scroll" id="img"
                                     label="تصویر چهره"
                                     for-id="img" ref="imageUploader"
-                                    crop-ratio="{{0.75}}"
+                                    crop-ratio="{{Helper::$cropsRatio['profile']}}"
                                     link="null"
                                     preload="null"
                                     height="10" mode="create">
@@ -25,7 +25,7 @@
                                     class="col-12 col-md-6 mx-auto overflow-x-scroll" id="video"
                                     label=" ویدیو کوتاه معرفی خود و مهارت های ورزشی"
                                     for-id="video" ref="videoUploader"
-                                    crop-ratio="{{0.75}}"
+                                    crop-ratio="{{Helper::$cropsRatio['video']}}"
                                     link="null"
 
                                     height="10" mode="create">
@@ -179,18 +179,18 @@
 
                             {{--<label for="sport-input"--}}
                             {{--class="col-12 col-form-label text-right">رشته ورزشی</label>--}}
-                            <select id="sport_id" name="sport_id"
-                                    class="px-4 form-control{{ $errors->has('sport_id')  ? ' is-invalid' : '' }}">
+                            <select id="sport" name="sport"
+                                    class="px-4 form-control{{ $errors->has('sport')  ? ' is-invalid' : '' }}">
                                 <option value="0">انتخاب رشته ورزشی</option>
                                 @foreach(\App\Models\Sport::get() as $s)
                                     <option value="{{$s->id}}"
-                                            {{ old('sport_id')==$s->id? ' selected ':''}} >{{$s->name}}</option>
+                                            {{ old('sport')==$s->id? ' selected ':''}} >{{$s->name}}</option>
 
                                 @endforeach
                             </select>
 
                             <div class=" text-danger text-start small  col-12   " role="alert">
-                                <strong id="err-sport_id"> </strong>
+                                <strong id="err-sport"> </strong>
                             </div>
 
                         </div>
@@ -198,27 +198,27 @@
                             <div class="col-sm-6  my-2 my-sm-0">
                                 {{--<label for="province-input"--}}
                                 {{--class="col-12 col-form-label text-right">استان</label>--}}
-                                <select id="province_id" name="province_id" onchange="setCountyOptions(this.value)"
-                                        class="px-4 form-control{{ $errors->has('province_id')  ? ' is-invalid' : '' }}">
+                                <select id="province" name="province" onchange="setCountyOptions(this.value)"
+                                        class="px-4 form-control{{ $errors->has('province')  ? ' is-invalid' : '' }}">
                                     <option value="0">انتخاب استان</option>
                                     @foreach(\Illuminate\Support\Facades\DB::table('province')->get() as $p)
                                         <option value="{{$p->id}}"
-                                                {{ old('province_id')==$p->id? ' selected ':''}} >{{$p->name}}</option>
+                                                {{ old('province')==$p->id? ' selected ':''}} >{{$p->name}}</option>
 
                                     @endforeach
                                 </select>
 
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-province_id"> </strong>
+                                    <strong id="err-province"> </strong>
                                 </div>
 
                             </div>
                             <div class="col-sm-6  my-2 my-sm-0">
                                 {{--<label for="county-input"--}}
                                 {{--class="col-12 col-form-label text-right">شهر </label>--}}
-                                <select id="county_id" name="county_id"
-                                        class="px-4   form-control{{ $errors->has('county_id')  ? ' is-invalid' : '' }}">
-                                    @if(  $cId=\App\Models\County::find(old('county_id') ))
+                                <select id="county" name="county"
+                                        class="px-4   form-control{{ $errors->has('county')  ? ' is-invalid' : '' }}">
+                                    @if(  $cId=\App\Models\County::find(old('county') ))
 
                                         <option value="{{$cId->id}}" selected>{{$cId->name}}</option>
                                     @else
@@ -227,7 +227,7 @@
                                 </select>
 
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-county_id"> </strong>
+                                    <strong id="err-county"> </strong>
                                 </div>
 
                             </div>
@@ -375,7 +375,7 @@
 
         });
 
-        function submitWithFiles(event) {
+        function submitWithFiles(event, extra = {'video_pending': true}) {
             document.querySelector('#loading').classList.remove('d-none');
             validInputs();
 
@@ -387,7 +387,7 @@
                     continue;
                 if (data[i].id === 'img')
                     fd.append(data[i].name, app.$refs.imageUploader.getCroppedData());
-                else if (data[i].id === 'video-file') {
+                else if (data[i].id === 'video-file' && extra['video_pending'] == true) {
                     if (data[i].files[0] !== undefined)
                         fd.append('video', data[i].files[0]);
                 }
@@ -397,6 +397,8 @@
                 else
                     fd.append(data[i].name, data[i].value);
             }
+            for (let i in extra)
+                fd.append(i, extra[i]);
 
             axios.post("{{route('player.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
@@ -407,11 +409,14 @@
             })
 
                 .then((response) => {
-                        console.log(response);
+//                        console.log(response);
                         document.querySelector('#loading').classList.add('d-none');
 
                         if (response.status == 200)
-                            window.location = response.data.url;
+                            if (response.data.resume == true)
+                                submitWithFiles(event, extra = {'video_pending': false});
+                            else
+                                window.location = response.data.url;
 
                     }
                 ).catch((error) => {
@@ -435,7 +440,7 @@
 
 
         function setCountyOptions(selValue) {
-            let sel2 = document.querySelector('#county_id');
+            let sel2 = document.querySelector('#county');
             while (sel2.firstChild && sel2.removeChild(sel2.firstChild)) ;
             for (let i = 0; i < counties.length; i++) {
                 if (counties[i].province_id == selValue) {
