@@ -300,11 +300,15 @@ class UserController extends Controller
         \GuzzleHttp\Client([/*'base_uri' => 'http://localhost:81/_laravelProjects/magnetgram/public/',*/
         ]);
 
+        if (!str_contains(url('/'), '.ir'))
+            $url = 'http://localhost:81/_laravelProjects/2sport/public/oauth/token';
+        else
+            $url = route('passport.token');
         try {
             $response = $http->post(
 //                route('passport.token')
             // 'oauth/token'
-                'http://localhost:81/_laravelProjects/2sport/public/oauth/token'
+                $url
                 , [
 
                 'headers' => ['cache-control' => 'no-cache',
