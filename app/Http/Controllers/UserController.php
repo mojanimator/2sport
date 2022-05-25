@@ -327,7 +327,7 @@ class UserController extends Controller
             return response()->json(['access_token' => $res->access_token, 'user' => $user], 200);
         } catch (\Guzzlehttp\Exception\BadResponseException $e) {
 //            $m = json_decode($e->getResponse()->getBody());
-            return response()->json(['res' => $e->getMessage()], 401);
+            return response()->json(['res' => 'LOGIN_FAIL'], 401);
 
         } catch (OAuthServerException $e) {
             return response()->json(['res' => 'LOGIN_FAIL',], $e->getCode());
