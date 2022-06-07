@@ -345,7 +345,7 @@
 
                         <div class="form-group   mb-0">
                             <div class="col-md-12  mt-2">
-                                <button onclick=" submitWithFiles(event)" type="button"
+                                <button onclick=" submitWithFiles(event,{'upload_pending': true})" type="button"
                                         class="btn btn-success btn-block font-weight-bold py-3">
                                     پرداخت و ثبت نام
                                 </button>
@@ -375,7 +375,7 @@
 
         });
 
-        function submitWithFiles(event, extra = {'video_pending': true}) {
+        function submitWithFiles(event, extra = {}) {
             document.querySelector('#loading').classList.remove('d-none');
             validInputs();
 
@@ -387,7 +387,7 @@
                     continue;
                 if (data[i].id === 'img')
                     fd.append(data[i].name, app.$refs.imageUploader.getCroppedData());
-                else if (data[i].id === 'video-file' && extra['video_pending'] == true) {
+                else if (data[i].id === 'video-file' && extra['upload_pending'] != true) {
                     if (data[i].files[0] !== undefined)
                         fd.append('video', data[i].files[0]);
                 }
@@ -414,7 +414,7 @@
 
                         if (response.status == 200)
                             if (response.data.resume == true)
-                                submitWithFiles(event, extra = {'video_pending': false});
+                                submitWithFiles(event );
                             else
                                 window.location = response.data.url;
 

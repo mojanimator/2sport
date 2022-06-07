@@ -22,6 +22,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Morilog\Jalali\Jalalian;
 use SMS;
+use stdClass;
 
 class ShopController extends Controller
 {
@@ -34,8 +35,8 @@ class ShopController extends Controller
 
         $request->validate([
             'name' => 'string|min:3|max:100',
-            'county_id' => 'required|' . Rule::in(County::pluck('id')),
-            'province_id' => 'required|in:' . County::where('id', $request->county_id)->firstOrNew()->province_id,
+            'county' => 'required|' . Rule::in(County::pluck('id')),
+            'province' => 'required|in:' . County::where('id', $request->county)->firstOrNew()->province_id,
 
             'phone' => 'required|numeric|digits:11|regex:/^09[0-9]+$/' . '|unique:shops,phone',
             'phone_verify' => [Rule::requiredIf(function () use ($request) {
@@ -46,8 +47,7 @@ class ShopController extends Controller
             'description' => 'nullable|string|max:1024',
             'address' => 'required|string|max:1024',
 
-            'license' => 'required|base64_image'/*.'|base64_size:2048'*/,
-            'logo' => 'nullable|base64_image'/*.'|base64_size:2048'*/,
+
 //            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
 
         ], [
@@ -61,12 +61,12 @@ class ShopController extends Controller
             'family.min' => 'نام خانوادگی حداقل 3 حرف باشد',
             'family.max' => 'نام خانوادگی حداکثر 30 حرف باشد',
 
-            'county_id.required' => 'شهر ضروری است',
-            'county_id.in' => 'شهر نامعتبر است',
-            'province_id.required' => 'استان ضروری است',
-            'province_id.in' => 'استان نامعتبر است',
-            'sport_id.required' => 'رشته ورزشی ضروری است',
-            'sport_id.in' => 'رشته ورزشی نامعتبر است',
+            'county.required' => 'شهر ضروری است',
+            'county.in' => 'شهر نامعتبر است',
+            'province.required' => 'استان ضروری است',
+            'province.in' => 'استان نامعتبر است',
+            'sport.required' => 'رشته ورزشی ضروری است',
+            'sport.in' => 'رشته ورزشی نامعتبر است',
             'sport-rule_id.in' => 'پست رشته ورزشی نامعتبر است',
 
             'height.required' => 'قد ضروری است',
@@ -118,14 +118,6 @@ class ShopController extends Controller
             'times.min' => 'حداقل یک ردیف برنامه کاری ضروری است',
 
 
-            'license.required' => 'تصویر جواز کسب ضروری است',
-            'license.base64_image' => 'فرمت تصویر جواز کسب نامعتبر است',
-            'license.base64_size' => 'حداکثر حجم فایل 2 مگابایت باشد',
-
-            'logo.base64_image' => 'فرمت تصویر جواز کسب نامعتبر است',
-            'logo.base64_size' => 'حداکثر حجم فایل 2 مگابایت باشد',
-
-
             'images.required' => 'حداقل یک تصویر از باشگاه ضروری است',
             'images.array' => 'حداقل یک تصویر از باشگاه ضروری است',
             'images.min' => 'حداقل یک تصویر از باشگاه ضروری است',
@@ -137,6 +129,25 @@ class ShopController extends Controller
             'video.required' => 'ویدیو ضروری است',
             'video.mimes' => 'ویدیو ارسالی با فرمت mp4 باشد',
             'video.max' => 'حجم ویدیو حداکثر 10 مگابایت باشد',
+
+        ]);
+
+        //request images after validating other fields
+        if (isset($request->upload_pending))
+            return response()->json(['resume' => true], 200);
+//
+        $request->validate([
+            'license' => 'required|base64_image'/*.'|base64_size:2048'*/,
+            'logo' => 'nullable|base64_image'/*.'|base64_size:2048'*/,
+        ], [
+
+            'license.required' => 'تصویر جواز کسب ضروری است',
+            'license.base64_image' => 'فرمت تصویر جواز کسب نامعتبر است',
+            'license.base64_size' => 'حداکثر حجم تصویر جواز کسب 2 مگابایت باشد',
+
+            'logo.base64_image' => 'فرمت تصویر لوگو نامعتبر است',
+            'logo.base64_size' => 'حداکثر حجم تصویر لوگو 2 مگابایت باشد',
+
 
         ]);
 
@@ -157,8 +168,9 @@ class ShopController extends Controller
 
         $shop = Shop::create([
             'user_id' => $user->id,
-            'province_id' => $request->province_id,
-            'county_id' => $request->county_id,
+            'location' => $request->location,
+            'province_id' => $request->province,
+            'county_id' => $request->county,
             'name' => $request->name,
             'active' => false,
             'phone' => $request->phone,
@@ -171,10 +183,10 @@ class ShopController extends Controller
 
         //make   images
         Doc::createImage($request->license, $shop->id, Helper::$typesMap['shops'], Helper::$docsMap['license']);
-        Doc::createImage($request->license, $shop->id, Helper::$typesMap['shops'], Helper::$docsMap['logo']);
+        Doc::createImage($request->logo, $shop->id, Helper::$typesMap['shops'], Helper::$docsMap['logo']);
 
 
-        $user->setRefferal();
+        $user->setReferral();
 
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'shop_created', $shop);
         return \NextPay::makePay(new Request(['type' => 'shop', 'id' => $shop->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $shop->phone]));
@@ -275,8 +287,8 @@ class ShopController extends Controller
             'times.min' => 'حداقل یک ردیف برنامه کاری ضروری است',
 
 
-            'img.required' => 'تصویر جواز کسب ضروری است',
-            'img.base64_image' => 'فرمت تصویر جواز کسب نامعتبر است',
+            'img.required' => 'تصویر  ضروری است',
+            'img.base64_image' => 'فرمت تصویر   نامعتبر است',
             'img.base64_size' => 'حداکثر حجم فایل 2 مگابایت باشد',
 
 
@@ -313,6 +325,13 @@ class ShopController extends Controller
             if ($request->replace) {
 
                 $doc = Doc::find($request->id);
+                if ($doc == null) {
+                    $doc = new stdClass;
+                    $doc->id = null;
+                    $doc->docable_id = $request->data_id;
+                    $doc->docable_type = Helper::$typesMap['shops'];
+                    $doc->type_id = $request->type ?: Helper::$docsMap['logo'];
+                }
                 $shop = Shop::where('id', $doc->docable_id)->first();
                 if (!$this->authorize('ownItem', [User::class, $shop, false]))
                     return response()->json(['errors' => ['تصویر متعلق به شما نیست']], 422);
@@ -328,7 +347,8 @@ class ShopController extends Controller
                 Doc::createImage($request->img, $shop->id, Helper::$typesMap['shops'], $request->type);
 
             }
-            $this->dataEdited($shop, 'shop_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            $what = $request->type != null ? $request->type == Helper::$docsMap['logo'] ? 'لوگو' : 'جواز کسب' : '';
+            return $this->dataEdited($shop, 'shop_edited', "تصویر $what با موفقیت ویرایش شد و در صف بررسی قرار گرفت!");
 
 
         }
@@ -340,7 +360,7 @@ class ShopController extends Controller
         if (isset($request->active)) {
             if ($request->active == true && $shop->active == false) { //activate
                 if (Carbon::now()->timestamp > $shop->expires_at) {
-                    return response()->json(['errors' => ['ابتدا فروشگاه را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
+                    return response()->json(['errors' => ['برای فعالسازی ابتدا اشتراک فروشگاه را تمدید کنید']], 422);
                 }
                 if ($user->role != 'ad' && $user->role != 'go') {
                     return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
@@ -349,28 +369,51 @@ class ShopController extends Controller
             }
             $shop->active = $request->active;
             $shop->save();
-        } elseif ($request->name) {
+        }
+        if ($request->name) {
             if ($shop->name == $request->name) return null;
             $shop->name = $request->name;
-            $this->dataEdited($shop, 'shop_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($shop, 'shop_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif ($request->phone && $request->phone_verify) {
+        }
+        if ($request->phone && $request->phone_verify) {
             $shop->phone = $request->phone;
             (new SMS())->deleteActivationSMS($request->phone);
             $shop->save();
+            return $this->dataEdited($shop, 'shop_edited', 'شماره تماس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif ($request->province_id && $request->county_id && $request->address) {
+        }
+        if ($request->province_id && $request->county_id && $request->address) {
             if ($shop->province_id == $request->province_id && $shop->county_id == $request->county_id && $shop->location == $request->location && $shop->address == $request->address) return null;
             $shop->province_id = $request->province_id;
             $shop->location = $request->location;
             $shop->county_id = $request->county_id;
             $shop->address = $request->address;
-            $this->dataEdited($shop, 'shop_edited', 'استان/شهر/آدرس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($shop, 'shop_edited', 'استان/شهر/آدرس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->province_id && $request->county_id) {
+            if ($shop->province_id == $request->province_id && $shop->county_id == $request->county_id) return null;
+            $shop->province_id = $request->province_id;
+            $shop->county_id = $request->county_id;
+            return $this->dataEdited($shop, 'shop_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->address) {
+            if ($shop->address == $request->address) return null;
+            $shop->address = $request->address;
+            return $this->dataEdited($shop, 'shop_edited', 'آدرس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->location) {
+            if ($shop->location == $request->location) return null;
+            $shop->location = $request->location;
+            return $this->dataEdited($shop, 'shop_edited', 'مکان با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         } elseif ($request->description) {
             if ($shop->description == $request->description) return null;
             $shop->description = $request->description;
-            $this->dataEdited($shop, 'shop_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($shop, 'shop_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         }
     }
@@ -412,7 +455,7 @@ class ShopController extends Controller
         $active = $request->active;
         $user_id = $request->user;
 
-        $user = auth()->user();
+        $user = auth()->user() ?: auth('api')->user();
 
         if (!$paginate) {
             $paginate = 12;
@@ -430,7 +473,7 @@ class ShopController extends Controller
 
         $query = Shop::query();
 
-		if (is_numeric($id))
+        if (is_numeric($id))
             $query = $query->where('id', $id);
 
         if (is_numeric($province_id))
@@ -438,26 +481,25 @@ class ShopController extends Controller
         if (is_numeric($county_id))
             $query = $query->where('county_id', $county_id);
 
-       
 
 //
         if ($name) {
             foreach (explode(' ', $name) as $word) {
-                $query = $query->where(function ($query) use ($word,$sport_id,$province_id, $county_id) {
+                $query = $query->where(function ($query) use ($word, $sport_id, $province_id, $county_id) {
                     $query->orWhere('name', 'LIKE', '%' . $word . '%')
-					->orWhereIn('id', Product::where('name', 'LIKE', '%' . $word . '%')->pluck('shop_id'));
-					
-		$sport_id= json_decode($sport_id);
-		$province_id= json_decode($province_id);
-		$county_id= json_decode($county_id);
-		if (is_array($sport_id))
-            foreach ($sport_id as $id) {
-                $query = $query->orWhereJsonContains('groups', ['id' => (int)$id]);
-            }		
-		if (is_array($province_id))
-            $query = $query->orWhereIn('province_id', $province_id);
-        if (is_array($county_id))
-            $query = $query->orWhereIn('county_id', $county_id);
+                        ->orWhereIn('id', Product::where('name', 'LIKE', '%' . $word . '%')->pluck('shop_id'));
+
+                    $sport_id = json_decode($sport_id);
+                    $province_id = json_decode($province_id);
+                    $county_id = json_decode($county_id);
+                    if (is_array($sport_id))
+                        foreach ($sport_id as $id) {
+                            $query = $query->orWhereJsonContains('groups', ['id' => (int)$id]);
+                        }
+                    if (is_array($province_id))
+                        $query = $query->orWhereIn('province_id', $province_id);
+                    if (is_array($county_id))
+                        $query = $query->orWhereIn('county_id', $county_id);
                 });
             }
         }
@@ -469,7 +511,7 @@ class ShopController extends Controller
         if (is_numeric($sport_id)) {
 
             $query = $query->whereJsonContains('groups', (int)$sport_id);
-        } 
+        }
 
 
         if (!$user || !$panel) {

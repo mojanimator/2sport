@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Morilog\Jalali\Jalalian;
 use SMS;
+use stdClass;
 
 class CoachController extends Controller
 {
@@ -27,14 +28,17 @@ class CoachController extends Controller
 //        $date = Carbon::now();
 
         $request->validate([
+            'img' => 'required|base64_image'/*|base64_size:10240'*/,
             'name' => 'string|min:3|max:100',
             'family' => 'string|min:3|max:100',
-            'county_id' => 'required|' . Rule::in(County::pluck('id')),
-            'province_id' => 'required|in:' . County::where('id', $request->county_id)->firstOrNew()->province_id,
-            'sport_id' => 'required|' . Rule::in(Sport::pluck('id')),
+            'is_man' => 'required|' . Rule::in('true', 'false', true, false, 0, 1),
+            'sport' => 'required|' . Rule::in(Sport::pluck('id')),
+            'county' => 'required|' . Rule::in(County::pluck('id')),
+            'province' => 'required|in:' . County::where('id', $request->county)->firstOrNew()->province_id,
             'sport-rule_id' => 'sometimes|' . Rule::in(DB::table('sport-rules')->pluck('id')),
-
-            'is_man' => 'required|boolean',
+            'y' => 'required|numeric|min:1200|max:1500',
+            'm' => 'required|numeric|min:1|max:12',
+            'd' => 'required|numeric|min:1|max:31',
             'phone' => 'required|numeric|digits:11|regex:/^09[0-9]+$/' . '|unique:coaches,phone',
             'phone_verify' => [Rule::requiredIf(function () use ($request) {
                 return !auth()->user() || $request->phone != auth()->user()->phone;
@@ -42,11 +46,8 @@ class CoachController extends Controller
                 return $query->where('phone', $request->phone);
             }) : '',],
             'description' => 'nullable|string|max:2048',
-            'y' => 'required|numeric|min:1200|max:1500',
-            'm' => 'required|numeric|min:1|max:12',
-            'd' => 'required|numeric|min:1|max:31',
 
-            'img' => 'required|base64_image'/*|base64_size:10240'*/,
+
 //            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
         ], [
             'name.required' => 'نام  نمی تواند خالی باشد',
@@ -59,12 +60,12 @@ class CoachController extends Controller
             'family.min' => 'نام خانوادگی حداقل 3 حرف باشد',
             'family.max' => 'نام خانوادگی حداکثر 100 حرف باشد',
 
-            'county_id.required' => 'شهر ضروری است',
-            'county_id.in' => 'شهر نامعتبر است',
-            'province_id.required' => 'استان ضروری است',
-            'province_id.in' => 'استان نامعتبر است',
-            'sport_id.required' => 'رشته ورزشی ضروری است',
-            'sport_id.in' => 'رشته ورزشی نامعتبر است',
+            'county.required' => 'شهر ضروری است',
+            'county.in' => 'شهر نامعتبر است',
+            'province.required' => 'استان ضروری است',
+            'province.in' => 'استان نامعتبر است',
+            'sport.required' => 'رشته ورزشی ضروری است',
+            'sport.in' => 'رشته ورزشی نامعتبر است',
             'sport-rule_id.in' => 'پست رشته ورزشی نامعتبر است',
 
             'height.required' => 'قد ضروری است',
@@ -135,15 +136,15 @@ class CoachController extends Controller
 
         $coach = Coach::create([
             'user_id' => $user->id,
-            'province_id' => $request->province_id,
-            'county_id' => $request->county_id,
-            'sport_id' => $request->sport_id,
+            'province_id' => $request->province,
+            'county_id' => $request->county,
+            'sport_id' => $request->sport,
             'username' => $request['username'],
             'name' => $request->name,
             'family' => $request->family,
 
-            'born_at' => (new Jalalian($request->y, $request->m, $request->d))->toCarbon(),
-            'is_man' => $request->is_man,
+            'born_at' => (new Jalalian((int)$request->y, (int)$request->m, (int)$request->d))->toCarbon(),
+            'is_man' => is_string($request->is_man) ? ($request->is_man == 'true' ? true : false) : $request->is_man,
             'active' => false,
             'phone' => $request->phone,
             'description' => $request->description,
@@ -157,7 +158,7 @@ class CoachController extends Controller
 //            Doc::createVideo($request->file('video'), $coach->id, Helper::$typesMap['coaches'], Helper::$docsMap['video']);
 
 
-        $user->setRefferal();
+        $user->setReferral();
 
 
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'coach_created', $coach);
@@ -179,7 +180,7 @@ class CoachController extends Controller
             'family' => 'sometimes|string|min:3|max:100',
             'county_id' => 'required_with:province_id|' . Rule::in(County::pluck('id')),
             'province_id' => 'required_with:county_id|in:' . County::where('id', $request->county_id)->firstOrNew()->province_id,
-            'is_man' => 'sometimes|boolean',
+            'is_man' => 'sometimes|' . Rule::in('true', 'false', true, false, 0, 1),
             'y' => 'required_with:d|numeric|min:1200|max:1500',
             'm' => 'required_with:y|numeric|min:1|max:12',
             'd' => 'required_with:m|numeric|min:1|max:31',
@@ -301,13 +302,20 @@ class CoachController extends Controller
             if ($request->replace) {
 
                 $doc = Doc::find($request->id);
+                if ($doc == null) {
+                    $doc = new stdClass;
+                    $doc->id = null;
+                    $doc->docable_id = $request->data_id;
+                    $doc->docable_type = Helper::$typesMap['coaches'];
+                    $doc->type_id = Helper::$docsMap['profile'];
+                }
                 $coach = Coach::where('id', $doc->docable_id)->first();
                 if (!$this->authorize('ownItem', [User::class, $coach, false]))
                     return response()->json(['errors' => ['تصویر متعلق به شما نیست']], 422);
                 Doc::createImage($request->img, $doc->docable_id, $doc->docable_type, $doc->type_id, $doc->id);
 
             }
-            $this->dataEdited($coach, 'coach_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($coach, 'coach_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
 
         }
@@ -319,7 +327,7 @@ class CoachController extends Controller
         if (isset($request->active)) {
             if ($request->active == true && $coach->active == false) { //activate
                 if (Carbon::now()->timestamp > $coach->expires_at) {
-                    return response()->json(['errors' => ['ابتدا مربی را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
+                    return response()->json(['errors' => ['برای فعالسازی ابتدا اشتراک مربی را تمدید کنید']], 422);
                 }
                 if ($user->role != 'ad' && $user->role != 'go') {
                     return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
@@ -328,45 +336,81 @@ class CoachController extends Controller
             }
             $coach->active = $request->active;
             $coach->save();
-        } elseif ($request->name) {
-            if ($coach->name == $request->name) return null;
-            $coach->name = $request->name;
-            $this->dataEdited($coach, 'coach_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
-
-        } elseif ($request->family) {
+        }
+        if ($request->name || $request->family) {
+            if ($coach->name == $request->name && $coach->family == $request->family) return null;
+            if ($request->name != null && $coach->name != $request->name)
+                $coach->name = $request->name;
+            if ($request->family != null && $coach->family != $request->family)
+                $coach->family = $request->family;
+            return $this->dataEdited($coach, 'coach_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+        }
+        if ($request->family) {
             if ($coach->family == $request->family) return null;
             $coach->family = $request->family;
-            $this->dataEdited($coach, 'coach_edited', 'نام خانوادگی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($coach, 'coach_edited', 'نام خانوادگی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif ($request->phone && $request->phone_verify) {
+        }
+        if ($request->phone && $request->phone_verify) {
             $coach->phone = $request->phone;
             (new SMS())->deleteActivationSMS($request->phone);
             $coach->save();
+            return $this->dataEdited($coach, 'coach_edited', 'شماره تماس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif (($request->is_man !== null) && $request->d && $request->y && $request->m) {
+        }
+        if (($request->is_man !== null) && $request->d && $request->y && $request->m) {
 
             $date = (new Jalalian($request->y, $request->m, $request->d))->toCarbon();
             if ($date->timestamp == $coach->born_at && $coach->is_man == $request->is_man) return null;
             $coach->is_man = $request->is_man;
             $coach->born_at = $date;
-            $this->dataEdited($coach, 'coach_edited', 'جنسیت/تاریخ تولد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($coach, 'coach_edited', 'جنسیت/تاریخ تولد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif ($request->sport_id !== null) {
+        }
+        if ($request->weight) {
+            if ($coach->weight == $request->weight) return null;
+            $coach->weight = $request->weight;
+            return $this->dataEdited($coach, 'coach_edited', 'وزن با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->height) {
+            if ($coach->height == $request->height) return null;
+            $coach->height = $request->height;
+            return $this->dataEdited($coach, 'coach_edited', 'قد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->d && $request->y && $request->m) {
+            $date = (new Jalalian($request->y, $request->m, $request->d))->toCarbon();
+            if ($date->timestamp == $coach->born_at) return null;
+
+            $coach->born_at = $date;
+            return $this->dataEdited($coach, 'coach_edited', 'تاریخ تولد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+
+        }
+        if ($request->is_man !== null) {
+            if ($coach->is_man == $request->is_man) return null;
+            $coach->is_man = $request->is_man;
+            return $this->dataEdited($coach, 'coach_edited', 'جنسیت با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+        }
+        if ($request->sport_id !== null) {
             if ($coach->sport_id == $request->sport_id) return null;
             $coach->sport_id = $request->sport_id;
-            $this->dataEdited($coach, 'coach_edited', 'رشته ورزشی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($coach, 'coach_edited', 'رشته ورزشی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
 
-        } elseif ($request->province_id && $request->county_id) {
+        }
+        if ($request->province_id && $request->county_id) {
             if ($coach->province_id == $request->province_id && $coach->county_id == $request->county_id) return null;
             $coach->province_id = $request->province_id;
             $coach->county_id = $request->county_id;
-            $this->dataEdited($coach, 'coach_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($coach, 'coach_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif ($request->description) {
+        }
+        if ($request->description) {
             if ($coach->description == $request->description) return null;
             $coach->description = $request->description;
-            $this->dataEdited($coach, 'coach_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($coach, 'coach_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         }
     }
@@ -387,7 +431,7 @@ class CoachController extends Controller
     protected function search(Request $request)
     {
 
-		$id = $request->id;
+        $id = $request->id;
         $page = $request->page;
         $paginate = $request->paginate;
         $sport_id = $request->sport;
@@ -403,7 +447,7 @@ class CoachController extends Controller
         $active = $request->active;
         $user_id = $request->user;
 
-        $user = auth()->user();
+        $user = auth()->user() ?: auth('api')->user();
 
         if (!$paginate) {
             $paginate = 12;
@@ -421,7 +465,7 @@ class CoachController extends Controller
 
         $query = Coach::query();
 
-		if (is_numeric($id))
+        if (is_numeric($id))
             $query = $query->where('id', $id);
 
         if (is_numeric($sport_id))
@@ -430,8 +474,8 @@ class CoachController extends Controller
             $query = $query->where('province_id', $province_id);
         if (is_numeric($county_id))
             $query = $query->where('county_id', $county_id);
-      
-        
+
+
         if ($age_l && is_numeric($age_l) && $age_l > 0)
             $query = $query->where('born_at', '<=', Carbon::now()->subYears($age_l));
         if ($age_h && is_numeric($age_h) && $age_h < 100)
@@ -439,20 +483,20 @@ class CoachController extends Controller
 
         if ($name) {
             foreach (explode(' ', $name) as $word) {
-                $query = $query->where(function ($query) use ($word,$sport_id,$province_id, $county_id) {
+                $query = $query->where(function ($query) use ($word, $sport_id, $province_id, $county_id) {
                     $query->orWhere('name', 'LIKE', '%' . $word . '%')
                         ->orWhere('family', 'LIKE', '%' . $word . '%');
-						
-			$sport_id= json_decode($sport_id);
-			$province_id= json_decode($province_id);
-			$county_id= json_decode($county_id);			
-			if (is_array( $sport_id))
-				$query = $query->orWhereIn('sport_id', $sport_id);
-			if (is_array($province_id))
-				$query = $query->orWhereIn('province_id', $province_id);
-			if (is_array($county_id))
-				$query = $query->orWhereIn('county_id', $county_id);
-               
+
+                    $sport_id = json_decode($sport_id);
+                    $province_id = json_decode($province_id);
+                    $county_id = json_decode($county_id);
+                    if (is_array($sport_id))
+                        $query = $query->orWhereIn('sport_id', $sport_id);
+                    if (is_array($province_id))
+                        $query = $query->orWhereIn('province_id', $province_id);
+                    if (is_array($county_id))
+                        $query = $query->orWhereIn('county_id', $county_id);
+
                 });
             }
         }

@@ -24,8 +24,8 @@ class Product extends Model
         'sold' => 'string',
         'price' => 'string',
         'count' => 'string',
-		 'group_id' => 'string',
-		 'shop_id' => 'integer',
+        'group_id' => 'string',
+        'shop_id' => 'integer',
         'discount_price' => 'string',
         'province_id' => 'string',
         'county_id' => 'string',
@@ -60,10 +60,10 @@ class Product extends Model
 
     public function getSalePercentAttribute()
     {
-		 
-        if (!$this->discount_price || !$this->price   )
+
+        if (!$this->discount_price || !$this->price)
             return '0%';
-        return round(($this->price - $this->discount_price) * 100 / ($this->price)) . "%";
+        return ceil(($this->price - $this->discount_price) * 100 / ($this->price)) . "%";
     }
 
 //    public function getSlugAttribute()

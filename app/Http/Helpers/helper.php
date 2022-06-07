@@ -20,7 +20,7 @@ class Helper
     static $initScore = 0;
     static $club_image_limit = 3;
     static $product_image_limit = 3;
-    static $cropsRatio = ['video' => 0.75, 'profile' => 0.75, 'gallery' => 1.25, 'product' => 1, 'logo' => 1];
+    static $cropsRatio = ['license' => 0.75, 'video' => 0.75, 'profile' => 0.75, 'club' => 1.25, 'product' => 1.0, 'logo' => 1.0];
     static $refMap = [
         1 => 'player',
         2 => 'coach',

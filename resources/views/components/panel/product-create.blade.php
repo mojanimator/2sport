@@ -27,7 +27,7 @@
                                                 class="  col-sm-12 col-md-6  mx-auto my-1 overflow-auto" id="img{{$i}}"
                                                 label="تصویر محصول"
                                                 for-id="img{{$i}}" ref="imageUploader-img{{$i}}"
-                                                crop-ratio="{{Helper::$crops['product']}}"
+                                                crop-ratio="{{Helper::$cropsRatio['product']}}"
                                                 link="null"
                                                 preload="null"
                                                 height="10" mode="create">
@@ -131,18 +131,18 @@
                             <div class="col-sm-12 my-1 my-sm-0 ">
                                 {{--<label for="province-input"--}}
                                 {{--class="col-12 col-form-label text-right">استان</label>--}}
-                                <select id="shop_id" name="shop_id"
-                                        class="px-4 form-control{{ $errors->has('shop_id')  ? ' is-invalid' : '' }}">
+                                <select id="shop" name="shop"
+                                        class="px-4 form-control{{ $errors->has('shop')  ? ' is-invalid' : '' }}">
                                     <option value="0">انتخاب فروشگاه</option>
                                     @foreach($shops as $s)
                                         <option value="{{$s->id}}"
-                                                {{ old('shop_id')==$s->id? ' selected ':''}} >{{$s->name}}</option>
+                                                {{ old('shop')==$s->id? ' selected ':''}} >{{$s->name}}</option>
 
                                     @endforeach
                                 </select>
 
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-shop_id"> </strong>
+                                    <strong id="err-shop"> </strong>
                                 </div>
 
                             </div>
@@ -188,7 +188,7 @@
 
                         <div class="form-group   mb-0">
                             <div class="col-md-12  mt-2">
-                                <button onclick=" submitWithFiles(event)" type="button"
+                                <button onclick=" submitWithFiles(event,{'upload_pending': true})" type="button"
                                         class="btn btn-success btn-block font-weight-bold py-3">
                                     ثبت
                                 </button>
@@ -212,7 +212,7 @@
 
         });
 
-        function submitWithFiles(event) {
+        function submitWithFiles(event, extra = {}) {
             document.querySelector('#loading').classList.remove('d-none');
             validInputs();
 
@@ -221,7 +221,7 @@
             let data = document.querySelector('#form-create').querySelectorAll('input, textarea, select');
             for (let i in data) {
 
-                if (data[i].id && data[i].id.includes('img') && !data[i].id.includes('file')) {
+                if (data[i].id && data[i].id.includes('img') && !data[i].id.includes('file') && extra['upload_pending'] !== true) {
 
                     let res = app.$refs['imageUploader-' + data[i].id].getCroppedData();
                     if (res)
@@ -234,7 +234,8 @@
                 else
                     fd.append(data[i].name, data[i].value);
             }
-
+            for (let i in extra)
+                fd.append(i, extra[i]);
 
             axios.post("{{route('product.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
@@ -247,8 +248,12 @@
 //                        console.log(response);
                         document.querySelector('#loading').classList.add('d-none');
 
-                        if (response.status === 200)
-                            window.location = '{{url('panel/product')}}'
+                        if (response.status == 200)
+                            if (response.data.resume == true)
+                                submitWithFiles(event);
+                            else
+                                window.location = '{{url('panel/product')}}'
+
 
                     }
                 ).catch((error) => {

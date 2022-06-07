@@ -136,6 +136,7 @@
                                 <image-uploader key="-1"
                                                 class=" my-1 col-6 mx-auto   overflow-auto" id="license"
                                                 label="تصویر چهره"
+                                                id="{{$player->id}}"
                                                 for-id="{{$profile?$profile->id:''}}" ref="profileUploader"
                                                 crop-ratio="{{.85}}"
                                                 link="{{route('player.edit')}}"
@@ -148,6 +149,7 @@
                                 <video-uploader
                                         class="col-12 col-lg-12 mx-auto  " id="video"
                                         label=" ویدیو کوتاه معرفی خود و مهارت های ورزشی"
+                                        id="{{$player->id}}"
                                         for-id="{{$video->id}}" ref="videoUploader"
                                         crop-ratio="{{1.25}}"
                                         link="{{route('player.edit')}}"

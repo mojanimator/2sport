@@ -6,6 +6,7 @@ use App\Mail\RegisterEditUserMail;
 use App\Models\County;
 use App\Models\Doc;
 use App\Models\Player;
+use App\Models\Province;
 use App\Models\Setting;
 use App\Models\Sport;
 use App\Models\User;
@@ -17,7 +18,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Morilog\Jalali\Jalalian;
+use phpDocumentor\Reflection\Types\Object_;
 use SMS;
+use stdClass;
 
 class PlayerController extends Controller
 {
@@ -27,15 +30,20 @@ class PlayerController extends Controller
 //        $date = Carbon::now();
 
         $request->validate([
+            'img' => 'required|base64_image'/*|base64_size:10240'*/,
             'name' => 'string|min:3|max:100',
             'family' => 'string|min:3|max:100',
-            'county' => 'required|' . Rule::in(County::pluck('id')),
-            'province' => 'required|in:' . County::where('id', $request->county_id)->firstOrNew()->province_id,
+            'is_man' => 'required|' . Rule::in('true', 'false', true, false, 0, 1),
             'sport' => 'required|' . Rule::in(Sport::pluck('id')),
+            'province' => 'required|' . (!$request->county ? Rule::in(Province::pluck('id')) : Rule::in([County::where('id', $request->county)->firstOrNew()->province_id])),
+            'county' => 'required|' . Rule::in(County::pluck('id')),
             'sport-rule_id' => 'sometimes|' . Rule::in(DB::table('sport-rules')->pluck('id')),
+            'y' => 'required|numeric|min:1200|max:1500',
+            'm' => 'required|numeric|min:1|max:12',
+            'd' => 'required|numeric|min:1|max:31',
             'height' => 'required|numeric|min:10|max:300',
             'weight' => 'required|numeric|min:10|max:300',
-            'is_man' => 'required|boolean',
+
             'phone' => 'required|numeric|digits:11|regex:/^09[0-9]+$/' . '|unique:players,phone',
             'phone_verify' => [Rule::requiredIf(function () use ($request) {
                 return !auth()->user() || $request->phone != auth()->user()->phone;
@@ -43,11 +51,8 @@ class PlayerController extends Controller
                 return $query->where('phone', $request->phone);
             }) : '',],
             'description' => 'nullable|string|max:2048',
-            'y' => 'required|numeric|min:1200|max:1500',
-            'm' => 'required|numeric|min:1|max:12',
-            'd' => 'required|numeric|min:1|max:31',
 
-            'img' => 'required|base64_image'/*|base64_size:10240'*/,
+
             'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:51200'
         ], [
             'name.required' => 'نام  نمی تواند خالی باشد',
@@ -108,9 +113,9 @@ class PlayerController extends Controller
             'd.min' => 'روز تولد بین 1 تا 31 است',
             'd.max' => 'روز تولد بین 1 تا 31 است',
 
-            'img.required' => 'تصویر ضروری است',
-            'img.base64_image' => 'فرمت تصویر نامعتبر است',
-            'img.base64_size' => 'حداکثر حجم فایل 1 مگابایت باشد',
+            'img.required' => 'تصویر چهره ضروری است',
+            'img.base64_image' => 'فرمت تصویر چهره نامعتبر است',
+            'img.base64_size' => 'حداکثر حجم تصویر چهره 1 مگابایت باشد',
 
             'video.required' => 'ویدیو ضروری است',
             'video.mimes' => 'ویدیو ارسالی با فرمت mp4 باشد',
@@ -118,37 +123,38 @@ class PlayerController extends Controller
 
         ]);
 //request video after validating other fields
-        if (isset($request->video_pending))
-            if ($request->video_pending == true)
-                return response()->json(['resume' => true], 200);
-        if ($request->video_pending == false) //video upload
-            $request->validate([
+        if (isset($request->upload_pending))
+//            if ($request->video_pending == true)
+            return response()->json(['resume' => true], 200);
+//        if ($request->video_pending == false) //video upload
+        $request->validate([
 
-                'video' => 'required|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:51200'
-            ], [
+            'video' => 'required|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:51200'
+        ], [
 
-                'video.required' => 'ویدیو ضروری است',
-                'video.mimes' => 'ویدیو ارسالی با فرمت mp4 باشد',
-                'video.max' => 'حجم ویدیو حداکثر 50 مگابایت باشد',
+            'video.required' => 'ویدیو ضروری است',
+            'video.mimes' => 'ویدیو ارسالی با فرمت mp4 باشد',
+            'video.max' => 'حجم ویدیو حداکثر 50 مگابایت باشد',
 
-            ]);
+        ]);
 
 //        DB::transaction(function () use ($request, & $user) {
 
-            if (!auth()->user()) { //user not login or register
-                $user = User::where('phone', $request->phone)->first(); //user not login
-                if (!$user) { //user not exists
-                    $user = User::create([
-                        'phone' => $request->phone,
-                        'active' => true,
-                        'name' => $request->name,
-                        'family' => $request->family,
-                        'phone_verified' => true,
-                    ]);
-                    auth()->login($user);
-                }
-            } else
-                $user = auth()->user();
+        if (!auth()->user()) { //user not login or register
+            $user = User::where('phone', $request->phone)->first(); //user not login
+            if (!$user) { //user not exists
+                $user = User::create([
+                    'phone' => $request->phone,
+                    'active' => true,
+                    'name' => $request->name,
+                    'family' => $request->family,
+                    'phone_verified' => true,
+                ]);
+                auth()->login($user);
+            }
+        } else
+            $user = auth()->user();
+
 
         $player = Player::create([
             'user_id' => $user->id,
@@ -161,8 +167,8 @@ class PlayerController extends Controller
             'family' => $request->family,
             'height' => $request->height,
             'weight' => $request->weight,
-            'born_at' => (new Jalalian($request->y, $request->m, $request->d))->toCarbon(),
-            'is_man' => $request->is_man,
+            'born_at' => (new Jalalian((int)$request->y, (int)$request->m, (int)$request->d))->toCarbon(),
+            'is_man' => is_string($request->is_man) ? ($request->is_man == 'true' ? true : false) : $request->is_man,
             'active' => false,
             'phone' => $request->phone,
             'description' => $request->description,
@@ -176,7 +182,7 @@ class PlayerController extends Controller
         Doc::createVideo($request->file('video'), $player->id, Helper::$typesMap['players'], Helper::$docsMap['video']);
 
 
-        $user->setRefferal();
+        $user->setReferral();
 
 
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'player_created', $player);
@@ -199,12 +205,12 @@ class PlayerController extends Controller
             'family' => 'sometimes|string|min:3|max:100',
             'county_id' => 'required_with:province_id|' . Rule::in(County::pluck('id')),
             'province_id' => 'required_with:county_id|in:' . County::where('id', $request->county_id)->firstOrNew()->province_id,
-            'is_man' => 'sometimes|boolean',
+            'is_man' => 'sometimes|' . Rule::in('true', 'false', true, false, 0, 1),
             'y' => 'required_with:d|numeric|min:1200|max:1500',
             'm' => 'required_with:y|numeric|min:1|max:12',
             'd' => 'required_with:m|numeric|min:1|max:31',
-            'height' => 'required_with:weight|numeric|min:10|max:300',
-            'weight' => 'required_with:height|numeric|min:10|max:300',
+            'height' => 'sometimes|numeric|min:10|max:300',
+            'weight' => 'sometimes|numeric|min:10|max:300',
             'sport_id' => 'sometimes|' . Rule::in($sports),
             'phone' => 'sometimes|numeric|digits:11|regex:/^09[0-9]+$/' . '|unique:users,phone,' . auth()->user()->id,
             'phone_verify' => ['required_with:phone', Rule::requiredIf(function () use ($request) {
@@ -324,6 +330,13 @@ class PlayerController extends Controller
             if ($request->replace) {
 
                 $doc = Doc::find($request->id);
+                if ($doc == null) {
+                    $doc = new stdClass;
+                    $doc->id = null;
+                    $doc->docable_id = $request->data_id;
+                    $doc->docable_type = Helper::$typesMap['players'];
+                    $doc->type_id = Helper::$docsMap['video'];
+                }
                 $player = Player::where('id', $doc->docable_id)->first();
 
                 if (!$this->authorize('ownItem', [User::class, $player, false]))
@@ -341,7 +354,7 @@ class PlayerController extends Controller
 
             }
 
-            $this->dataEdited($player, 'player_edited', 'ویدیو با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($player, 'player_edited', 'ویدیو با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         } elseif ($request->cmnd == 'delete-img') {
 
@@ -359,13 +372,21 @@ class PlayerController extends Controller
 
             if ($request->replace) {
                 $doc = Doc::find($request->id);
+                if ($doc == null) {
+                    $doc = new stdClass;
+                    $doc->id = null;
+                    $doc->docable_id = $request->data_id;
+                    $doc->docable_type = Helper::$typesMap['players'];
+                    $doc->type_id = Helper::$docsMap['profile'];
+                }
                 $player = Player::where('id', $doc->docable_id)->first();
                 if (!$this->authorize('ownItem', [User::class, $player, false]))
                     return response()->json(['errors' => ['تصویر متعلق به شما نیست']], 422);
+
                 Doc::createImage($request->img, $doc->docable_id, $doc->docable_type, $doc->type_id, $doc->id);
 
             }
-            $this->dataEdited($player, 'player_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($player, 'player_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         }
         $player = Player::where('id', $request->id)->first();
@@ -375,7 +396,7 @@ class PlayerController extends Controller
         if (isset($request->active)) {
             if ($request->active == true && $player->active == false) { //activate
                 if (Carbon::now()->timestamp > $player->expires_at) {
-                    return response()->json(['errors' => ['ابتدا بازیکن را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
+                    return response()->json(['errors' => ['برای فعالسازی ابتدا اشتراک بازیکن را تمدید کنید']], 422);
                 }
                 if ($user->role != 'ad' && $user->role != 'go') {
                     return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
@@ -384,48 +405,85 @@ class PlayerController extends Controller
             }
             $player->active = $request->active;
             $player->save();
-        } elseif ($request->name) {
-            if ($player->name == $request->name) return null;
-            $player->name = $request->name;
-            $this->dataEdited($player, 'player_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
-        } elseif ($request->family) {
+        }
+        if ($request->name || $request->family) {
+            if ($player->name == $request->name && $player->family == $request->family) return null;
+            if ($request->name != null && $player->name != $request->name)
+                $player->name = $request->name;
+            if ($request->family != null && $player->family != $request->family)
+                $player->family = $request->family;
+            return $this->dataEdited($player, 'player_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+        }
+        if ($request->family) {
             if ($player->family == $request->family) return null;
             $player->family = $request->family;
-            $this->dataEdited($player, 'player_edited', 'نام خانوادگی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($player, 'player_edited', 'نام خانوادگی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
 
-        } elseif ($request->phone && $request->phone_verify) {
+        }
+        if ($request->phone && $request->phone_verify) {
             $player->phone = $request->phone;
             (new SMS())->deleteActivationSMS($request->phone);
             $player->save();
+            return $this->dataEdited($player, 'player_edited', 'شماره تماس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif (($request->is_man !== null) && $request->d && $request->y && $request->m && $request->weight && $request->height) {
+        }
+        if (($request->is_man !== null) && $request->d && $request->y && $request->m && $request->weight && $request->height) {
             $date = (new Jalalian($request->y, $request->m, $request->d))->toCarbon();
             if ($date->timestamp == $player->born_at && $player->weight == $request->weight && $player->height == $request->height && $player->is_man == $request->is_man) return null;
             $player->weight = $request->weight;
             $player->height = $request->height;
             $player->is_man = $request->is_man;
             $player->born_at = $date;
-            $this->dataEdited($player, 'player_edited', 'قد/وزن/جنسیت/تاریخ تولد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($player, 'player_edited', 'قد/وزن/جنسیت/تاریخ تولد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
 
-        } elseif ($request->sport_id !== null) {
+        }
+        if ($request->weight) {
+            if ($player->weight == $request->weight) return null;
+            $player->weight = $request->weight;
+            return $this->dataEdited($player, 'player_edited', 'وزن با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->height) {
+            if ($player->height == $request->height) return null;
+            $player->height = $request->height;
+            return $this->dataEdited($player, 'player_edited', 'قد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->d && $request->y && $request->m) {
+            $date = (new Jalalian($request->y, $request->m, $request->d))->toCarbon();
+            if ($date->timestamp == $player->born_at) return null;
+
+            $player->born_at = $date;
+            return $this->dataEdited($player, 'player_edited', 'تاریخ تولد با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+
+        }
+        if ($request->is_man !== null) {
+            if ($player->is_man == $request->is_man) return null;
+            $player->is_man = $request->is_man;
+            return $this->dataEdited($player, 'player_edited', 'جنسیت با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+        }
+        if ($request->sport_id !== null) {
             if ($player->sport_id == $request->sport_id) return null;
             $player->sport_id = $request->sport_id;
-            $this->dataEdited($player, 'player_edited', 'رشته ورزشی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($player, 'player_edited', 'رشته ورزشی با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
 
-        } elseif ($request->province_id && $request->county_id) {
+        }
+        if ($request->province_id && $request->county_id) {
             if ($player->province_id == $request->province_id && $player->county_id == $request->county_id) return null;
             $player->province_id = $request->province_id;
             $player->county_id = $request->county_id;
 
-            $this->dataEdited($player, 'player_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($player, 'player_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif ($request->description) {
+        }
+        if ($request->description) {
             if ($player->description == $request->description) return null;
             $player->description = $request->description;
-            $this->dataEdited($player, 'player_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($player, 'player_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         }
     }
@@ -474,7 +532,7 @@ class PlayerController extends Controller
         $active = $request->active;
         $user_id = $request->user;
 
-        $user = auth()->user();
+        $user = auth()->user() ?: auth('api')->user();
 
         if (!$paginate) {
             $paginate = 12;

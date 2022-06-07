@@ -7,7 +7,7 @@
                         <div class="col-8">
                             <div class="numbers">
                                 <h5 class="  mb-0 text-success font-weight-bold">
-                                    باشگاه جدید
+                                    مرکز ورزشی جدید
                                 </h5>
                                 <h5 class=" text-sm text-black-50 font-weight-bolder mb-0">
                                     &nbsp

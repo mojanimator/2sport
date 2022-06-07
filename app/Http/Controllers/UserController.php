@@ -267,12 +267,15 @@ class UserController extends Controller
         $info = [];
         $ref = [];
         if ($user) {
+            $shops = Shop::where('user_id', $user->id)->select('id', 'name', 'user_id')->orDerByDesc('id')->get();
             $info = [
 
                 'player' => Player::where('user_id', $user->id)->count(),
                 'coach' => Coach::where('user_id', $user->id)->count(),
                 'club' => Club::where('user_id', $user->id)->count(),
-                'shop' => Shop::where('user_id', $user->id)->count(),
+                'shop' => count($shops),
+                'shops' => $shops,
+
             ];
             if (in_array($user->role, ['go', 'ad', 'bl']))
                 $info = ['blog' => Blog::where('user_id', $user->id)->count()] + $info;

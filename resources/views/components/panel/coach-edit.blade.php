@@ -133,6 +133,7 @@
                                 <image-uploader key="-1"
                                                 class=" my-1 col-6 mx-auto   overflow-auto" id="license"
                                                 label="تصویر چهره"
+                                                id="{{$coach->id}}"
                                                 for-id="{{$profile?$profile->id:''}}" ref="profileUploader"
                                                 crop-ratio="{{.85}}"
                                                 link="{{route('coach.edit')}}"
@@ -317,8 +318,8 @@
 
                             <div class="col-md-10 row mx-auto my-2 ">
                                 <div class="input-group px-0 ">
-                                    <select id="sport_id" name="sport_id"
-                                            class="px-4 form-control{{ $errors->has('sport_id')  ? ' is-invalid' : '' }}">
+                                    <select id="sport" name="sport"
+                                            class="px-4 form-control{{ $errors->has('sport')  ? ' is-invalid' : '' }}">
                                         <option value="0">انتخاب رشته ورزشی</option>
                                         @foreach(\App\Models\Sport::get() as $s)
                                             <option value="{{$s->id}}"
@@ -329,13 +330,13 @@
                                     <button class="btn btn-secondary rounded ms-auto" type="button"
                                             id="addres-addon"
                                             onclick=" submitWithFiles(event,{
-                                            'sport_id':document.getElementById('sport_id').value,
+                                            'sport':document.getElementById('sport').value,
 
                                            })">ویرایش
                                     </button>
                                 </div>
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-sport_id"> </strong>
+                                    <strong id="err-sport"> </strong>
                                 </div>
 
                             </div>
@@ -347,16 +348,16 @@
                                     <button class="btn btn-secondary rounded ms-auto" type="button"
                                             id="addres-addon"
                                             onclick=" submitWithFiles(event,{
-                                            'county_id':document.getElementById('county_id').value,
-                                            'province_id':document.getElementById('province_id').value,
+                                            'county':document.getElementById('county').value,
+                                            'province':document.getElementById('province').value,
                                            })">ویرایش
                                     </button>
                                 </div>
                                 <div class="col-sm-6 my-1 my-sm-0 ">
                                     {{--<label for="province-input"--}}
                                     {{--class="col-12 col-form-label text-right">استان</label>--}}
-                                    <select id="province_id" name="province_id" onchange="setCountyOptions(this.value)"
-                                            class="px-4 form-control{{ $errors->has('province_id')  ? ' is-invalid' : '' }}">
+                                    <select id="province" name="province" onchange="setCountyOptions(this.value)"
+                                            class="px-4 form-control{{ $errors->has('province')  ? ' is-invalid' : '' }}">
                                         <option value="0">انتخاب استان</option>
                                         @foreach(\Illuminate\Support\Facades\DB::table('province')->get() as $p)
                                             <option value="{{$p->id}}"
@@ -366,15 +367,15 @@
                                     </select>
 
                                     <div class=" text-danger text-start small  col-12   " role="alert">
-                                        <strong id="err-province_id"> </strong>
+                                        <strong id="err-province"> </strong>
                                     </div>
 
                                 </div>
                                 <div class="col-sm-6  my-1 my-sm-0">
                                     {{--<label for="county-input"--}}
                                     {{--class="col-12 col-form-label text-right">شهر </label>--}}
-                                    <select id="county_id" name="county_id"
-                                            class="px-4 form-control{{ $errors->has('county_id')  ? ' is-invalid' : '' }}">
+                                    <select id="county" name="county"
+                                            class="px-4 form-control{{ $errors->has('county')  ? ' is-invalid' : '' }}">
                                         @if(   $coach->county_id  )
                                             @foreach(\App\Models\County::where('province_id',$coach->province_id)->get() as $c)
 
@@ -386,7 +387,7 @@
                                     </select>
 
                                     <div class=" text-danger text-start small  col-12   " role="alert">
-                                        <strong id="err-county_id"> </strong>
+                                        <strong id="err-county"> </strong>
                                     </div>
 
                                 </div>
@@ -520,7 +521,7 @@
 
 
             function setCountyOptions(selValue) {
-                let sel2 = document.querySelector('#county_id');
+                let sel2 = document.querySelector('#county');
                 while (sel2.firstChild && sel2.removeChild(sel2.firstChild)) ;
                 for (let i = 0; i < counties.length; i++) {
                     if (counties[i].province_id == selValue) {

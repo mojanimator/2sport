@@ -15,8 +15,9 @@
                             <image-uploader key="-1"
                                             class=" my-1   mx-auto   overflow-auto" id="license"
                                             label="تصویر جواز کسب"
+                                            id=""
                                             for-id="img" ref="licenseUploader"
-                                            crop-ratio="{{Helper::$cropsRatio['profile']}}"
+                                            crop-ratio="{{Helper::$cropsRatio['license']}}"
                                             link="null"
                                             preload="null"
                                             height="10" mode="create">
@@ -29,8 +30,9 @@
                                 <image-uploader key="{{$i}}" style=" min-width:{{1*10}}rem;min-height:{{10}}rem"
                                                 class="  col-sm-12 col-md-6  mx-auto my-1 overflow-auto" id="img{{$i}}"
                                                 label="تصویر محیط باشگاه"
+                                                id=""
                                                 for-id="img{{$i}}" ref="imageUploader-img{{$i}}"
-                                                crop-ratio="{{Helper::$cropsRatio['gallery']}}"
+                                                crop-ratio="{{Helper::$cropsRatio['club']}}"
                                                 link="null"
                                                 preload="null"
                                                 height="10" mode="create">
@@ -133,27 +135,27 @@
                             <div class="col-sm-6 my-1 my-sm-0 ">
                                 {{--<label for="province-input"--}}
                                 {{--class="col-12 col-form-label text-right">استان</label>--}}
-                                <select id="province_id" name="province_id" onchange="setCountyOptions(this.value)"
-                                        class="px-4 form-control{{ $errors->has('province_id')  ? ' is-invalid' : '' }}">
+                                <select id="province" name="province" onchange="setCountyOptions(this.value)"
+                                        class="px-4 form-control{{ $errors->has('province')  ? ' is-invalid' : '' }}">
                                     <option value="0">انتخاب استان</option>
                                     @foreach(\Illuminate\Support\Facades\DB::table('province')->get() as $p)
                                         <option value="{{$p->id}}"
-                                                {{ old('province_id')==$p->id? ' selected ':''}} >{{$p->name}}</option>
+                                                {{ old('province')==$p->id? ' selected ':''}} >{{$p->name}}</option>
 
                                     @endforeach
                                 </select>
 
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-province_id"> </strong>
+                                    <strong id="err-province"> </strong>
                                 </div>
 
                             </div>
                             <div class="col-sm-6  my-1 my-sm-0">
                                 {{--<label for="county-input"--}}
                                 {{--class="col-12 col-form-label text-right">شهر </label>--}}
-                                <select id="county_id" name="county_id"
-                                        class="px-4 form-control{{ $errors->has('county_id')  ? ' is-invalid' : '' }}">
-                                    @if(  $cId=\App\Models\County::find(old('county_id') ))
+                                <select id="county" name="county"
+                                        class="px-4 form-control{{ $errors->has('county')  ? ' is-invalid' : '' }}">
+                                    @if(  $cId=\App\Models\County::find(old('county') ))
 
                                         <option value="{{$cId->id}}" selected>{{$cId->name}}</option>
                                     @else
@@ -162,7 +164,7 @@
                                 </select>
 
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-county_id"> </strong>
+                                    <strong id="err-county"> </strong>
                                 </div>
 
                             </div>
@@ -191,8 +193,7 @@
                                 <textarea id="description" rows="4"
                                           class="  px-4 form-control @error('description') is-invalid @enderror"
                                           name="description"
-                                          autocomplete="description" autofocus>{{ old('description') }}
-                                </textarea>
+                                          autocomplete="description" autofocus>{{ old('description') }}</textarea>
                                 <label for="description"
                                        class="col-md-12 col-form-label form-label  text-md-right">
                                     توضیحات
@@ -261,7 +262,7 @@
                         </div>
                         <div class="form-group   mb-0">
                             <div class="col-md-12  mt-2">
-                                <button onclick=" submitWithFiles(event)" type="button"
+                                <button onclick=" submitWithFiles(event,{'upload_pending': true})" type="button"
                                         class="btn btn-success btn-block font-weight-bold py-3">
                                     پرداخت و ثبت
                                 </button>
@@ -290,7 +291,7 @@
             );
         });
 
-        function submitWithFiles(event) {
+        function submitWithFiles(event, extra = {}) {
             document.querySelector('#loading').classList.remove('d-none');
             validInputs();
 
@@ -300,9 +301,9 @@
             for (let i in data) {
                 if (data[i].type === 'radio' && data[i].checked === false)
                     continue;
-                if (data[i].id === 'license')
+                if (data[i].id === 'license' && extra['upload_pending'] !== true)
                     fd.append(data[i].name, app.$refs.licenseUploader.getCroppedData());
-                else if (data[i].id && data[i].id.includes('img') && !data[i].id.includes('file')) {
+                else if (data[i].id && data[i].id.includes('img') && !data[i].id.includes('file') && extra['upload_pending'] !== true) {
 
                     let res = app.$refs['imageUploader-' + data[i].id].getCroppedData();
                     if (res)
@@ -314,6 +315,8 @@
                 else
                     fd.append(data[i].name, data[i].value);
             }
+            for (let i in extra)
+                fd.append(i, extra[i]);
             fd.append('times', app.$refs.clubTimes.getTimes());
             axios.post("{{route('club.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
@@ -327,7 +330,10 @@
                         document.querySelector('#loading').classList.add('d-none');
 
                         if (response.status == 200)
-                            window.location = response.data.url;
+                            if (response.data.resume == true)
+                                submitWithFiles(event);
+                            else
+                                window.location = response.data.url;
 
                     }
                 ).catch((error) => {
@@ -351,7 +357,7 @@
 
 
         function setCountyOptions(selValue) {
-            let sel2 = document.querySelector('#county_id');
+            let sel2 = document.querySelector('#county');
             while (sel2.firstChild && sel2.removeChild(sel2.firstChild)) ;
             for (let i = 0; i < counties.length; i++) {
                 if (counties[i].province_id == selValue) {

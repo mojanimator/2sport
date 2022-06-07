@@ -21,6 +21,7 @@ use Illuminate\Validation\ValidationException;
 use Morilog\Jalali\Jalalian;
 use PHPUnit\TextUI\Help;
 use SMS;
+use stdClass;
 
 class ClubController extends Controller
 {
@@ -33,9 +34,9 @@ class ClubController extends Controller
 
         $request->validate([
             'name' => 'string|min:3|max:100',
-            'county_id' => 'required|' . Rule::in(County::pluck('id')),
-            'province_id' => 'required|in:' . County::where('id', $request->county_id)->firstOrNew()->province_id,
 
+            'county' => 'required|' . Rule::in(County::pluck('id')),
+            'province' => 'required|in:' . County::where('id', $request->county)->firstOrNew()->province_id,
             'phone' => 'required|numeric|digits:11|regex:/^09[0-9]+$/' . '|unique:clubs,phone',
             'phone_verify' => [Rule::requiredIf(function () use ($request) {
                 return !auth()->user() || $request->phone != auth()->user()->phone;
@@ -45,27 +46,26 @@ class ClubController extends Controller
             'description' => 'nullable|string|max:1024',
             'address' => 'required|string|max:1024',
             'times' => 'required|json',
-            'license' => 'required|base64_image'/*.'|base64_size:2048'*/,
+
 //            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
-            'images' => 'required|array|min:1|max:' . \Helper::$club_image_limit,
-            'images.*' => 'required|base64_image'/*.'|base64_size:2048'*/,
+
         ], [
-            'name.required' => 'نام باشگاه نمی تواند خالی باشد',
-            'name.string' => 'نام باشگاه نامعتبر است',
-            'name.min' => 'نام باشگاه حداقل 3 حرف باشد',
-            'name.max' => 'نام باشگاه حداکثر 100 حرف باشد',
+            'name.required' => 'نام مرکزورزشی نمی تواند خالی باشد',
+            'name.string' => 'نام مرکزورزشی نامعتبر است',
+            'name.min' => 'نام مرکزورزشی حداقل 3 حرف باشد',
+            'name.max' => 'نام مرکزورزشی حداکثر 100 حرف باشد',
 
             'family.required' => 'نام خانوادگی  نمی تواند خالی باشد',
             'family.string' => 'نام خانوادگی نامعتبر است',
             'family.min' => 'نام خانوادگی حداقل 3 حرف باشد',
             'family.max' => 'نام خانوادگی حداکثر 30 حرف باشد',
 
-            'county_id.required' => 'شهر ضروری است',
-            'county_id.in' => 'شهر نامعتبر است',
-            'province_id.required' => 'استان ضروری است',
-            'province_id.in' => 'استان نامعتبر است',
-            'sport_id.required' => 'رشته ورزشی ضروری است',
-            'sport_id.in' => 'رشته ورزشی نامعتبر است',
+            'county.required' => 'شهر ضروری است',
+            'county.in' => 'شهر نامعتبر است',
+            'province.required' => 'استان ضروری است',
+            'province.in' => 'استان نامعتبر است',
+            'sport.required' => 'رشته ورزشی ضروری است',
+            'sport.in' => 'رشته ورزشی نامعتبر است',
             'sport-rule_id.in' => 'پست رشته ورزشی نامعتبر است',
 
             'height.required' => 'قد ضروری است',
@@ -122,9 +122,9 @@ class ClubController extends Controller
             'license.base64_size' => 'حداکثر حجم فایل 2 مگابایت باشد',
 
 
-            'images.required' => 'حداقل یک تصویر از باشگاه ضروری است',
-            'images.array' => 'حداقل یک تصویر از باشگاه ضروری است',
-            'images.min' => 'حداقل یک تصویر از باشگاه ضروری است',
+            'images.required' => 'حداقل یک تصویر از مرکزورزشی ضروری است',
+            'images.array' => 'حداقل یک تصویر از مرکزورزشی ضروری است',
+            'images.min' => 'حداقل یک تصویر از مرکزورزشی ضروری است',
             'images.max' => 'حداکثر تعداد تصاویر ' . \Helper::$club_image_limit . ' عدد است ',
 
             'images.*.base64_image' => 'فرمت تصویر از نوع  jpg باشد',
@@ -141,18 +141,18 @@ class ClubController extends Controller
         foreach (json_decode($request->times) as $time) {
 
             if (!in_array($time->id, $sports)) {
-                $msg = "مقادیر نوع ورزش کاری خالی و یا نامعتبر هستند";
+                $msg = "مقادیر رشته ورزشی خالی و یا نامعتبر هستند";
                 break;
             }
             if (!in_array($time->g, [0, 1])) {
                 $msg = "مقادیر جنسیت خالی و یا نامعتبر هستند";
                 break;
             }
-            if (!in_array($time->fm, [0, 30])) {
+            if (!in_array($time->fm, [0, 15, 30, 45])) {
                 $msg = "مقادیر دقیقه شروع خالی و یا نامعتبر هستند";
                 break;
             }
-            if (!in_array($time->tm, [0, 30])) {
+            if (!in_array($time->tm, [0, 15, 30, 45])) {
                 $msg = "مقادیر دقیقه پایان خالی و یا نامعتبر هستند";
                 break;
             }
@@ -175,6 +175,32 @@ class ClubController extends Controller
             throw ValidationException::withMessages(['times' => "$msg"]);
 
 
+        //request images after validating other fields
+        if (isset($request->upload_pending))
+            return response()->json(['resume' => true], 200);
+//
+        $request->validate([
+            'license' => 'required|base64_image'/*.'|base64_size:2048'*/,
+            'images' => 'required|array|min:1|max:' . \Helper::$club_image_limit,
+            'images.*' => 'required|base64_image'/*.'|base64_size:2048'*/,
+        ], [
+
+            'license.required' => 'تصویر جواز کسب ضروری است',
+            'license.base64_image' => 'فرمت تصویر جواز کسب نامعتبر است',
+            'license.base64_size' => 'حداکثر حجم فایل 2 مگابایت باشد',
+
+
+            'images.required' => 'حداقل یک تصویر از مرکزورزشی ضروری است',
+            'images.array' => 'تصویر مرکز ورزشی نامعتبر است' . gettype($request->images),
+            'images.min' => 'حداقل یک تصویر از مرکزورزشی ضروری است',
+            'images.max' => 'حداکثر تعداد تصاویر ' . \Helper::$club_image_limit . ' عدد است ',
+
+            'images.*.base64_image' => 'فرمت تصویر از نوع  jpg باشد',
+            'images.*.base64_size' => 'حداکثر حجم عکس 2 مگابایت باشد ',
+
+        ]);
+
+
         if (!auth()->user()) { //user not login or register
             $user = User::where('phone', $request->phone)->first(); //user not login
             if (!$user) { //user not exists
@@ -191,8 +217,8 @@ class ClubController extends Controller
 
         $club = Club::create([
             'user_id' => $user->id,
-            'province_id' => $request->province_id,
-            'county_id' => $request->county_id,
+            'province_id' => $request->province,
+            'county_id' => $request->county,
             'name' => $request->name,
             'active' => false,
             'phone' => $request->phone,
@@ -212,7 +238,7 @@ class ClubController extends Controller
         }
 
 
-        $user->setRefferal();
+        $user->setReferral();
 
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'club_created', $club);
         return \NextPay::makePay(new Request(['type' => 'club', 'id' => $club->id, 'month' => $request->{'renew-month'}, 'coupon' => $request->coupon, 'phone' => $club->phone]));
@@ -231,7 +257,7 @@ class ClubController extends Controller
             'name' => 'sometimes|string|min:3|max:100',
             'county_id' => 'required_with:province_id|' . Rule::in(County::pluck('id')),
             'province_id' => 'required_with:county_id|in:' . County::where('id', $request->county_id)->firstOrNew()->province_id,
-            'location' => 'sometimes|string|max:100',
+            'location_id' => 'sometimes|string|max:100',
             'phone' => 'sometimes|numeric|digits:11|regex:/^09[0-9]+$/' . '|unique:users,phone,' . auth()->user()->id,
             'phone_verify' => ['required_with:phone', Rule::requiredIf(function () use ($request) {
                 return $request->phone && ($request->phone != auth()->user()->phone);
@@ -239,15 +265,15 @@ class ClubController extends Controller
                 return $query->where('phone', $request->phone);
             }) : '',],
             'description' => 'sometimes|string|max:1024',
-            'address' => 'required_with:province_id|string|max:1024',
+            'address' => 'string|max:1024|'/*.'required_with:province'*/,
             'times' => 'sometimes|json',
             'img' => 'sometimes|base64_image'/*.'|base64_size:2048'*/,
 //            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
         ], [
-            'name.required' => 'نام باشگاه نمی تواند خالی باشد',
-            'name.string' => 'نام باشگاه نامعتبر است',
-            'name.min' => 'نام باشگاه حداقل 3 حرف باشد',
-            'name.max' => 'نام باشگاه حداکثر 100 حرف باشد',
+            'name.required' => 'نام مرکزورزشی نمی تواند خالی باشد',
+            'name.string' => 'نام مرکزورزشی نامعتبر است',
+            'name.min' => 'نام مرکزورزشی حداقل 3 حرف باشد',
+            'name.max' => 'نام مرکزورزشی حداکثر 100 حرف باشد',
 
             'family.required' => 'نام خانوادگی  نمی تواند خالی باشد',
             'family.string' => 'نام خانوادگی نامعتبر است',
@@ -319,9 +345,9 @@ class ClubController extends Controller
             'img.base64_size' => 'حداکثر حجم فایل 2 مگابایت باشد',
 
 
-            'images.required' => 'حداقل یک تصویر از باشگاه ضروری است',
-            'images.array' => 'حداقل یک تصویر از باشگاه ضروری است',
-            'images.min' => 'حداقل یک تصویر از باشگاه ضروری است',
+            'images.required' => 'حداقل یک تصویر از مرکزورزشی ضروری است',
+            'images.array' => 'حداقل یک تصویر از مرکزورزشی ضروری است',
+            'images.min' => 'حداقل یک تصویر از مرکزورزشی ضروری است',
             'images.max' => 'حداکثر تعداد تصاویر ' . \Helper::$club_image_limit . ' عدد است ',
 
             'images.*.base64_image' => 'فرمت تصویر از نوع  jpg باشد',
@@ -344,6 +370,8 @@ class ClubController extends Controller
                 return response()->json(['errors' => ['حداقل یک تصویر ضروری است']], 422);
 
             Doc::deleteFile($doc);
+            if (str_contains(request()->url(), 'api/'))
+                return response()->json(['status' => 'success', 'msg' => 'تصویر با موفقیت حذف شد']);
             return redirect()->back()->with('success-alert', 'تصویر با موفقیت حذف شد');
 
         } elseif ($request->cmnd == 'upload-img' && $request->img) {
@@ -352,6 +380,13 @@ class ClubController extends Controller
             if ($request->replace) {
 
                 $doc = Doc::find($request->id);
+                if ($doc == null) {
+                    $doc = new stdClass;
+                    $doc->id = null;
+                    $doc->docable_id = $request->data_id;
+                    $doc->docable_type = Helper::$typesMap['clubs'];
+                    $doc->type_id = $request->type ?: Helper::$docsMap['club'];
+                }
                 $club = Club::where('id', $doc->docable_id)->first();
                 if (!$this->authorize('ownItem', [User::class, $club, false]))
                     return response()->json(['errors' => ['تصویر متعلق به شما نیست']], 422);
@@ -360,14 +395,14 @@ class ClubController extends Controller
             } elseif ($request->type == Helper::$docsMap['club']) {
                 $club = Club::where('id', $request->id)->first();
                 if (!$this->authorize('ownItem', [User::class, $club, false]))
-                    return response()->json(['errors' => ['باشگاه متعلق به شما نیست']], 422);
+                    return response()->json(['errors' => ['مرکزورزشی متعلق به شما نیست']], 422);
                 if (Doc::where('type_id', $request->type)->where('docable_id', $club->id)->count() >= Helper::$club_image_limit)
                     return response()->json(['errors' => ['تعداد تصاویر بیش از حد مجاز (' . Helper::$club_image_limit . ') است']], 422);
                 Doc::createImage($request->img, $club->id, Helper::$typesMap['clubs'], $request->type);
 
             }
 
-            $this->dataEdited($club, 'club_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($club, 'club_edited', 'تصویر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
 
         }
@@ -378,7 +413,7 @@ class ClubController extends Controller
         if (isset($request->active)) {
             if ($request->active == true && $club->active == false) { //activate
                 if (Carbon::now()->timestamp > $club->expires_at) {
-                    return response()->json(['errors' => ['ابتدا مرکز ورزشی را انتخاب کنید و از بالای صفحه، اشتراک آن را تمدید کنید']], 422);
+                    return response()->json(['errors' => ['برای فعالسازی ابتدا اشتراک مرکز ورزشی را تمدید کنید']], 422);
                 }
                 if ($user->role != 'ad' && $user->role != 'go') {
                     return response()->json(['errors' => ['در صف فعالسازی است و پس از بررسی توسط ادمین فعال خواهد شد']], 422);
@@ -387,33 +422,37 @@ class ClubController extends Controller
             }
             $club->active = $request->active;
             $club->save();
-        } elseif ($request->name) {
+        }
+        if ($request->name) {
             if ($club->name == $request->name) return null;
             $club->name = $request->name;
-            $this->dataEdited($club, 'club_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($club, 'club_edited', 'نام با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif ($request->phone && $request->phone_verify) {
+        }
+        if ($request->phone && $request->phone_verify) {
             $club->phone = $request->phone;
             (new SMS())->deleteActivationSMS($request->phone);
             $club->save();
+            return $this->dataEdited($club, 'club_edited', 'شماره تماس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif ($request->times) {
+        }
+        if ($request->times) {
             $msg = null;
             foreach (json_decode($request->times) as $time) {
 
                 if (!in_array($time->id, $sports)) {
-                    $msg = "مقادیر نوع ورزش کاری خالی و یا نامعتبر هستند";
+                    $msg = "مقادیر نوع ورزش خالی و یا نامعتبر هستند";
                     break;
                 }
                 if (!in_array($time->g, [0, 1])) {
                     $msg = "مقادیر جنسیت خالی و یا نامعتبر هستند";
                     break;
                 }
-                if (!in_array($time->fm, [0, 30])) {
+                if (!in_array($time->fm, [0, 15, 30, 45])) {
                     $msg = "مقادیر دقیقه شروع خالی و یا نامعتبر هستند";
                     break;
                 }
-                if (!in_array($time->tm, [0, 30])) {
+                if (!in_array($time->tm, [0, 15, 30, 45])) {
                     $msg = "مقادیر دقیقه پایان خالی و یا نامعتبر هستند";
                     break;
                 }
@@ -437,21 +476,43 @@ class ClubController extends Controller
 
             if ($club->times == $request->times) return null;
             $club->times = $request->times;
-            $this->dataEdited($club, 'club_edited', 'برنامه کاری با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($club, 'club_edited', 'برنامه کاری با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
 
-        } elseif ($request->province_id && $request->county_id && $request->address) {
+        }
+        if ($request->province_id && $request->county_id && $request->address) {
             if ($club->province_id == $request->province_id && $club->county_id == $request->county_id && $club->location == $request->location && $club->address == $request->address) return null;
             $club->province_id = $request->province_id;
-            $club->location = $request->location;
+            if ($request->location)
+                $club->location = $request->location;
             $club->county_id = $request->county_id;
             $club->address = $request->address;
-            $this->dataEdited($club, 'club_edited', 'استان/شهر/آدرس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($club, 'club_edited', 'استان/شهر/آدرس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
-        } elseif ($request->description) {
+        }
+        if ($request->province_id && $request->county_id) {
+            if ($club->province_id == $request->province_id && $club->county_id == $request->county_id) return null;
+            $club->province_id = $request->province_id;
+            $club->county_id = $request->county_id;
+            return $this->dataEdited($club, 'club_edited', 'استان/شهر با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->address) {
+            if ($club->address == $request->address) return null;
+            $club->address = $request->address;
+            return $this->dataEdited($club, 'club_edited', 'آدرس با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->location) {
+            if ($club->location == $request->location) return null;
+            $club->location = $request->location;
+            return $this->dataEdited($club, 'club_edited', 'مکان با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+
+        }
+        if ($request->description) {
             if ($club->description == $request->description) return null;
             $club->description = $request->description;
-            $this->dataEdited($club, 'club_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
+            return $this->dataEdited($club, 'club_edited', 'توضیحات با موفقیت ویرایش شد و در صف بررسی قرار گرفت!');
 
         }
     }
@@ -472,7 +533,7 @@ class ClubController extends Controller
     protected function search(Request $request)
     {
 
-		$id = $request->id;
+        $id = $request->id;
         $page = $request->page;
         $paginate = $request->paginate;
         $sport_id = $request->sport;
@@ -487,7 +548,7 @@ class ClubController extends Controller
         $active = $request->active;
         $user_id = $request->user;
 
-        $user = auth()->user();
+        $user = auth()->user() ?: auth('api')->user();
 
         if (!$paginate) {
             $paginate = 12;
@@ -505,7 +566,7 @@ class ClubController extends Controller
 
         $query = Club::query();
 
-		if (is_numeric($id))
+        if (is_numeric($id))
             $query = $query->where('id', $id);
 
         if (is_numeric($sport_id))
@@ -514,27 +575,26 @@ class ClubController extends Controller
             $query = $query->where('province_id', $province_id);
         if (is_numeric($county_id))
             $query = $query->where('county_id', $county_id);
-     
 
-       
+
 //
         if ($name) {
             foreach (explode(' ', $name) as $word) {
-                $query = $query->where(function ($query) use ($word,$sport_id,$province_id, $county_id) {
+                $query = $query->where(function ($query) use ($word, $sport_id, $province_id, $county_id) {
                     $query->orWhere('name', 'LIKE', '%' . $word . '%');
-					
-				$sport_id= json_decode($sport_id);
-				$province_id= json_decode($province_id);
-				$county_id= json_decode($county_id);
-			if (is_array($sport_id))
-				foreach ($sport_id as $id) {
-						$query = $query->orWhereJsonContains('times', ['id' => (int)$id]);
-					}
-				 if (is_array($province_id))
-					$query = $query->orWhereIn('province_id', $province_id);
-				if (is_array($county_id))
-					$query = $query->orWhereIn('county_id', $county_id);
-				
+
+                    $sport_id = json_decode($sport_id);
+                    $province_id = json_decode($province_id);
+                    $county_id = json_decode($county_id);
+                    if (is_array($sport_id))
+                        foreach ($sport_id as $id) {
+                            $query = $query->orWhereJsonContains('times', ['id' => (int)$id]);
+                        }
+                    if (is_array($province_id))
+                        $query = $query->orWhereIn('province_id', $province_id);
+                    if (is_array($county_id))
+                        $query = $query->orWhereIn('county_id', $county_id);
+
                 });
             }
         }

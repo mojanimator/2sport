@@ -364,6 +364,27 @@ class Telegram
                     $msg .= " 📃 " . "توضیحات: " . $data->description . PHP_EOL;
 
                     break;
+                case 'product_deleted':
+                    $shop = \App\Models\Shop::firstOrNew(['id' => $data->shop_id]);
+                    $msg .= " 📛 " . ($admin ? "ادمین *$admin* یک محصول را حذف کرد" : "یک محصول حذف شد") . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    $msg .= " 👤 " . "نام: " . PHP_EOL;
+                    $msg .= $data->name . PHP_EOL;
+                    $msg .= " 📈 " . "قیمت اصلی: " . PHP_EOL;
+                    $msg .= $data->price . PHP_EOL;
+                    $msg .= " 📉 " . "قیمت با تخفیف: " . PHP_EOL;
+                    $msg .= $data->discount_price . PHP_EOL;
+                    $msg .= " 📊 " . "تعداد: " . PHP_EOL;
+                    $msg .= $data->count . PHP_EOL;
+                    $msg .= " 🚩 " . "دسته بندی: " . Sport::firstOrNew(['id' => $data->group_id])->name . PHP_EOL;
+                    $msg .= " 🛒 " . "فروشگاه: " . PHP_EOL;
+                    $msg .= $shop->name . PHP_EOL;
+                    $msg .= " 📱 " . "شماره تماس: " . PHP_EOL;
+                    $msg .= $shop->phone . PHP_EOL;
+                    $msg .= " 📃 " . "توضیحات: " . $data->description . PHP_EOL;
+
+                    break;
                 case 'error':
                     $msg = ' 📛 ' . ' خطای سیستم ' . PHP_EOL . $data;
                     break;

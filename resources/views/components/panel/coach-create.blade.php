@@ -7,7 +7,7 @@
                 <div class="card-body  ">
 
 
-                    <form id="form-create" method="POST" action="{{ route('player.create') }}" class="text-right  row">
+                    <form id="form-create" method="POST" action="{{ route('coach.create') }}" class="text-right  row">
                         @csrf
 
                         <div class="row mx-auto my-2">
@@ -168,18 +168,18 @@
 
                             {{--<label for="sport-input"--}}
                             {{--class="col-12 col-form-label text-right">رشته ورزشی</label>--}}
-                            <select id="sport_id" name="sport_id"
-                                    class="px-4 form-control{{ $errors->has('sport_id')  ? ' is-invalid' : '' }}">
+                            <select id="sport" name="sport"
+                                    class="px-4 form-control{{ $errors->has('sport')  ? ' is-invalid' : '' }}">
                                 <option value="0">انتخاب رشته ورزشی</option>
                                 @foreach(\App\Models\Sport::get() as $s)
                                     <option value="{{$s->id}}"
-                                            {{ old('sport_id')==$s->id? ' selected ':''}} >{{$s->name}}</option>
+                                            {{ old('sport')==$s->id? ' selected ':''}} >{{$s->name}}</option>
 
                                 @endforeach
                             </select>
 
                             <div class=" text-danger text-start small  col-12   " role="alert">
-                                <strong id="err-sport_id"> </strong>
+                                <strong id="err-sport"> </strong>
                             </div>
 
                         </div>
@@ -187,27 +187,27 @@
                             <div class="col-sm-6 my-1 my-sm-0 ">
                                 {{--<label for="province-input"--}}
                                 {{--class="col-12 col-form-label text-right">استان</label>--}}
-                                <select id="province_id" name="province_id" onchange="setCountyOptions(this.value)"
-                                        class="px-4 form-control{{ $errors->has('province_id')  ? ' is-invalid' : '' }}">
+                                <select id="province" name="province" onchange="setCountyOptions(this.value)"
+                                        class="px-4 form-control{{ $errors->has('province')  ? ' is-invalid' : '' }}">
                                     <option value="0">انتخاب استان</option>
                                     @foreach(\Illuminate\Support\Facades\DB::table('province')->get() as $p)
                                         <option value="{{$p->id}}"
-                                                {{ old('province_id')==$p->id? ' selected ':''}} >{{$p->name}}</option>
+                                                {{ old('province')==$p->id? ' selected ':''}} >{{$p->name}}</option>
 
                                     @endforeach
                                 </select>
 
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-province_id"> </strong>
+                                    <strong id="err-province"> </strong>
                                 </div>
 
                             </div>
                             <div class="col-sm-6  my-1 my-sm-0">
                                 {{--<label for="county-input"--}}
                                 {{--class="col-12 col-form-label text-right">شهر </label>--}}
-                                <select id="county_id" name="county_id"
-                                        class="px-4 form-control{{ $errors->has('county_id')  ? ' is-invalid' : '' }}">
-                                    @if(  $cId=\App\Models\County::find(old('county_id') ))
+                                <select id="county" name="county"
+                                        class="px-4 form-control{{ $errors->has('county')  ? ' is-invalid' : '' }}">
+                                    @if(  $cId=\App\Models\County::find(old('county') ))
 
                                         <option value="{{$cId->id}}" selected>{{$cId->name}}</option>
                                     @else
@@ -216,7 +216,7 @@
                                 </select>
 
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-county_id"> </strong>
+                                    <strong id="err-county"> </strong>
                                 </div>
 
                             </div>

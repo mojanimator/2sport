@@ -27,8 +27,18 @@ Route::middleware('auth:api')->group(function () {
     Route::post('product/edit', [App\Http\Controllers\ProductController::class, 'edit'])->name('product.edit');
     Route::post('blog/edit', [App\Http\Controllers\BlogController::class, 'edit'])->name('blog.edit');
 
-});
+    Route::post('player/create', [App\Http\Controllers\PlayerController::class, 'create'])->name('player.create');
+    Route::post('coach/create', [App\Http\Controllers\CoachController::class, 'create'])->name('coach.create');
+    Route::post('club/create', [App\Http\Controllers\ClubController::class, 'create'])->name('club.create');
+    Route::post('shop/create', [App\Http\Controllers\ShopController::class, 'create'])->name('shop.create');
+    Route::post('product/create', [App\Http\Controllers\ProductController::class, 'create'])->name('product.create');
 
+    Route::post('product/remove', [App\Http\Controllers\ProductController::class, 'remove'])->name('product.remove');
+
+
+    Route::post('payment/create', [App\Http\Controllers\PaymentController::class, 'makePay'])->name('payment.create');
+
+});
 Route::post('coupon/calculate', [App\Http\Controllers\CouponController::class, 'calculate'])->name('coupon.calculate');
 
 

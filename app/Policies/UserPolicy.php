@@ -55,6 +55,7 @@ class UserPolicy
 
     public function ownItem(User $user, $item, $abort, $id = null)
     {
+
         if ($id) {
             switch ($item) {
                 case 'player':

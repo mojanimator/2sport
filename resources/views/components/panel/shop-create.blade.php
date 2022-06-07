@@ -107,27 +107,27 @@
                             <div class="col-sm-6 my-1 my-sm-0 ">
                                 {{--<label for="province-input"--}}
                                 {{--class="col-12 col-form-label text-right">استان</label>--}}
-                                <select id="province_id" name="province_id" onchange="setCountyOptions(this.value)"
-                                        class="px-4 form-control{{ $errors->has('province_id')  ? ' is-invalid' : '' }}">
+                                <select id="province" name="province" onchange="setCountyOptions(this.value)"
+                                        class="px-4 form-control{{ $errors->has('province')  ? ' is-invalid' : '' }}">
                                     <option value="0">انتخاب استان</option>
                                     @foreach(\Illuminate\Support\Facades\DB::table('province')->get() as $p)
                                         <option value="{{$p->id}}"
-                                                {{ old('province_id')==$p->id? ' selected ':''}} >{{$p->name}}</option>
+                                                {{ old('province')==$p->id? ' selected ':''}} >{{$p->name}}</option>
 
                                     @endforeach
                                 </select>
 
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-province_id"> </strong>
+                                    <strong id="err-province"> </strong>
                                 </div>
 
                             </div>
                             <div class="col-sm-6  my-1 my-sm-0">
                                 {{--<label for="county-input"--}}
                                 {{--class="col-12 col-form-label text-right">شهر </label>--}}
-                                <select id="county_id" name="county_id"
-                                        class="px-4 form-control{{ $errors->has('county_id')  ? ' is-invalid' : '' }}">
-                                    @if(  $cId=\App\Models\County::find(old('county_id') ))
+                                <select id="county" name="county"
+                                        class="px-4 form-control{{ $errors->has('county')  ? ' is-invalid' : '' }}">
+                                    @if(  $cId=\App\Models\County::find(old('county') ))
 
                                         <option value="{{$cId->id}}" selected>{{$cId->name}}</option>
                                     @else
@@ -136,7 +136,7 @@
                                 </select>
 
                                 <div class=" text-danger text-start small  col-12   " role="alert">
-                                    <strong id="err-county_id"> </strong>
+                                    <strong id="err-county"> </strong>
                                 </div>
 
                             </div>
@@ -235,7 +235,7 @@
                         </div>
                         <div class="form-group   mb-0">
                             <div class="col-md-12  mt-2">
-                                <button onclick=" submitWithFiles(event)" type="button"
+                                <button onclick=" submitWithFiles(event,{upload_pending:true})" type="button"
                                         class="btn btn-success btn-block font-weight-bold py-3">
                                     پرداخت و ثبت
                                 </button>
@@ -264,7 +264,7 @@
             );
         });
 
-        function submitWithFiles(event) {
+        function submitWithFiles(event, extra = {}) {
             document.querySelector('#loading').classList.remove('d-none');
             validInputs();
 
@@ -274,9 +274,9 @@
             for (let i in data) {
                 if (data[i].type === 'radio' && data[i].checked === false)
                     continue;
-                if (data[i].id === 'license')
+                if (data[i].id === 'license' && extra['upload_pending'] !== true)
                     fd.append(data[i].name, app.$refs.licenseUploader.getCroppedData());
-                else if (data[i].id === 'logo')
+                else if (data[i].id === 'logo' && extra['upload_pending'] !== true)
                     fd.append(data[i].name, app.$refs.logoUploader.getCroppedData());
                 else if (['phone', 'phone_verify'].includes(data[i].name)) {
                     fd.append(data[i].name, f2e(data[i].value));
@@ -284,7 +284,8 @@
                 else
                     fd.append(data[i].name, data[i].value);
             }
-
+            for (let i in extra)
+                fd.append(i, extra[i]);
             axios.post("{{route('shop.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
                     let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -297,7 +298,10 @@
                         document.querySelector('#loading').classList.add('d-none');
 
                         if (response.status == 200)
-                            window.location = response.data.url;
+                            if (response.data.resume == true)
+                                submitWithFiles(event);
+                            else
+                                window.location = response.data.url;
 
                     }
                 ).catch((error) => {
@@ -321,7 +325,7 @@
 
 
         function setCountyOptions(selValue) {
-            let sel2 = document.querySelector('#county_id');
+            let sel2 = document.querySelector('#county');
             while (sel2.firstChild && sel2.removeChild(sel2.firstChild)) ;
             for (let i = 0; i < counties.length; i++) {
                 if (counties[i].province_id == selValue) {

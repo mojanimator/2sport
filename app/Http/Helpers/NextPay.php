@@ -29,7 +29,7 @@ class  NextPay
         $coupon = $request->coupon;
         $phone = $request->phone;
 
-        $user = auth()->user();
+        $user = auth()->user() ?: auth('api')->user();
         if (!$user)
             $user = \App\Models\User::where('phone', $phone)->first();
         $order_id = uniqid();
@@ -55,6 +55,7 @@ class  NextPay
 
         if (!isset($data))
             return response()->json(['errors' => ['error' => ['موردی یافت نشد.']]], 422);
+
         if ($price == 0) {
             $now = \Carbon\Carbon::now();
 
@@ -84,7 +85,7 @@ class  NextPay
             \App\Models\Ref::where('invited_id', $user->id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
             Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'payment', $payment);
             redirect("/panel/$type/edit/$id")->with('success-alert', 'پرداخت شما با موفقیت انجام شد و در صف فعالسازی قرار گرفت');
-            return response()->json(['url' => "/panel/$type/edit/$id"], 200);
+            return response()->json(['url' => url("panel/$type/edit/$id")], 200);
 
         }
 
@@ -174,7 +175,7 @@ class  NextPay
         if ($response && $response->code == 0) { //verify success
             $payment = \App\Models\Payment::where('order_id', $response->order_id)->first();
             if (!$payment)
-                return;
+                return redirect(url("panel/"))->with('error-alert', 'پرداخت ناموفق بود');;
             $response->custom = isset($response->custom) ? json_decode($response->custom) : $response->custom;
             $payment->amount = $response->amount;
             $payment->card_holder = $response->card_holder;
@@ -186,7 +187,7 @@ class  NextPay
             $payment->save();
 
             $tmp = explode('_', $payment->pay_for);
-            if (count($tmp) != 2) return;
+            if (count($tmp) != 2) return redirect(url("panel/"))->with('error-alert', 'پرداخت ناموفق بود');;
             $id = $payment->pay_for_id;
             $type = $tmp[0];
             $month = $tmp[1];
@@ -198,7 +199,7 @@ class  NextPay
                 $data = \App\Models\Club::find($id);
             elseif ($type == 'shop')
                 $data = \App\Models\Shop::find($id);
-            else return;
+            else return redirect(url("panel/"))->with('error-alert', 'پرداخت ناموفق بود');;
             $now = \Carbon\Carbon::now();
             $time = $data->expires_at != null && $now->timestamp < $data->expires_at ? \Carbon\Carbon::parse($data->expires_at)->addDays($month * 30) : $now->addDays($month * 30);
             $data->expires_at = $time;
@@ -215,7 +216,7 @@ class  NextPay
             return redirect(url("panel/$type/edit/$id"))->with('success-alert', 'پرداخت شما با موفقیت انجام شد و در صف تایید قرار گرفتید');
 
         } else {
-            if (!$response) return;
+            if (!$response) return redirect(url("panel/"))->with('error-alert', 'پرداخت ناموفق بود');
             return redirect(url("panel/"))->with('error-alert', self::MESSAGES[$response->code]);
 
         }
@@ -223,10 +224,11 @@ class  NextPay
 
     private static function makeDiscount($price, $c)
     {
+
         if ($price == 0 || !$c)
             return $price;
-
-        if (!$c || $c->used_at != null || $c->discount_percent == 0 || ($c->expires_at && $c->expires_at < \Carbon\Carbon::now()->timestamp) || \App\Models\Payment::where('user_id', auth()->user()->id)->where('coupon_id', $c->id)->exists())
+        $user_id = optional(auth()->user() ?: auth('api')->user())->id;
+        if (!$c || $c->used_at != null || $c->discount_percent == 0 || ($c->expires_at && $c->expires_at < \Carbon\Carbon::now()->timestamp) || \App\Models\Payment::whereNotNull('user_id')->where('user_id', $user_id)->where('coupon_id', $c->id)->exists())
             return $price;
         if ($c->discount_percent == 100)
             return 0;

@@ -282,6 +282,7 @@
 //                this.cropper.crop();
                 fd.append('video', this.doc);
                 fd.append('type', this.type);
+                fd.append('data_id', this.id);
                 fd.append('id', this.forId);
                 fd.append('replace', (!!this.required) || this.preload);
                 fd.append('cmnd', 'upload-vid');

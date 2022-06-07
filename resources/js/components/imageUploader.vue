@@ -277,6 +277,7 @@
                 let fd = {
                     'img': this.cropper.getCroppedCanvas().toDataURL(),
                     'type': this.type,
+                    'data_id':this.id,
                     'id': this.forId,
                     'replace': (!!this.required) || this.preload, //if true : replace with before image
                     'cmnd': 'upload-img',

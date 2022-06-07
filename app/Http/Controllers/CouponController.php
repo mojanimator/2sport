@@ -19,11 +19,12 @@ class CouponController extends Controller
         $coupon = $request->coupon;
         $type = $request->type;
         $coupon = Coupon::where('code', $coupon)->first();
+        $user_id=optional(auth()->user()?:auth('api')->user())->id;
         if (!$coupon)
             return response()->json(['errors' => ['coupon' => ['کد تخفیف معتبر نیست']]], 422);
-        if ($coupon->user_id != null && $coupon->user_id != optional(auth()->user())->id)
+        if ($coupon->user_id != null && $coupon->user_id != $user_id)
             return response()->json(['errors' => ['coupon' => ['کد تخفیف برای شما معتبر نیست']]], 422);
-        if (Payment::where('coupon_id', $coupon->id)->where('user_id', optional(auth()->user())->id)->exists())
+        if (Payment::where('coupon_id', $coupon->id)->whereNotNull('user_id')->where('user_id', $user_id)->exists())
             return response()->json(['errors' => ['coupon' => ['کد تخفیف را قبلا استفاده کرده اید']]], 422);
         if ($coupon->used_at != null)
             return response()->json(['errors' => ['coupon' => ['کد تخفیف استفاده شده است']]], 422);

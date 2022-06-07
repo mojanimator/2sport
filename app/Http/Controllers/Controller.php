@@ -29,9 +29,9 @@ class Controller extends BaseController
             \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, $logType, $data);
             $data->save();
 
-            if (!str_contains(url('/'), 'api/'))
+            if (!str_contains(request()->url(), 'api/'))
                 return redirect()->back()->with('success-alert', $msg);
-            else return response()->json(['status' => 'success']);
+            else return response()->json(['status' => 'success', 'msg' => $msg]);
         }
     }
 
@@ -42,13 +42,24 @@ class Controller extends BaseController
             'days' => [0 => 'شنبه', 1 => 'یکشنبه', 2 => 'دوشنبه', 3 => 'سه شنبه', 4 => 'چهارشنبه', 5 => 'پنجشنبه', 6 => 'جمعه', 7 => 'هر روز',],
             'prices' => Setting::get(),
             'provinces' => Province::select('id', 'name')->get(),
-            'shops' => Shop::select('id', 'name')->get(),
+            'shops' => Shop::select('id', 'name')->orDerByDesc('id')->get(),
             'counties' => County::select('id', 'name', 'province_id')->get(),
             'sports' => Sport::select('id', 'name')->get(),
             'app_version' => Helper::$APP_VERSION,
             'crop_ratio' => Helper::$cropsRatio,
-            'app_link' => 'test',
+            'app_info' => [
+                'version' => 1,
+                'links' => [
+                    'phone' => '989018945844', 'app' => '', 'comments' => '',
+                    'site' => 'https://2sport.ir',
+                    'telegram' => 'https://t.me/develowper',
+                    'instagram' => 'https://instagram.com/develowper',
+                    'email' => 'double24.info@gmail.com']],
             'doc_types' => Helper::$docsMap,
+            'limits' => ['club' => Helper::$club_image_limit, 'product' => Helper::$product_image_limit],
+            'chat_script' => '<!--BEGIN RAYCHAT CODE-->
+  <script type="text/javascript">!function(){function t(){var t=document.createElement("script");t.type="text/javascript",t.async=!0,localStorage.getItem("rayToken")?t.src="https://app.raychat.io/scripts/js/"+o+"?rid="+localStorage.getItem("rayToken")+"&href="+window.location.href:t.src="https://app.raychat.io/scripts/js/"+o+"?href="+window.location.href;var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}var e=document,a=window,o="897e98b2-466c-42d9-9655-af7ef7d67840";"complete"==e.readyState?t():a.attachEvent?a.attachEvent("onload",t):a.addEventListener("load",t,!1)}();</script>
+<!--END RAYCHAT CODE-->'
         ], 200);
     }
 
