@@ -120,7 +120,7 @@ class Telegram
     {
 
         try {
-            if (!str_contains(url('/'), '.ir'))
+            if (!str_contains(request()->url(), '.ir'))
                 return;
             if ($data instanceof \App\Models\User)
                 $us = $data;
