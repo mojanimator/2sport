@@ -12,8 +12,10 @@ class RefController extends Controller
 {
     public function search(Request $request = null)
     {
+
+
         $user = auth()->user() ?: auth('api')->user();
-        $admin = ($user->role == 'ad' || $user->role == 'go') && auth()->user(); //send all users for admin just in site
+        $admin = ($user->role == 'ad' || $user->role == 'go') && !str_contains(request()->url(), '/api/'); //send all users for admin just in site
         $refs = Ref::get();
         $settings = Setting::get();
         $ref1_percent = (($settings->where('key', 'ref_1')->first() ?: new Setting())->value ?: 0) / 100;

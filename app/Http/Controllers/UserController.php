@@ -280,10 +280,10 @@ class UserController extends Controller
             if (in_array($user->role, ['go', 'ad', 'bl']))
                 $info = ['blog' => Blog::where('user_id', $user->id)->count()] + $info;
 
-            if (!in_array($user->role, ['go', 'ad'])) {
-                $rf = new RefController();
-                $ref = $rf->search();
-            }
+//            if (!in_array($user->role, ['go', 'ad'])) {
+            $rf = new RefController();
+            $ref = $rf->search();
+//            }
         }
 
         return response()->json(['user' => $user, 'info' => $info, 'ref' => $ref,], 200);
