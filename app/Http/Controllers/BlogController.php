@@ -114,7 +114,8 @@ class BlogController extends Controller
                     $photo = url("$photo");
                     $link = url('/') . "/blog/$blog->id/" . str_replace(' ', '-', str_replace('/', '-', $blog->title));
                     $caption = " 🚩 " . $blog->title . PHP_EOL . $link;
-                    Telegram::sendPhoto(Helper::$TELEGRAM_CHANNEL_ID, $photo, $caption);
+                    if (str_contains(request()->url(), '.ir'))
+                        Telegram::sendPhoto(Helper::$TELEGRAM_CHANNEL_ID, $photo, $caption);
 
                 }
             }
