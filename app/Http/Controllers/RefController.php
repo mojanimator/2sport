@@ -13,7 +13,7 @@ class RefController extends Controller
     public function search(Request $request = null)
     {
         $user = auth()->user() ?: auth('api')->user();
-        $admin = (($user->role == 'ad' || $user->role == 'go') && false); //send all users for admin just in site
+        $admin = ($user->role == 'ad' || $user->role == 'go') && auth()->user(); //send all users for admin just in site
         $refs = Ref::get();
         $settings = Setting::get();
         $ref1_percent = (($settings->where('key', 'ref_1')->first() ?: new Setting())->value ?: 0) / 100;
@@ -21,7 +21,7 @@ class RefController extends Controller
         $ref3_percent = (($settings->where('key', 'ref_3')->first() ?: new Setting())->value ?: 0) / 100;
         $ref4_percent = (($settings->where('key', 'ref_4')->first() ?: new Setting())->value ?: 0) / 100;
         $ref5_percent = (($settings->where('key', 'ref_5')->first() ?: new Setting())->value ?: 0) / 100;
-        $users = User::select('id', 'name', 'family', 'username')->whereIntegerInRaw('id', $admin ? $refs->pluck('inviter_id')->unique() : [$user->id])->get();
+        $users = User::select('id', 'name', 'family', 'username')->whereIntegerInRaw('id', $admin ? $refs->unique('inviter_id')->pluck('inviter_id') : [$user->id])->get();
 
 
         foreach ($users as $user) {
