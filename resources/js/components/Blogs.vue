@@ -438,7 +438,7 @@
                 };
 //                let day = d.toLocaleDateString('fa-IR');
 
-                return d.toLocaleString('fa-IR', options).split(' ').reverse().join(' ');
+                return d.toLocaleString('utc', options).split(' ').reverse().join(' ');
             },
             imgError(event) {
 

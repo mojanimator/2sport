@@ -12,7 +12,7 @@ class RefController extends Controller
 {
     public function search(Request $request = null)
     {
-        $user = auth()->user();
+        $user = auth()->user() ?: auth('api')->user();
         $admin = $user->role == 'ad' || $user->role == 'go';
         $refs = Ref::get();
         $settings = Setting::get();
