@@ -35,6 +35,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('product/remove', [App\Http\Controllers\ProductController::class, 'remove'])->name('product.remove');
 
+    Route::get('blog/find', [App\Http\Controllers\BlogController::class, 'find'])->name('blog.find');
 
     Route::post('payment/create', [App\Http\Controllers\PaymentController::class, 'makePay'])->name('payment.create');
 

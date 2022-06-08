@@ -376,19 +376,26 @@ if($table){
                 $imgs=\App\Models\Doc::where('type_id',Helper::$docsMap['club'])->with('docable')->inRandomOrder()->take(5)->get();
             $clubs=[];
              foreach($imgs as  $idx=>$img){
-             $clubs[]= $imgs[$idx]->getRelation('docable') ;
+             $d= $imgs[$idx]->getRelation('docable');
+             if(!$d || !$img) continue;
+             $clubs[]= $d ;
              $clubs[$idx]['doc']=  $img ;
              }
             $imgs=\App\Models\Doc::where('type_id',Helper::$docsMap['profile'])->where('docable_type',Helper::$typesMap['coaches'])->with('docable')->inRandomOrder()->take(5)->get();
                 $coaches=[];
               foreach($imgs as  $idx=>$img){
-             $coaches[]= $imgs[$idx]->getRelation('docable') ;
+                $d= $imgs[$idx]->getRelation('docable');
+
+             if(!$d || !$img) continue;
+             $coaches[]= $d ;
              $coaches[$idx]['doc']=  $img ;
              }
             $imgs=\App\Models\Doc::where('type_id',Helper::$docsMap['profile'])->where('docable_type',Helper::$typesMap['players'])->with('docable')->inRandomOrder()->take(5)->get();
                 $players=[];
               foreach($imgs as  $idx=>$img){
-             $players[]= $imgs[$idx]->getRelation('docable') ;
+                $d= $imgs[$idx]->getRelation('docable');
+             if(!$d || !$img) continue;
+             $players[]= $d ;
              $players[$idx]['doc']=  $img ;
              }
 
@@ -406,7 +413,7 @@ if($table){
 
                     <div class="carousel-indicators">
                         @foreach($clubs as  $idx=>$club)
-
+                            @continue(  is_array($clubs[$idx]))
                             <button type="button" data-mdb-target="#carouselClubs" data-mdb-slide-to="{{$idx}}"
                                     class="{{$idx==0?  'active':''}}"
                                     aria-current="true" aria-label="{{$clubs[$idx]->name}}"></button>
@@ -417,6 +424,7 @@ if($table){
 
                         @foreach($clubs as  $idx=>$club)
                             @php($doc=$clubs[$idx]['doc'])
+                            @continue(!$doc ||  is_array($clubs[$idx]))
                             @php($img=asset("storage/$doc->type_id/$doc->id.jpg") )
                             <div class="z-index-1 carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
                                 <img src="{{$img}}" class=" d-block  w-100 h-100  "
@@ -481,28 +489,29 @@ if($table){
                         <div class="carousel-inner  h-100 w-100 ">
 
                             @foreach($coaches as  $idx=>$coach)
-                                @if (!is_array($coach))
-                                    @php($doc=$coaches[$idx]['doc'])
-                                    @php($img=asset("storage/$doc->type_id/$doc->id.jpg") )
-                                    <div class="z-index-1 carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
-                                        <img src="{{$img}}" class=" d-block  w-100 h-100 rounded-3"
-                                             alt="{{$coaches[$idx]->name}}"
-                                             style=" object-fit:fill;object-position: 0 0;">
-                                        <div class="carousel-caption   d-md-block start-0 end-0 ">
-                                            <h5 class="bg-gradient-dark-transparent text-white  w-100 py-3 ">{{$coaches[$idx]->name.' '. $coaches[$idx]->family}}</h5>
-                                            <div class="  left-0 right-0 bg-gradient-faded-dark w-100    rounded-lg p-4">
-                                                {{--<p class="small">{{$docables[$idx]->name}}</p>--}}
-                                            </div>
-                                            <a type="button"
-                                               class="btn move-on-hover bg-secondary w-auto text-white btn-lg"
-                                               href="/coach/{{$coaches[$idx]->id}}">مشاهده جزییات
 
-                                            </a>
+                                @php($doc=$coaches[$idx]['doc'])
+                                @continue(!$doc || is_array($coaches[$idx]))
+                                @php($img=asset("storage/$doc->type_id/$doc->id.jpg") )
+                                <div class="z-index-1 carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
+                                    <img src="{{$img}}" class=" d-block  w-100 h-100 rounded-3"
+                                         alt="{{$coaches[$idx]->name}}"
+                                         style=" object-fit:fill;object-position: 0 0;">
+                                    <div class="carousel-caption   d-md-block start-0 end-0 ">
+                                        <h5 class="bg-gradient-dark-transparent text-white  w-100 py-3 ">{{$coaches[$idx]->name.' '. $coaches[$idx]->family}}</h5>
+                                        <div class="  left-0 right-0 bg-gradient-faded-dark w-100    rounded-lg p-4">
+                                            {{--<p class="small">{{$docables[$idx]->name}}</p>--}}
                                         </div>
+                                        <a type="button"
+                                           class="btn move-on-hover bg-secondary w-auto text-white btn-lg"
+                                           href="/coach/{{$coaches[$idx]->id}}">مشاهده جزییات
 
-
+                                        </a>
                                     </div>
-                                @endif
+
+
+                                </div>
+
                             @endforeach
 
                         </div>
@@ -552,28 +561,29 @@ if($table){
                         <div class="carousel-inner  h-100 w-100 ">
 
                             @foreach($players as  $idx=>$player)
-                                @if (!is_array($player))
-                                    @php($doc=$players[$idx]['doc'])
-                                    @php($img=asset("storage/$doc->type_id/$doc->id.jpg") )
-                                    <div class="z-index-1 carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
-                                        <img src="{{$img}}" class=" d-block  w-100 h-100 rounded-3"
-                                             alt="{{$players[$idx]->name}}"
-                                             style="  object-position: 0 0;">
-                                        <div class="carousel-caption   d-md-block start-0 end-0 ">
-                                            <h5 class="bg-gradient-dark-transparent text-white  w-100 py-3 ">{{$players[$idx]->name.' '. $players[$idx]->family}}</h5>
-                                            <div class="  left-0 right-0 bg-gradient-faded-dark w-100    rounded-lg p-4">
-                                                {{--<p class="small">{{$docables[$idx]->name}}</p>--}}
-                                            </div>
-                                            <a type="button"
-                                               class="btn move-on-hover bg-secondary w-auto text-white btn-lg"
-                                               href="/player/{{$players[$idx]->id}}">مشاهده جزییات
 
-                                            </a>
+                                @php($doc=$players[$idx]['doc'])
+                                @continue(!$doc || is_array($players[$idx]))
+                                @php($img=asset("storage/$doc->type_id/$doc->id.jpg") )
+                                <div class="z-index-1 carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
+                                    <img src="{{$img}}" class=" d-block  w-100 h-100 rounded-3"
+                                         alt="{{$players[$idx]->name}}"
+                                         style="  object-position: 0 0;">
+                                    <div class="carousel-caption   d-md-block start-0 end-0 ">
+                                        <h5 class="bg-gradient-dark-transparent text-white  w-100 py-3 ">{{$players[$idx]->name.' '. $players[$idx]->family}}</h5>
+                                        <div class="  left-0 right-0 bg-gradient-faded-dark w-100    rounded-lg p-4">
+                                            {{--<p class="small">{{$docables[$idx]->name}}</p>--}}
                                         </div>
+                                        <a type="button"
+                                           class="btn move-on-hover bg-secondary w-auto text-white btn-lg"
+                                           href="/player/{{$players[$idx]->id}}">مشاهده جزییات
 
-
+                                        </a>
                                     </div>
-                                @endif
+
+
+                                </div>
+
                             @endforeach
 
                         </div>

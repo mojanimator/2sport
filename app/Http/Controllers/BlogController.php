@@ -15,6 +15,11 @@ use Telegram;
 
 class BlogController extends Controller
 {
+    protected function find(Request $request)
+    {
+        return Blog::whereId($request->id)->with('docs')->first();
+    }
+
     protected function create(Request $request)
     {
         $this->authorize('createItem', [User::class, Blog::class, true]);
@@ -259,7 +264,7 @@ class BlogController extends Controller
         $active = $request->active;
         $user_id = $request->user;
 
-        $user = auth()->user();
+        $user = auth()->user() ?: auth('api')->user();
 
         if (!$paginate) {
             $paginate = 12;
