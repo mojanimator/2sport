@@ -134,6 +134,42 @@ class Telegram
             $msg = $time . PHP_EOL;
             $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
             switch ($type) {
+                case 'event_created':
+                    $msg .= " 🟢 " . "یک رویداد ساخته شد" . PHP_EOL;
+                    $msg .= " 👤 " . "سازنده" . PHP_EOL;
+                    $msg .= ($us->name ? "$us->name $us->family" : "$us->username") . PHP_EOL;
+                    $msg .= " 📌 " . "عنوان" . PHP_EOL;
+                    $msg .= $data->title . PHP_EOL;
+                    $msg .= " 📅 " . "تاریخ : " . PHP_EOL . Jalalian::fromDateTime($data->time)->format('%Y/%m/%d ⏰ H:i') . PHP_EOL;
+                    $msg .= " 🚩 " . "آیتم 1" . PHP_EOL;
+                    $msg .= $data->team1 . PHP_EOL;
+                    $msg .= " 🚩 " . "آیتم 2" . PHP_EOL;
+                    $msg .= $data->team2 . PHP_EOL;
+                    $msg .= " 📊 " . "وضعیت" . PHP_EOL;
+                    $msg .= $data->status . PHP_EOL;
+                    $msg .= " ⭐ " . "دسته" . PHP_EOL;
+                    $msg .= Sport::find($data->sport_id)->name . PHP_EOL;
+                    $msg .= " 📃 " . "جزییات: " . PHP_EOL . $data->details . PHP_EOL;
+
+                    break;
+                case 'event_edited':
+                    $msg .= " 🟢 " . "یک رویداد ویرایش شد" . PHP_EOL;
+                    $msg .= " 👤 " . "سازنده" . PHP_EOL;
+                    $msg .= ($us->name ? "$us->name $us->family" : "$us->username") . PHP_EOL;
+                    $msg .= " 📌 " . "عنوان" . PHP_EOL;
+                    $msg .= $data->title . PHP_EOL;
+                    $msg .= " 📅 " . "تاریخ : " . PHP_EOL . Jalalian::fromDateTime($data->time)->format('%Y/%m/%d ⏰ H:i') . PHP_EOL;
+                    $msg .= " 🚩 " . "آیتم 1" . PHP_EOL;
+                    $msg .= $data->team1 . PHP_EOL;
+                    $msg .= " 🚩 " . "آیتم 2" . PHP_EOL;
+                    $msg .= $data->team2 . PHP_EOL;
+                    $msg .= " 📊 " . "وضعیت" . PHP_EOL;
+                    $msg .= $data->status . PHP_EOL;
+                    $msg .= " ⭐ " . "دسته" . PHP_EOL;
+                    $msg .= Sport::find($data->sport_id)->name . PHP_EOL;
+                    $msg .= " 📃 " . "جزییات: " . PHP_EOL . $data->details . PHP_EOL;
+
+                    break;
                 case 'user_created':
                     $msg .= " 🟢 " . "یک کاربر ساخته شد" . PHP_EOL;
                     $msg .= " 👤 " . "نام کاربری" . PHP_EOL;

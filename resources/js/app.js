@@ -61,6 +61,7 @@ import referral from './components/Referral.vue';
 import searchUsers from './components/searchUsers.vue';
 import systemLogs from './components/SystemLogs.vue';
 import coupons from './components/Coupons.vue';
+import searchEvents from './components/searchEvents.vue';
 
 
 import {createApp, computed, ref} from 'vue'
@@ -89,6 +90,7 @@ const app = createApp({
         referral,
         searchUsers,
         coupons,
+        searchEvents,
 
 
     }

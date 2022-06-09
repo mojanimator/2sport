@@ -237,7 +237,7 @@
 
                             </div>
                             <div class=" text-danger text-start small  col-12   " role="alert">
-                                <strong id="err-phone_verify"> </strong>
+                                <strong id="err-description"> </strong>
                             </div>
                         </div>
                         {{--//payment--}}

@@ -65,9 +65,11 @@
 strong[id^="err-"], .invalid-feedback {
   font-size: .7rem;
 }
-input{
-  caret-color:$primary;
+
+input {
+  caret-color: $primary;
 }
+
 .card-container {
 
   @include media-breakpoint-down-px(10000px) {
@@ -256,6 +258,10 @@ body {
     background-color: $value !important;
 
   }
+}
+
+.smaller {
+  font-size: 0.775em;
 }
 
 .carousel-control-prev-icon:after {

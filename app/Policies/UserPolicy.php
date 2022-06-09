@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Blog;
 use App\Models\Club;
 use App\Models\Coach;
+use App\Models\Event;
 use App\Models\Player;
 use App\Models\Product;
 use App\Models\Setting;
@@ -98,12 +99,19 @@ class UserPolicy
     public function createItem(User $user, $item, $abort)
     {
 
+
         if ($user->role == 'go')
             return true;
         $item_is_blog_table = ($item == Blog::class || $item == Table::class || $item == 'blog' || $item == 'table');
         if ($item_is_blog_table && $user->role == 'bl')
             return true;
         if (!$item_is_blog_table && $user->role == 'bl')
+            return false;
+
+        if ($user->role == 'go' || $user->role == 'ad' && ($item == Event::class || $item == 'event'))
+            return true;
+
+        if ($user->role != 'go' && $user->role != 'ad' && ($item == Event::class || $item == 'event'))
             return false;
 
         if (!$item_is_blog_table)

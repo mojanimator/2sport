@@ -85,6 +85,7 @@
                         </div>
                         <hr class="m-0">
                     @endif
+
                     @can('createItem',[\App\Models\User::class,\App\Models\Blog::class,false])
                         <a href="/panel/blog"
                            class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/blog') ?'bg-cyan text-primary':''}}"
@@ -119,6 +120,25 @@
                             </div>
                         </a>
                     @endcan
+                    @if($user->role=='ad' || $user->role=='go')
+                        <hr class="m-0">
+                        <a href="/panel/event"
+                           class="sidebar-item py-2 px-0 px-sm-2 text-white hoverable-dark {{str_contains( url()->current(),'/event') ?'bg-cyan text-primary':''}}"
+                           data-bs-toggle="tooltip">
+                            <div class=" align-content-end">
+                          <span class=" d-inline-block  item-icon  " data-bs-placement="left" data-bs-toggle="tooltip"
+                                title="رویداد">
+                              <x-icons src="conductor.svg"
+                                       fill="{{str_contains( url()->current(),'/event') ?$primaryColor:'#fff'}}"
+                                       style="max-width: 4rem"
+                                       class="'w-100   px-2 pe-sm-2 text-white'">
+                            </x-icons>
+                          </span>
+
+                                <span class="item-text">رویداد</span>
+                            </div>
+                        </a>
+                    @endif
                     @can('createItem',[\App\Models\User::class,\App\Models\Player::class,false])
 
                         <a href="/panel/player"
@@ -457,6 +477,19 @@
                         <x-panel.user-edit param="{{$param}}">
 
                         </x-panel.user-edit>
+
+                    @elseif(str_contains( url()->current(),'/event/create'))
+                        <x-panel.event-create>
+
+                        </x-panel.event-create>
+                    @elseif(str_contains( url()->current(),'/event/edit'))
+                        <x-panel.event-edit param="{{$param}}">
+
+                        </x-panel.event-edit>
+                    @elseif(str_contains( url()->current(),'/event'))
+                        <x-panel.events>
+
+                        </x-panel.events>
                     @else
                         <x-panel.main>
 

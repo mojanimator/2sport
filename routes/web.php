@@ -29,6 +29,7 @@ Route::get('test', function () {
 
 });
 
+Route::get('event/search', [App\Http\Controllers\EventController::class, 'search'])->name('event.search');
 Route::get('club/search', [App\Http\Controllers\ClubController::class, 'search'])->name('club.search');
 Route::get('coach/search', [App\Http\Controllers\CoachController::class, 'search'])->name('coach.search');
 Route::get('player/search', [App\Http\Controllers\PlayerController::class, 'search'])->name('player.search');
@@ -41,6 +42,13 @@ Route::get('table/search', [App\Http\Controllers\TableController::class, 'search
 Route::get('/', function () {
     return view('home');
 })->name('/');
+
+Route::get('events', function () {
+    return view('events');
+})->name('events.view');
+Route::get('event/{id}', function ($id) {
+    return view('event', ['id' => $id]);
+});
 
 Route::get('players', function () {
     return view('players');
@@ -174,12 +182,14 @@ Route::post('club/create', [App\Http\Controllers\ClubController::class, 'create'
 Route::post('shop/create', [App\Http\Controllers\ShopController::class, 'create'])->name('shop.create');
 Route::middleware(['auth'])->group(function () {
 
+    Route::post('event/create', [App\Http\Controllers\EventController::class, 'create'])->name('event.create');
     Route::post('coupon/create', [App\Http\Controllers\CouponController::class, 'create'])->name('coupon.create');
     Route::post('product/create', [App\Http\Controllers\ProductController::class, 'create'])->name('product.create');
     Route::post('blog/create', [App\Http\Controllers\BlogController::class, 'create'])->name('blog.create');
     Route::post('table/create', [App\Http\Controllers\TableController::class, 'create'])->name('table.create');
     Route::post('system-setting/create', [App\Http\Controllers\SettingController::class, 'create'])->name('system-setting.create');
 
+    Route::post('event/edit', [App\Http\Controllers\EventController::class, 'edit'])->name('event.edit');
     Route::post('club/edit', [App\Http\Controllers\ClubController::class, 'edit'])->name('club.edit');
     Route::post('coach/edit', [App\Http\Controllers\CoachController::class, 'edit'])->name('coach.edit');
     Route::post('player/edit', [App\Http\Controllers\PlayerController::class, 'edit'])->name('player.edit');
@@ -190,6 +200,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('table/edit', [App\Http\Controllers\TableController::class, 'edit'])->name('table.edit');
     Route::post('system-setting/edit', [App\Http\Controllers\SettingController::class, 'edit'])->name('system-setting.edit');
 
+    Route::post('event/remove', [App\Http\Controllers\EventController::class, 'remove'])->name('event.remove');
     Route::post('coupon/remove', [App\Http\Controllers\CouponController::class, 'remove'])->name('coupon.remove');
     Route::post('club/remove', [App\Http\Controllers\ClubController::class, 'remove'])->name('club.remove');
     Route::post('coach/remove', [App\Http\Controllers\CoachController::class, 'remove'])->name('coach.remove');
