@@ -424,7 +424,8 @@
             },
 
             getDateTime(date) {
-                let d = new Date(date);
+                let d = new Date(date * 1000);
+
                 let options = {
                     hour12: false,
                     weekday: 'long',
@@ -438,7 +439,7 @@
                 };
 //                let day = d.toLocaleDateString('fa-IR');
 
-                return d.toLocaleString('utc', options).split(' ').reverse().join(' ');
+                return d.toLocaleString('fa-IR', options).split(' ').reverse().join(' ');
             },
             imgError(event) {
 

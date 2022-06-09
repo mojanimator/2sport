@@ -72,7 +72,7 @@
             <div class=" shadow rounded p-2 my-3 text-center bg-primary text-white">{{$data->title}}</div>
             <div class="card py-4 px-4 mx-2 mx-sm-1" style="min-height: 100vh">
                 <small class="text-end   mb-2 text-secondary"
-                       style="font-size: .7rem">{{Morilog\Jalali\Jalalian::forge($data->updated_at, new DateTimeZone('Asia/Tehran'))->format('%A, %d %B %Y ⏰ H:i')}}</small>
+                       style="font-size: .7rem">{{Morilog\Jalali\Jalalian::forge($data->published_at, new DateTimeZone('Asia/Tehran'))->format('%A, %d %B %Y ⏰ H:i')}}</small>
                 @foreach($content as $section)
 
                     @if($section->type =='paragraph')
