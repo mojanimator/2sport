@@ -2,7 +2,7 @@
 
 
     $event=\App\Models\Event::find($param);
-        $date=Morilog\Jalali\Jalalian::fromDateTime($event->time);
+        $date=Morilog\Jalali\Jalalian::fromDateTime($event->time,new DateTimeZone('Asia/Tehran'));
 @endphp
 
 <div class="  my-3 ">

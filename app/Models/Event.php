@@ -15,7 +15,7 @@ class Event extends Model
         'id', 'user_id', 'sport_id', 'title', 'team1', 'team2', 'status', 'link', 'source', 'time', 'updated_at', 'details',
     ];
     protected $casts = [
-        'time' => 'timestamp'
-
+        'time' => 'timestamp',
+        'sport_id' => 'string',
     ];
 }

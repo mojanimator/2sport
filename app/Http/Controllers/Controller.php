@@ -45,12 +45,13 @@ class Controller extends BaseController
             'shops' => Shop::select('id', 'name')->orDerByDesc('id')->get(),
             'counties' => County::select('id', 'name', 'province_id')->get(),
             'sports' => Sport::select('id', 'name')->get(),
-            'app_version' => Helper::$APP_VERSION,
+
             'crop_ratio' => Helper::$cropsRatio,
             'app_info' => [
-                'version' => 1,
+                'version' => Helper::$APP_VERSION,
+                'phone' => Helper::$admin_phone,
                 'links' => [
-                    'phone' => '989018945844', 'app' => '', 'comments' => '',
+                    'app' => '', 'comments' => '',
                     'site' => 'https://2sport.ir',
                     'telegram' => 'https://t.me/develowper',
                     'instagram' => 'https://instagram.com/develowper',

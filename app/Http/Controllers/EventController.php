@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Sport;
 use App\Models\User;
+use Carbon\Carbon;
+use DateTimeZone;
 use Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -110,7 +112,7 @@ class EventController extends Controller
             'details' => $request->details,
             'link' => $request->link,
             'source' => $request->source,
-            'time' => (new Jalalian((int)$request->y, (int)$request->m, (int)$request->d, (int)$request->hh, (int)$request->mm))->toCarbon(),
+            'time' => (new Jalalian((int)$request->y, (int)$request->m, (int)$request->d, (int)$request->hh, (int)$request->mm, 0, new DateTimeZone('Asia/Tehran')))->toCarbon()->setTimezone('utc'),
         ]);
 
         \Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'event_created', $event);
@@ -218,7 +220,7 @@ class EventController extends Controller
             'details' => $request->details,
             'link' => $request->link,
             'source' => $request->source,
-            'time' => (new Jalalian((int)$request->y, (int)$request->m, (int)$request->d, (int)$request->hh, (int)$request->mm))->toCarbon(),
+            'time' => (new Jalalian((int)$request->y, (int)$request->m, (int)$request->d, (int)$request->hh, (int)$request->mm, 0, new DateTimeZone('Asia/Tehran')))->toCarbon()->setTimezone('utc'),
         ]);
 
         \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, 'event_edited', $event);
@@ -244,10 +246,11 @@ class EventController extends Controller
 
     }
 
-    protected function search(Request $request)
+    function search(Request $request)
     {
 
 
+        $group = $request->group; //search in title,summary,content,tags
         $name = $request->name; //search in title,summary,content,tags
         $category_id = $request->sport;
 
@@ -295,27 +298,30 @@ class EventController extends Controller
 //        dd(Carbon::now()->subYears($age_l)->toDateTimeString() . "\n" . Carbon::createFromTimestamp(Player::first()->born_at));
 
 
-        if (!$user) {
-            $query = $query->where('active', true);
-        } else {
+        if ($panel && $user->role == 'us')
+            $query = $query->where('user_id', $user->id);
 
-            if ($panel && $user->role == 'us')
-                $query = $query->where('user_id', $user->id);
+        if ($panel && is_numeric($active))
+            $query = $query->where('active', $active);
 
-            if ($panel && is_numeric($active))
-                $query = $query->where('active', $active);
+        if ($user_id && $panel && ($user->role == 'ad' || $user->role == 'go'))
+            $query = $query->where('user_id', $user_id);
 
-            if ($user_id && $panel && ($user->role == 'ad' || $user->role == 'go'))
-                $query = $query->where('user_id', $user_id);
-        }
 //
         if ($orderBy)
             $query = $query->orderBy($orderBy, $dir);
 
 
-//        $query = $query->get()->with('docs');
-
-        $data = $query->paginate($paginate, ['*'], 'page', $page);
+//        get last week  (today is in middle)
+        if ($group) {
+            $from = Carbon::now()->subDays(3);
+            $to = Carbon::now()->addDays(3);
+            $data = $query->whereBetween('time', [$from, $to])->get()->groupBy([function ($query) {
+                return Jalalian::forge($query->time)->format('%A');
+            }, 'title']);
+//            $data = collect($data)->groupBy('time')->all();
+        } else
+            $data = $query->paginate($paginate, ['*'], 'page', $page);
 
 //        foreach ($data as $idx => $item) {
 //            $img = \App\Models\Image::on(env('DB_CONNECTION'))->where('type', 'p')->where('for_id', $item->id)->inRandomOrder()->first();

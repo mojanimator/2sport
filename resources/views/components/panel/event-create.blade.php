@@ -1,7 +1,7 @@
 @php
 
 
-    $date= \Morilog\Jalali\Jalalian::now();
+    $date= \Morilog\Jalali\Jalalian::now(new DateTimeZone('Asia/Tehran'));
 
 @endphp
 

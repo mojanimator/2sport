@@ -52,6 +52,7 @@ Route::get('shop/search', [App\Http\Controllers\ShopController::class, 'search']
 Route::get('product/search', [App\Http\Controllers\ProductController::class, 'search'])->name('product.search');
 Route::get('blog/search', [App\Http\Controllers\BlogController::class, 'search'])->name('blog.search');
 Route::get('table/search', [App\Http\Controllers\TableController::class, 'search'])->name('table.search');
+Route::get('event/search', [App\Http\Controllers\EventController::class, 'search'])->name('event.search');
 
 Route::get('latest', [App\Http\Controllers\Controller::class, 'latest'])->name('latest');
 Route::get('settings', [App\Http\Controllers\Controller::class, 'settings'])->name('settings');
