@@ -20,6 +20,8 @@ class CreateEventsTable extends Migration
             $table->string('title', 150);
             $table->string('team1', 100)->nullable();
             $table->string('team2', 100)->nullable();
+            $table->string('score1', 10)->nullable();
+            $table->string('score2', 10)->nullable();
             $table->enum('status', Helper::$eventStatus)->nullable();
             $table->string('source', 100)->nullable();
             $table->string('link', 100)->nullable();

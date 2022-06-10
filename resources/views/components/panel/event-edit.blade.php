@@ -48,39 +48,75 @@
                         </div>
 
 
-                        <div class="col-md-10 mx-auto     ">
-                            <div class="m-2 form-outline">
-                                <input id="team1" type="text"
-                                       class="  px-4 form-control @error('team1') is-invalid @enderror"
-                                       name="team1"
-                                       value="{{ $event->team1 }}" autocomplete="team1" autofocus>
-                                <label for="team1"
-                                       class="col-md-12 col-form-label form-label  text-md-right">
-                                    آیتم (تیم) اول
-                                </label>
+                        <div class="col-md-11 mx-auto  row   ">
+                            <div class="col-sm-6      ">
+                                <div class="m-2 form-outline">
+                                    <input id="team1" type="text"
+                                           class="  px-4 form-control @error('team1') is-invalid @enderror"
+                                           name="team1"
+                                           value="{{ $event->team1 }}" autocomplete="team1" autofocus>
+                                    <label for="team1"
+                                           class="col-md-12 col-form-label form-label  text-md-right">
+                                        آیتم (تیم) اول
+                                    </label>
 
+                                </div>
+                                <div class=" text-danger text-start small     " role="alert">
+                                    <strong id="err-team1"> </strong>
+                                </div>
                             </div>
-                            <div class=" text-danger text-start small     " role="alert">
-                                <strong id="err-team1"> </strong>
+
+                            <div class="col-sm-6      ">
+                                <div class="m-2 form-outline">
+                                    <input id="score1" type="number"
+                                           class="  px-4 form-control @error('score1') is-invalid @enderror"
+                                           name="score1"
+                                           value="{{ $event->score1  }}" autocomplete="score1" autofocus>
+                                    <label for="score1"
+                                           class="col-md-12 col-form-label form-label  text-md-right">
+                                        امتیاز اول
+                                    </label>
+
+                                </div>
+                                <div class=" text-danger text-start small     " role="alert">
+                                    <strong id="err-score1"> </strong>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-10 mx-auto     ">
-                            <div class="m-2 form-outline">
-                                <input id="team2" type="text"
-                                       class="  px-4 form-control @error('team2') is-invalid @enderror"
-                                       name="team2"
-                                       value="{{ $event->team2 }}" autocomplete="team2" autofocus>
-                                <label for="team2"
-                                       class="col-md-12 col-form-label form-label  text-md-right">
-                                    آیتم (تیم) دوم
-                                </label>
+                        <div class="col-md-11 mx-auto  row   ">
+                            <div class="col-sm-6      ">
+                                <div class="m-2 form-outline">
+                                    <input id="team2" type="text"
+                                           class="  px-4 form-control @error('team2') is-invalid @enderror"
+                                           name="team2"
+                                           value="{{ $event->team2  }}" autocomplete="team2" autofocus>
+                                    <label for="team2"
+                                           class="col-md-12 col-form-label form-label  text-md-right">
+                                        آیتم (تیم) دوم
+                                    </label>
 
+                                </div>
+                                <div class=" text-danger text-start small     " role="alert">
+                                    <strong id="err-team2"> </strong>
+                                </div>
                             </div>
-                            <div class=" text-danger text-start small     " role="alert">
-                                <strong id="err-team2"> </strong>
+                            <div class="col-sm-6      ">
+                                <div class="m-2 form-outline">
+                                    <input id="score2" type="number"
+                                           class="  px-4 form-control @error('score2') is-invalid @enderror"
+                                           name="score2"
+                                           value="{{ $event->score2 }}" autocomplete="score2" autofocus>
+                                    <label for="score2"
+                                           class="col-md-12 col-form-label form-label  text-md-right">
+                                        امتیاز دوم
+                                    </label>
+
+                                </div>
+                                <div class=" text-danger text-start small     " role="alert">
+                                    <strong id="err-score2"> </strong>
+                                </div>
                             </div>
                         </div>
-
 
                         <div class="col-md-10 mx-auto row    ">
                             <label class="  font-weight-bold me-4">{{'وضعیت'}}</label>

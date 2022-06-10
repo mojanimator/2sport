@@ -23,6 +23,8 @@ class EventController extends Controller
             'title' => 'string|min:3|max:150',
             'team1' => 'nullable|string|min:3|max:100',
             'team2' => 'nullable|string|min:3|max:100',
+            'score1' => 'nullable|string|max:10',
+            'score2' => 'nullable|string|max:10',
             'sport' => 'required|' . Rule::in(Sport::pluck('id')),
             'status' => 'nullable|' . Rule::in(\Helper::$eventStatus),
 
@@ -48,6 +50,10 @@ class EventController extends Controller
             'team1.string' => 'آیتم اول  نامعتبر است',
             'team1.min' => 'آیتم اول  حداقل 3 حرف باشد',
             'team1.max' => 'آیتم اول  حداکثر 100 حرف باشد',
+
+
+            'score1.max' => 'امتیاز آیتم اول  حداکثر 10 حرف باشد',
+            'score2.max' => 'امتیاز آیتم دوم  حداکثر 10 حرف باشد',
 
             'team2.required' => 'آیتم دوم نمی تواند خالی باشد',
             'team2.string' => 'آیتم دوم  نامعتبر است',
@@ -107,6 +113,8 @@ class EventController extends Controller
             'title' => $request->title,
             'team1' => $request->team1,
             'team2' => $request->team2,
+            'score1' => $request->score1,
+            'score2' => $request->score2,
             'status' => $request->status,
             'sport_id' => $request->sport,
             'details' => $request->details,
@@ -132,6 +140,8 @@ class EventController extends Controller
             'title' => 'string|min:3|max:150',
             'team1' => 'nullable|string|min:3|max:100',
             'team2' => 'nullable|string|min:3|max:100',
+            'score1' => 'nullable|max:10',
+            'score2' => 'nullable|max:10',
             'sport' => 'required|' . Rule::in(Sport::pluck('id')),
             'status' => 'nullable|' . Rule::in(\Helper::$eventStatus),
 
@@ -215,6 +225,8 @@ class EventController extends Controller
             'title' => $request->title,
             'team1' => $request->team1,
             'team2' => $request->team2,
+            'score1' => $request->score1,
+            'score2' => $request->score2,
             'status' => $request->status,
             'sport_id' => $request->sport,
             'details' => $request->details,
@@ -319,6 +331,8 @@ class EventController extends Controller
             $data = $query->whereBetween('time', [$from, $to])->get()->groupBy([function ($query) {
                 return Jalalian::forge($query->time)->format('%A');
             }, 'title']);
+            $today = Jalalian::forge(Carbon::now())->format('%A');
+            return response()->json(['today' => $today, 'days' => $data]);
 //            $data = collect($data)->groupBy('time')->all();
         } else
             $data = $query->paginate($paginate, ['*'], 'page', $page);
