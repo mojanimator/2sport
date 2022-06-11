@@ -281,33 +281,78 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="view=='conductor'"
-                         v-for="d,idx in  conductor.filter(function(el)  {return el.type_id == 2;}) "
-                         class="col-md-10 col-xl-6 mx-auto">
-                        <div class="card shadow-primary small">
+                    <div v-if="view=='conductor'" class="w-100 mx-auto">
 
-                            <div class="card-header bg-primary text-white">{{d.title}}</div>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-light">
-                                    <thead class="">
-                                    <tr>
-                                        <th scope="col" class="p-1 px-2 font-weight-bold"
-                                            v-for="h,idx in JSON.parse(d.header)">{{h}}
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr v-for="row,idx in JSON.parse(d.body)">
-                                        <td v-for="col,idx in row" class="p-1 px-2">
-                                            <img v-if="col.type=='img'" :src="col.value" alt="" style="height: 3rem;">
-                                            <span v-else="">{{col.value}}</span>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+
+                        <ul class="nav nav-tabs nav-fill mb-3" id="ex1" role="tablist">
+
+                            <li v-for="d,idx in eventDays" class="nav-item" role="presentation">
+                                <a
+                                        class="nav-link  " :class="idx==today?'active':''"
+                                        :id="'tab-'+eventIds[idx]"
+                                        data-mdb-toggle="tab"
+                                        :href="'#'+eventIds[idx]"
+                                        role="tab"
+                                        :aria-controls="eventIds[idx]"
+                                        aria-selected="true"
+                                >{{ idx }}</a>
+
+                            </li>
+
+                        </ul>
+                        <!-- Tabs navs -->
+
+                        <!-- Tabs content -->
+                        <div class="tab-content" id="content">
+                            <div v-for="d,idx in eventDays"
+                                 class="tab-pane fade show " :class="idx==today?'active':''"
+                                 :id="eventIds[idx]"
+                                 role="tabpanel"
+                                 :aria-labelledby="'tab-'+eventIds[idx]"
+                            >
+                                <div v-for="eventGroups,title in d">
+                                    <div class="card">
+                                        <div class="text-white text-center card-header bg-indigo p-1 ">{{title}}</div>
+                                        <div class="card-body">
+                                            <div v-for="event,idx in eventGroups">
+
+
+                                                <hr v-if="idx!=0" class="border border-top border-info p-0 m-0">
+
+                                                <div class="text-primary d-flex flex-column ">
+                                                    <div class="text-indigo justify-content-evenly d-flex ">
+                                                        <div> {{event.team1}}</div>
+                                                        <div v-if="event.score1!=null || event.score2!=null"
+                                                             class="d-flex justify-content-center font-weight-bold text-purple ">
+
+                                                            <div> {{event.score1}}</div>
+                                                            <div v-if="event.score1!=null && event.score2!=null">:</div>
+                                                            <div> {{event.score2}}</div>
+
+                                                            <div v-if="event.status==null && (event.score1==null && event.score2==null)"
+                                                                 class="small">
+                                                                {{getTime(event.time)}}
+                                                            </div>
+
+                                                        </div>
+                                                        <div>{{event.team2}}</div>
+                                                    </div>
+
+                                                    <div v-if="event.status!=null" class="text-center smaller">
+                                                        {{event.status}}
+                                                    </div>
+
+                                                    <div class="small text-center"> {{getTime(event.time)}}</div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
 
                     <div class="progress-line mt-1" :style="loading?'opacity:1;':'opacity:0;'"></div>
@@ -320,11 +365,13 @@
 
 <script>
     //    import 'masonry-layout';
+
+
     let scrolled = false;
     let self;
     let page;
     export default {
-        props: ['tableLink', 'blogLink', 'categoryData', 'urlParams'],
+        props: ['tableLink', 'blogLink', 'categoryData', 'eventsData', 'urlParams'],
         data() {
             return {
                 view: 'blog-all',
@@ -343,7 +390,9 @@
                 dataLink: null,
                 loader: null,
                 categories: this.categoryData ? JSON.parse(this.categoryData) : [],
-
+                eventDays: this.eventsData ? JSON.parse(this.eventsData)['days'] : [],
+                today: this.eventsData ? JSON.parse(this.eventsData)['today'] : [],
+                eventIds: [],
             }
         },
         watch: {
@@ -361,6 +410,14 @@
                     this.params.page = 0;
                 }
             }
+
+            for (let idx in this.eventDays) {
+
+                this.eventIds[idx] = 't' + Math.floor(Math.random() * 100000000000,);
+
+            }
+
+
         },
         mounted() {
             self = this;
@@ -441,6 +498,22 @@
 
                 return d.toLocaleString('fa-IR', options).split(' ').reverse().join(' ');
             },
+            getTime(date) {
+                if (date == null || date == undefined) return '';
+                let d = new Date(date * 1000);
+                let options = {
+                    hour12: false,
+
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    nu: 'arab',
+                    calendar: 'persian',
+                };
+//                let day = d.toLocaleDateString('fa-IR');
+
+                return d.toLocaleString('fa-IR', options).split(' ').reverse().join(' ');
+            },
+
             imgError(event) {
 
                 event.target.src = '/img/noimage.png';
