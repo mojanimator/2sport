@@ -134,10 +134,10 @@ class TableController extends Controller
 
     }
 
-    protected function search(Request $request)
+    public function search(Request $request)
     {
 
-
+        $group = $request->group;
         $name = $request->name; //search in title,summary,content,tags
         $category_id = $request->category;
 
@@ -150,7 +150,7 @@ class TableController extends Controller
         $user_id = $request->user_id;
 
 
-        $user = auth()->user();
+        $user = auth()->user() ?: auth('api')->user();
 
         if (!$paginate) {
             $paginate = 12;
@@ -207,7 +207,9 @@ class TableController extends Controller
             $cols[] = 'content->table->body as body';
         }
         $query = $query->select($cols);
-
+        if ($group) {
+            $query->get()->groupBy('tournament');
+        }
 
 //        $data = $query->offset($page - 1)->limit($paginate)->get();
 

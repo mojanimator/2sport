@@ -285,61 +285,82 @@
                 </div>
             </div>
             @php
-                $table=\App\Models\Table::where('type_id',Helper::$tableType['کنداکتور'])->first();
-if($table){
-            $data=json_decode($table->content) ;
-            $img=$data->img;
-            $data=$data->table;
-            if($data)
-            {  $conductors= $data->body;
+                $events=(new \App\Http\Controllers\EventController )->search(new  \Illuminate\Http\Request(['group'=>true,]));
+                if( $events-> getData() ){
+ $today=$events->getData()->today;
+ $days=get_object_vars($events->getData()->days );
+ }
 
-            }
-}
             @endphp
-            @if($table)
+            @if($days && is_array($days))
                 <div class="col-md-6 px-1 my-1">
                     <div class=" bg-gradient-dark-transparent rounded-3    overflow-hidden  position-relative"
                          style="height: 18rem;">
                         <small class="text-white position-absolute end-0 m-2 small"
-                               style="font-size: .7rem;z-index: 1">{{Morilog\Jalali\Jalalian::forge($table->updated_at, new DateTimeZone('Asia/Tehran'))->format('%A, %d %B %Y')}}</small>
-                        <div class=" bg-gradient-primary  p-2 overflow-hidden position-absolute rounded-bottom    text-white"
-                             style="z-index: 1"
-                        >
-                            پخش زنده ورزشی
-                        </div>
-                        <img src="{{ $img }}"
-                             class="  position-absolute w-100  h-100  "
-                             alt=" "
-                             style=" object-fit:cover ;object-position: 0 0; z-index: 0">
-                        <div id="carouselConductor" class=" carousel slide  h-100"
-                             data-mdb-ride="carousel" data-mdb-interval="5000">
+                               style="font-size: .7rem;z-index: 1"></small>
 
+
+                        @php  $indx=0 @endphp
+                        <div id="carouselConductor" class=" carousel slide   h-100  w-100  "
+                             data-mdb-ride="carousel" data-mdb-interval="8000">
                             <div class="carousel-indicators">
-                                @foreach($conductors as  $idx=>$conductor)
+                                @foreach($days as  $idx=>$day)
 
                                     <button type="button" data-mdb-target="#carouselConductor"
-                                            data-mdb-slide-to="{{$idx}}"
-                                            class="{{$idx==0?  'active':''}}"
-                                            aria-current="true" aria-label="{{$idx}} "></button>
+                                            data-mdb-slide-to="{{$indx++}}"
+                                            class="{{$idx==$today?  'active':''}}"
+                                            aria-current="true" aria-label="{{$indx}} "></button>
 
                                 @endforeach
                             </div>
-                            <div class="carousel-inner  h-100 w-100 ">
+                            <div class="carousel-inner h-100 w-100    ">
 
-                                @foreach($conductors as  $idx=>$conductor)
+                                @foreach($days as  $idx=>$eventGroups)
 
-                                    <div class="  carousel-item h-100 w-100 {{$idx==0?  'active':''}}">
+                                    <div class="  carousel-item   h-100 w-100 position-relative  {{$idx==$today?  'active':''}}">
+                                        <div class=" bg-gradient-primary  p-2 overflow-hidden position-absolute rounded-bottom    text-white"
+                                             style="z-index: 1"
+                                        >{{$idx}}
 
-                                        <a href="/table/{{$table->id}}/{{str_replace(' ','-',$table->title)}}"
-                                           class="carousel-caption border-3  m-3    d-block start-0 end-0   bottom-0 start-0 end-0  d-md-block   "
-                                        >
-                                            <div class="rounded-3 overflow-hidden  ">
-                                                @foreach($conductor as $idx=>$program)
-                                                    <div class="bg-gradient-info text-white py-1   m-0">{{$program->value}}</div>
+                                        </div>
+                                        <div class="  carousel-caption   border-3  mt-3   overflow-y-auto    h-100 ">
+                                            <div class="rounded-3 h-100 w-100 ">
 
+                                                @foreach($eventGroups as $title=>$events)
+
+                                                    <div class="card my-1   w-100  ">
+                                                        <div class="text-white card-header bg-indigo p-1 ">{{$title}}</div>
+                                                        @foreach($events as $idx=>$event)
+                                                            @if($idx!=0)
+                                                                <hr class="border border-top border-info p-0 m-0">
+                                                            @endif
+                                                            <div class="text-primary d-flex flex-column ">
+                                                                <div class="text-indigo justify-content-around d-flex ">
+                                                                    <div> {{$event->team1}}</div>
+                                                                    <div class="d-flex justify-content-center font-weight-bold text-purple ">
+                                                                        @if($event->score1 && $event->score2)
+                                                                            <div> {{$event->score1}}</div>
+                                                                            <div>:</div>
+                                                                            <div> {{$event->score2}}</div>
+                                                                        @elseif($event->status==null)
+                                                                            <div class="small"> {{Morilog\Jalali\Jalalian::forge($event->time, new DateTimeZone('Asia/Tehran'))->format('⏰ H:i')}}</div>
+
+                                                                        @endif
+                                                                    </div>
+                                                                    <div>{{$event->team2}}</div>
+                                                                </div>
+                                                                @if($event->status!=null)
+                                                                    <div class=" smaller">{{$event->status}}</div>
+                                                                @else
+                                                                    <div class="small"> {{Morilog\Jalali\Jalalian::forge($event->time, new DateTimeZone('Asia/Tehran'))->format('⏰ H:i')}}</div>
+
+                                                                @endif
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
                                                 @endforeach
                                             </div>
-                                        </a>
+                                        </div>
 
 
                                     </div>

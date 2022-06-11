@@ -45,6 +45,8 @@ Route::post('coupon/calculate', [App\Http\Controllers\CouponController::class, '
 
 Route::get('login', [App\Http\Controllers\UserController::class, 'login'])->name('user.login');
 
+Route::get('table/search', [App\Http\Controllers\TableController::class, 'search'])->name('table.search');
+
 Route::get('club/search', [App\Http\Controllers\ClubController::class, 'search'])->name('club.search');
 Route::get('coach/search', [App\Http\Controllers\CoachController::class, 'search'])->name('coach.search');
 Route::get('player/search', [App\Http\Controllers\PlayerController::class, 'search'])->name('player.search');

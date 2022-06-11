@@ -44,7 +44,7 @@
                                         <strong id="err-category_id"> </strong>
                                     </span>
                 </div>
-                <div v-if="category_id==3  && tournaments.length>0" class="col-12 mx-auto">
+                <div v-if="category_id==2  && tournaments.length>0" class="col-12 mx-auto">
 
                     <select class="px-4 my-2 form-control "
                             :class="errors.tournament? 'is-invalid':''"
@@ -61,7 +61,7 @@
                     </select>
 
                 </div>
-                <div v-if="category_id==3  " class="col-12 mx-auto">
+                <div v-if="category_id==2  " class="col-12 mx-auto">
 
                     <input class="px-4 my-2 form-control "
                            :class="errors.tournament? 'is-invalid':''"

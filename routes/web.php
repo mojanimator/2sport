@@ -26,8 +26,8 @@ use Faker\Factory as Faker;
 Route::get('test', function () {
 //    Artisan::call('db:seed');
 //    Artisan::call('server:optimize');
-    $e = new \App\Http\Controllers\EventController();
-//    return $e->search(new \Illuminate\Http\Request(['group' => true]));
+    $e = new \App\Http\Controllers\TableController();
+    return $e->search(new \Illuminate\Http\Request(['group' => true, 'type_id' => 2]));
 });
 
 Route::get('event/search', [App\Http\Controllers\EventController::class, 'search'])->name('event.search');

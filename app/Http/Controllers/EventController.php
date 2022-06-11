@@ -326,12 +326,13 @@ class EventController extends Controller
 
 //        get last week  (today is in middle)
         if ($group) {
-            $from = Carbon::now()->subDays(3);
-            $to = Carbon::now()->addDays(3);
-            $data = $query->whereBetween('time', [$from, $to])->get()->groupBy([function ($query) {
-                return Jalalian::forge($query->time)->format('%A');
+            $zone = new DateTimeZone('Asia/Tehran');
+            $from = Carbon::now($zone)->subDays(3);
+            $to = Carbon::now($zone)->addDays(3);
+            $data = $query->whereBetween('time', [$from, $to])->get()->sortBy('time')->groupBy([function ($query) use ($zone) {
+                return Jalalian::forge($query->time, $zone)->format('%A');
             }, 'title']);
-            $today = Jalalian::forge(Carbon::now())->format('%A');
+            $today = Jalalian::forge(Carbon::now($zone))->format('%A');
             return response()->json(['today' => $today, 'days' => $data]);
 //            $data = collect($data)->groupBy('time')->all();
         } else

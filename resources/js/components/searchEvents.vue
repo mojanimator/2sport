@@ -7,7 +7,7 @@
 
                 <select @change="getData(1)" class="px-4 my-2 form-control "
 
-                        v-model="params.category"
+                        v-model="params.sport"
                 >
                     <option value="">همه دسته ها</option>
                     <option class="text-dark" v-for="category in sports"
@@ -253,7 +253,7 @@
         mounted() {
 
             self = this;
-            if (!this.params.sport) this.params.category = "";
+            if (!this.params.sport) this.params.sport = "";
 
             if (!this.params.user) this.params.user = "";
         }, methods: {
