@@ -391,6 +391,7 @@
                 this.chart.update();
             },
             getData() {
+//                console.log(this.params.dateTo);
                 this.loading = true;
 
                 axios.get(this.logLink, {
@@ -441,11 +442,21 @@
                     var today = new Date(t - 24 * 60 * 60 * 1000);
                 else
                     var today = new Date(t + 24 * 60 * 60 * 1000);
+                let options = {
+                    hour12: false,
+
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+
+                    calendar: 'persian',
+                };
 //                var dd = String(today.getDate()).padStart(2, '0');
 //                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 //                var yyyy = today.getFullYear();
 //                return yyyy + '/' + mm + '/' + dd;
-                return f2e(today.toLocaleDateString('fa-IR'));
+
+                return f2e(today.toLocaleDateString('fa-IR', options));
             }
             ,
             log(str) {

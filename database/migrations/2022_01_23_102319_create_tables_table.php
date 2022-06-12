@@ -15,12 +15,15 @@ class CreateTablesTable extends Migration
     {
         Schema::create('tables', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('tournament', 100)->nullable();
+            $table->bigInteger('tournament_id')->unsigned()->nullable();
             $table->string('title', 100);
-            $table->tinyInteger('type_id')->unsigned(); //Helper::$tableTypes()
+//            $table->tinyInteger('type_id')->unsigned(); //Helper::$tableTypes()
             $table->json('content');
             $table->boolean('active')->default(true);
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+
+            $table->foreign('tournament_id')->references('id')->on('tournaments')->onDelete('no action');
+
         });
     }
 

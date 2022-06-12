@@ -12,10 +12,16 @@ class Table extends Model
     public $timestamps = false;
     protected $table = 'tables';
     protected $fillable = [
-        'id', 'title', 'type_id', 'tournament', 'active', 'content', 'updated_at',
+        'id', 'title', 'tournament_id', 'active', 'content', 'updated_at',
     ];
     protected $casts = [
         'active' => 'boolean'
 
     ];
+
+
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
+    }
 }

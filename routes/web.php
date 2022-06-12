@@ -38,6 +38,7 @@ Route::get('shop/search', [App\Http\Controllers\ShopController::class, 'search']
 Route::get('product/search', [App\Http\Controllers\ProductController::class, 'search'])->name('product.search');
 Route::get('blog/search', [App\Http\Controllers\BlogController::class, 'search'])->name('blog.search');
 Route::get('table/search', [App\Http\Controllers\TableController::class, 'search'])->name('table.search');
+Route::get('tournament/search', [App\Http\Controllers\TournamentController::class, 'search'])->name('tournament.search');
 
 
 Route::get('/', function () {
@@ -183,6 +184,7 @@ Route::post('club/create', [App\Http\Controllers\ClubController::class, 'create'
 Route::post('shop/create', [App\Http\Controllers\ShopController::class, 'create'])->name('shop.create');
 Route::middleware(['auth'])->group(function () {
 
+    Route::post('tournament/create', [App\Http\Controllers\TournamentController::class, 'create'])->name('tournament.create');
     Route::post('event/create', [App\Http\Controllers\EventController::class, 'create'])->name('event.create');
     Route::post('coupon/create', [App\Http\Controllers\CouponController::class, 'create'])->name('coupon.create');
     Route::post('product/create', [App\Http\Controllers\ProductController::class, 'create'])->name('product.create');
@@ -190,6 +192,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('table/create', [App\Http\Controllers\TableController::class, 'create'])->name('table.create');
     Route::post('system-setting/create', [App\Http\Controllers\SettingController::class, 'create'])->name('system-setting.create');
 
+    Route::post('tournament/edit', [App\Http\Controllers\TournamentController::class, 'edit'])->name('tournament.edit');
     Route::post('event/edit', [App\Http\Controllers\EventController::class, 'edit'])->name('event.edit');
     Route::post('club/edit', [App\Http\Controllers\ClubController::class, 'edit'])->name('club.edit');
     Route::post('coach/edit', [App\Http\Controllers\CoachController::class, 'edit'])->name('coach.edit');
@@ -201,6 +204,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('table/edit', [App\Http\Controllers\TableController::class, 'edit'])->name('table.edit');
     Route::post('system-setting/edit', [App\Http\Controllers\SettingController::class, 'edit'])->name('system-setting.edit');
 
+    Route::post('tournament/remove', [App\Http\Controllers\TournamentController::class, 'remove'])->name('tournament.remove');
     Route::post('event/remove', [App\Http\Controllers\EventController::class, 'remove'])->name('event.remove');
     Route::post('coupon/remove', [App\Http\Controllers\CouponController::class, 'remove'])->name('coupon.remove');
     Route::post('club/remove', [App\Http\Controllers\ClubController::class, 'remove'])->name('club.remove');

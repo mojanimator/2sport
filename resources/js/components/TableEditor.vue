@@ -13,61 +13,77 @@
             </div>
         </div>
         <div class="card-body ">
-            <image-uploader
-                    class=" col-sm-10 col-md-8 col-lg-6 mx-auto  overflow-x-scroll" id="img"
-                    label="لوگوی جدول"
-                    for-id="img" ref="imageUploader"
-                    :crop-ratio="1.25"
-                    link="null"
-                    :preload="img"
-                    height="10" mode="create">
+            <div v-show="tournament_id==null || (mode=='edit' && tournament_id==table.tournament.id)"
+                 class="border border-1 rounded-3 p-3 bg-light">
+                <div class="my-2   ">
+                    <label for="tournament_name"
+                           class="col-md-12    form-label  text-md-right">نام تورنومنت</label>
+                    <input id="tournament_name" type="text" v-model="tournament_name"
+                           class="  px-4 form-control   "
+                           :class="errors.tournament_name? 'is-invalid':''"
+                           name="tournament_name"
+                           autocomplete="tournament_name" autofocus>
 
-            </image-uploader>
-            <span class=" text-danger text-center small row  col-12" role="alert">
-                                        <strong id="err-data.img">  </strong>
-                                    </span>
-            <div class="row mx-auto ">
-                <div class="col-12 mx-auto ">
+                </div>
+                <div class=" text-danger text-start small     " role="alert">
+                    <strong id="err-tournament_name"> </strong>
+                </div>
+                <div class="  mx-auto">
 
-                    <select class="px-4 my-2 form-control "
-                            :class="errors.category_id? 'is-invalid':''"
-                            v-model="category_id"
-                    >
-                        <option value="">دسته بندی</option>
-                        <option class="text-dark" v-for="category,idx in categories"
-                                :value="idx">
-                            {{ category }}
+                    <select class="  my-2 form-control "
+                            :class="errors.sport_id? 'is-invalid':''"
+                            v-model="sport_id">
+
+                        <option class="text-dark" :value="null">
+                            انتخاب رشته ورزشی
+                        </option>
+                        <option class="text-dark" v-for="sport,idx in sports"
+                                :value="sport.id">
+                            {{ sport.name }}
 
                         </option>
                     </select>
-                    <span class=" text-danger text-center small row  col-12" role="alert">
-                                        <strong id="err-category_id"> </strong>
-                                    </span>
+
                 </div>
-                <div v-if="category_id==2  && tournaments.length>0" class="col-12 mx-auto">
+                <image-uploader
+                        class=" col-sm-10 col-md-8 col-lg-6 mx-auto  overflow-x-scroll" id="img"
+                        label="لوگوی تورنومنت"
+                        :for-id="table.tournament.id" ref="imageUploader"
+                        :crop-ratio="cropRatio"
+                        :link="tournamentEditLink"
+                        :id="table.tournament.id"
+                        :data-id="table.id"
+                        :replace="mode=='edit'"
+                        :mode="mode==null?'create':mode"
+                        :preload="img"
+                        height="10">
 
-                    <select class="px-4 my-2 form-control "
-                            :class="errors.tournament? 'is-invalid':''"
-                            v-model="tournament">
+                </image-uploader>
+                <span class=" text-danger text-center small row  col-12" role="alert">
+                                        <strong id="err-data.img">  </strong>
+                                    </span>
 
-                        <option class="text-dark" value="">
+            </div>
+            <div class="row mx-auto ">
+
+                <div class="  mx-auto">
+
+                    <select class="  my-2 form-control "
+                            :class="errors.tournament_id? 'is-invalid':''"
+                            v-model="tournament_id">
+
+                        <option class="text-dark" :value="null">
                             انتخاب تورنومنت
                         </option>
                         <option class="text-dark" v-for="tournament,idx in tournaments"
-                                :value="tournament">
-                            {{ tournament }}
+                                :value="tournament.id">
+                            {{ tournament.name }}
 
                         </option>
                     </select>
 
                 </div>
-                <div v-if="category_id==2  " class="col-12 mx-auto">
 
-                    <input class="px-4 my-2 form-control "
-                           :class="errors.tournament? 'is-invalid':''"
-                           v-model="tournament" placeholder="تورنومنت جدید"/>
-
-                </div>
                 <span class=" text-danger text-center small row  col-12" role="alert">
                           <strong id="err-tournament"> </strong>
                                     </span>
@@ -268,14 +284,17 @@
     import imageViewer from './imageViewer.vue';
 
     export default {
-        props: ['tableData', 'mode', 'sendLink', 'removeLink', 'categoryData', 'tournamentData'],
+        props: ['tableData', 'cropRatio', 'mode', 'imgLink', 'sendLink', 'tournamentEditLink', 'createLink', 'removeLink', 'sportData', 'tournamentData'],
         components: {imageUploader, imageViewer},
         data() {
             return {
                 loading: false,
-                categories: JSON.parse(this.categoryData),
+
                 tournaments: JSON.parse(this.tournamentData),
-                tournament: null,
+                sports: JSON.parse(this.sportData),
+                sport_id: null,
+                tournament_id: null,
+                tournament_name: null,
                 errors: {},
                 category_id: null,
                 tags: null,
@@ -301,17 +320,25 @@
 
         mounted() {
             if (!this.category_id) this.category_id = "";
-            if (!this.tournament) this.tournament = "";
+            if (!this.tournament_id) this.tournament_id = "";
 
             if (this.table) {
+                if (this.table.tournament) {
+                    this.tournament_name = this.table.tournament.name;
+                    this.img = this.imgLink + '/' + this.table.tournament_id + '.jpg';
 
-                this.tournament = this.table.tournament;
+//                    this.$refs.imageUploader.id = this.table.tournament.id;
+//                    this.$refs.imageUploader.link = this.tournamentEditLink;
+                    this.$refs.imageUploader.doc = this.img;
+                    this.sport_id = this.table.tournament.sport_id;
+                }
+
+                this.tournament_id = this.table.tournament_id;
                 this.title = this.table.title;
                 this.category_id = this.table.type_id;
                 if (this.table.content) {
                     this.table.content = JSON.parse(this.table.content);
 
-                    this.$refs.imageUploader.doc = this.table.content.img;
 
                     this.tags = this.table.content.tags;
                     this.content = this.table.content.table;
@@ -517,11 +544,11 @@
                 axios.post(this.sendLink, {
                     id: this.table ? this.table.id : null,
                     title: this.title,
-                    category_id: this.category_id,
-                    tournament: this.tournament,
-
+                    sport_id: this.sport_id,
+                    tournament_id: this.tournament_id,
+                    tournament_name: this.tournament_name,
+                    img: this.$refs.imageUploader.getCroppedData(),
                     data: {
-                        img: this.$refs.imageUploader.getCroppedData(),
                         tags: this.tags,
                         table: this.content,
 
@@ -555,6 +582,9 @@
                         this.errors = error.response.data.errors || {};
                         invalidInputs(error.response.data.errors);
                     }
+                    let msg = ''
+                    for (let idx in error.response.data.errors)
+                        msg += '' + error.response.data.errors[idx] + '<br>';
 //                    if (error.response && error.response.status === 422)
 //                        for (let idx in error.response.data.errors)
 //                            this.errors += '' + error.response.data.errors[idx] + '<br>';
@@ -563,7 +593,7 @@
 //                    }
 //                    console.log(error);
 //                    console.log(error.message);
-                    window.showToast('danger', 'لطفا خطاها را اصلاح کنید', onclick = null);
+                    window.showToast('danger', msg, onclick = null);
                 });
             },
             log(str) {

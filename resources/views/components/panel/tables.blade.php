@@ -1,6 +1,3 @@
-
-
-
 <div class="row mt-3 mx-auto   ">
     <div class="col-md-6   ">
         <a href="{{url('panel/table/create')}}" class="my-1  d-block ">
@@ -34,7 +31,10 @@
     <search-tables
             admin="{{true}}"
             panel="{{true}}"
-            category-data="{{json_encode(array_flip( Helper::$tableType))  }}"
+            crop-ratio="{{Helper::$cropsRatio['tournament']}}"
+            img-link="{{ asset('storage/'.Helper::$docsMap['tournament'] )}}"
+            tournaments-data="{{ \App\Models\Tournament::get(['id','name']) }}"
+            sports-data="{{ \App\Models\Sport::get(['id','name']) }}"
             edit-link="{{route('table.edit')}}"
             remove-link="{{route('table.remove')}}"
             data-link="{{route('table.search')}}"

@@ -93,10 +93,11 @@ class SettingController extends Controller
         $province = $request->province;
         $timestamp = $request->timestamp;//y,m,d
 
-        $from = $request->dateFrom;
-        $to = $request->dateTo;
+        $from = f2e($request->dateFrom);
+        $to = f2e($request->dateTo);
 //        $from = '1400/10/10';
 //        $to = '1401/01/03';
+
         $from = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $from);
         $to = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $to);
 

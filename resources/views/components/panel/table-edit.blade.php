@@ -1,6 +1,6 @@
 @php
 
-      $table=\App\Models\Table::where('id',$param)->first();
+    $table=\App\Models\Table::where('id',$param)->with('tournament')->first();
 
 
 @endphp
@@ -14,11 +14,12 @@
 
 
             <table-editor class=" "
-                          tournament-data="{{ \App\Models\Table::where('tournament','!=',null)->distinct('tournament')->pluck('tournament') }}"
-
+                          tournament-data="{{ \App\Models\Tournament::get(['id','name'])}}"
+                          sport-data="{{ \App\Models\Sport::get(['id','name'])}}"
+                          img-link="{{ asset('storage/'.Helper::$docsMap['tournament'] )}}"
                           mode="edit"
                           table-data="{{$table}}"
-                          category-data="{{json_encode(array_flip( Helper::$tableType))  }}"
+                          tournament-edit-link="{{route('tournament.edit')}}"
                           send-link="{{route('table.edit')}}"
                           remove-link="{{route('table.remove')}}"
             >

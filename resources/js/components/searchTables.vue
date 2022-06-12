@@ -9,10 +9,10 @@
 
                         v-model="params.category"
                 >
-                    <option value="">همه دسته ها</option>
-                    <option class="text-dark" v-for="category,idx in categories"
+                    <option value="">همه ورزش ها</option>
+                    <option class="text-dark" v-for="sport,idx in sports"
                             :value=" idx">
-                        {{ category }}
+                        {{ sport.name }}
 
                     </option>
                 </select>
@@ -63,24 +63,6 @@
             </div>
 
 
-            <div v-if="admin && users.length>0" class="col-sm-4" v-show="filter">
-
-                <select class="px-4 my-2  form-control "
-
-                        v-model="params.user"
-                        @change=" getData(1)">
-                    <option value="">همه کاربران</option>
-                    <option class="text-dark" v-for="user in users"
-                            :value="user.id">
-                        {{ user.username }}
-
-                    </option>
-                </select>
-
-
-            </div>
-
-
             <div class="row mx-auto  my-2">
                 <paginator class="col-sm-6  my-1  " ref="paginator"></paginator>
                 <button class="btn btn-secondary rounded col-sm-4 my-1" type="button"
@@ -118,8 +100,8 @@
         <div class="       shadow-card ">
 
             <div class="     mb-3       font-weight-bold text-primary border border-2 border-primary rounded bg-light p-2 mb-2 z-index-0 text-center ">
-                <div class="  hover-underline " :class="params.order_by=='created_at'?'active':''"
-                     @click="params.order_by='created_at';if (params.dir=='DESC')params.dir ='ASC';else params.dir ='DESC';  ;getData(1);">
+                <div class="  hover-underline " :class="params.order_by=='updated_at'?'active':''"
+                     @click="params.order_by='updated_at';if (params.dir=='DESC')params.dir ='ASC';else params.dir ='DESC';  ;getData(1);">
                     تاریخ ثبت
                 </div>
 
@@ -160,14 +142,22 @@
 
                         </div>
                         <a :href="'/panel/table/edit/'+d.id" class="m-1 d-block  ">
-                            <div class="card move-on-hover">
-                                <div class="card-body  p-3 ">
+                            <div class="card move-on-hover ">
+                                <div class="card-body  px-1 pt-4 pb-2 ">
                                     <div class="row">
+                                        <div class="col-4 text-end  " style="height: 5rem !important;">
+
+                                            <img :src="getImage(d.tournament_id)" class="rounded  w-100 h-100 "
+                                                 style="object-fit: contain"
+                                                 alt="" @error="imgError">
+
+
+                                        </div>
                                         <div class="col-8">
                                             <div class="numbers">
-                                                <div v-if="d.tournament"
+                                                <div v-if="d.tournament_id"
                                                      class="small  mb-0 text-primary font-weight-bold">
-                                                    {{d.tournament }}
+                                                    {{ getTournament(d.tournament_id)}}
 
                                                 </div>
                                                 <div class="small  mb-0 text-primary font-weight-bold">
@@ -175,7 +165,7 @@
 
                                                 </div>
                                                 <div class="small text-secondary text-opacity-75 font-weight-bolder  my-1">
-                                                    {{ getCategory(d.type_id)}}
+                                                    {{ getSport(d.type_id)}}
 
                                                 </div>
                                                 <div class="small text-blue text-opacity-75 font-weight-bolder  my-1">
@@ -185,14 +175,7 @@
 
                                             </div>
                                         </div>
-                                        <div class="col-4 text-end  " style="height: 5rem !important;">
 
-                                            <img :src="d.img " class="rounded  w-100 h-100 "
-                                                 style="object-fit: contain"
-                                                 alt="" @error="imgError">
-
-
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +214,7 @@
 
 
     export default {
-        props: ['panel', 'admin', 'dataLink', 'editLink', 'removeLink', 'user-data', 'categoryData', 'imgLink', 'assetLink', 'urlParams', 'type',],
+        props: ['panel', 'admin', 'dataLink', 'editLink', 'removeLink', 'tournamentData', 'sportData', 'imgLink', 'assetLink', 'urlParams', 'type',],
 
         components: {paginator, slider, Swiper, SwiperSlide},
         data() {
@@ -250,8 +233,8 @@
                 page: 1,
                 pagination: {},
                 params: {order_by: 'updated_at', dir: 'DESC'},
-                categories: this.categoryData ? JSON.parse(this.categoryData) : [],
-                users: this.userData ? JSON.parse(this.userData) : [],
+                sports: this.sportData ? JSON.parse(this.sportData) : [],
+                tournaments: this.tournamentData ? JSON.parse(this.tournamentData) : [],
                 filter: false,
                 pinSearch: false,
                 view: 'horizontal',
@@ -289,20 +272,36 @@
         }, methods: {
 
 
-            getCategory(id) {
+            getSport(id) {
+                let s = this.sports.find(function (el) {
 
-                return this.categories[id];
+                    return el.id == id;
+                });
 
+                if (s) return s.name; else return '';
+            },
+
+
+            getTournament(id) {
+                let s = this.tournaments.find(function (el) {
+
+                    return el.id == id;
+                });
+
+                if (s) return s.name; else return '';
             },
 
 
             showDialog(type, message, click, params) {
                 window.showDialog(type, message, onclick = () => click, params);
 
-
             },
             log(str) {
                 console.log(str);
+            },
+            getImage(id) {
+
+                return this.imgLink + '/' + id + '.jpg';
             },
             imgError(event) {
 

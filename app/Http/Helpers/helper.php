@@ -20,7 +20,7 @@ class Helper
     static $initScore = 0;
     static $club_image_limit = 3;
     static $product_image_limit = 3;
-    static $cropsRatio = ['license' => 0.75, 'video' => 0.75, 'profile' => 0.75, 'club' => 1.25, 'product' => 1.0, 'logo' => 1.0];
+    static $cropsRatio = ['license' => 0.75, 'video' => 0.75, 'profile' => 0.75, 'club' => 1.25, 'product' => 1.0, 'logo' => 1.0, 'tournament' => 1.25,];
     static $eventStatus = ['لغو', 'تعویق', 'درحال برگزاری', 'نامشخص'];
     static $refMap = [
         1 => 'player',
@@ -56,6 +56,7 @@ class Helper
         'video' => 5,
         'logo' => 6,
         'blog' => 7,
+        'tournament' => 8,
 
     ];
     static $categoryType = [

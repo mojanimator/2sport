@@ -4,9 +4,11 @@
         {{--        @php($cat=collect(Helper::$tableType)->map(function ($id,$name){return  ['id'=>$id,'name'=>$name,];})->values())--}}
 
         <table-editor class=" "
-                      tournament-data="{{ \App\Models\Table::where('tournament','!=',null)->distinct('tournament')->pluck('tournament') }}"
-                      category-data="{{json_encode(array_flip( Helper::$tableType))  }}"
+                      tournament-data="{{ \App\Models\Tournament::select('id','name')->get()}}"
+                      sport-data="{{ \App\Models\Sport::select('id','name')->get()}}"
+
                       send-link="{{route('table.create')}}"
+                      create-tournament-link="{{route('tournament.create')}}"
         >
         </table-editor>
 

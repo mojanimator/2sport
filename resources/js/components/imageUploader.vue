@@ -3,6 +3,7 @@
     <div class="   ">
 
         <div class="   w-100   ">
+
             <label :for="id"
                    class=" text-center d-none"> </label>
             <!--<div :style="'width:'+(cropRatio*height)+'rem;height:'+height+'rem'"-->
@@ -192,12 +193,14 @@
 
             },
             refresh() {
+
                 this.uploadContainer.classList.remove('d-none');
                 this.image.src = null;
 //                document.getElementById('img').value = null;
 //                this.cropper.destroy();
 //                this.componentKey++;
 //                this.$forceUpdate();
+
                 this.creating = false;
                 this.initCropper();
 
@@ -208,6 +211,7 @@
                 this.cropper.crop();
                 this.loading = false;
                 let img = this.cropper.getCroppedCanvas().toDataURL();
+
                 if (this.mode === 'multi') {
                     if (this.images.length >= this.limit) {
                         window.showToast('danger', 'تعداد تصاویر بیش از حد مجاز است', onclick = null);
@@ -241,6 +245,7 @@
                     'id': this.forId,
                     'cmnd': 'delete-img',
                     'type': this.type,
+                    'data_id': this.id,
                     'replace': !!this.required,
                 },)
                     .then((response) => {
@@ -277,7 +282,7 @@
                 let fd = {
                     'img': this.cropper.getCroppedCanvas().toDataURL(),
                     'type': this.type,
-                    'data_id':this.id,
+                    'data_id': this.id,
                     'id': this.forId,
                     'replace': (!!this.required) || this.preload, //if true : replace with before image
                     'cmnd': 'upload-img',
@@ -319,9 +324,17 @@
                 this.cropper = new Cropper(this.image, {
 //                    autoCrop: false,
                     autoCropArea: 1,
-                    viewMode: 1,
+                    viewMode: 3, responsive: false,
 //                    autoCrop: true,
+                    style: {height: '100%', width: '100%'},
                     aspectRatio: this.cropRatio,
+                    highlight: true,
+                    restore: true,
+                    cropBoxMovable: true,
+                    zoomable: true,
+//                    dragMode: 'move',
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false,
                     crop(event) {
 //                        console.log('crop');
                         this.creating = true;

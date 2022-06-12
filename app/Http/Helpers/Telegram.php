@@ -3,6 +3,7 @@
 use App\Models\County;
 use App\Models\Province;
 use App\Models\Sport;
+use App\Models\Tournament;
 use Morilog\Jalali\Jalalian;
 
 class Telegram
@@ -134,6 +135,18 @@ class Telegram
             $msg = $time . PHP_EOL;
             $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
             switch ($type) {
+                case 'table_created':
+                    $msg .= " 🟢 " . "یک جدول ساخته شد" . PHP_EOL;
+                    $msg .= " 👤 " . "سازنده" . PHP_EOL;
+                    $msg .= ($us->name ? "$us->name $us->family" : "$us->username") . PHP_EOL;
+                    $msg .= " 📌 " . "عنوان" . PHP_EOL;
+                    $msg .= $data->title . PHP_EOL;
+                    $msg .= " 📅 " . "تاریخ : " . PHP_EOL . Jalalian::fromDateTime($data->updated_at)->format('%Y/%m/%d ⏰ H:i') . PHP_EOL;
+                    $msg .= " 🚩 " . "تورنومنت" . PHP_EOL;
+                    $msg .= optional(Tournament::find($data->tournament_id))->name . PHP_EOL;
+
+
+                    break;
                 case 'event_created':
                     $msg .= " 🟢 " . "یک رویداد ساخته شد" . PHP_EOL;
                     $msg .= " 👤 " . "سازنده" . PHP_EOL;

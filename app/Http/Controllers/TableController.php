@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Doc;
+use App\Models\Sport;
 use App\Models\Table;
+use App\Models\Tournament;
 use App\Models\User;
 use Facade\Ignition\Tabs\Tab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use stdClass;
 
 class TableController extends Controller
 {
@@ -21,16 +26,25 @@ class TableController extends Controller
         $request->validate([
             'title' => 'required|string|max:100|unique:tables',
             'data' => 'required|array',
-            'category_id' => 'required|in:' . implode(',', array_values(\Helper::$tableType)),
-            'tournament' => [Rule::requiredIf($request->category_id == \Helper::$tableType['تورنومنت'], 'max:100')],
-            'data.img' => 'required|base64_image|base64_size:20480',
+            'sport_id' => 'nullable|' . Rule::in(Sport::pluck('id')),
+            'tournament_id' => [Rule::requiredIf(!$request->tournament_name), !$request->tournament_name ? Rule::in(Tournament::pluck('id')) : 'nullable'],
+            'tournament_name' => [Rule::requiredIf($request->tournament_id == null), Rule::unique('tournaments', 'name'), 'max:100'],
+
+            'img' => Rule::requiredIf($request->tournament_id == null) . '|base64_image|base64_size:20480',
 
 //            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
         ], [
-            'title.required' => 'تیتر نمی تواند خالی باشد',
-            'title.string' => 'تیتر متنی باشد',
-            'title.max' => 'تیتر حداکثر 100 حرف باشد',
-            'title.unique' => 'تیتر تکراری است',
+            'title.required' => 'تیتر جدول نمی تواند خالی باشد',
+            'title.string' => 'تیتر جدول متنی باشد',
+            'title.max' => 'تیتر جدول حداکثر 100 حرف باشد',
+            'title.unique' => 'تیتر جدول تکراری است',
+
+            'tournament_id.required' => ' تورنومنت جدید و یا انتخاب تورنومنت ضروری است',
+            'tournament_id.in' => 'تورنومنت انتخابی نامعتبر است',
+
+            'tournament_name.required' => ' تورنومنت جدید و یا انتخاب تورنومنت ضروری است',
+            'tournament_name.unique' => 'نام تورنومنت تکراری است',
+            'tournament_name.max' => 'نام تورنومنت حداکثر 100 حرف باشد',
 
             'tournament.required' => 'نام تورنومنت ضروری است',
             'tournament.max' => 'تیتر حداکثر 100 حرف باشد',
@@ -41,22 +55,28 @@ class TableController extends Controller
 
             'category_id.required' => 'دسته بندی جدول ضروری است',
             'category_id.in' => 'دسته بندی جدول نا معتبر است',
-            'data.img.required' => 'تصویر ضروری است',
-            'data.img.base64_image' => 'فرمت تصویر نامعتبر است',
-            'data.img.base64_size' => 'حداکثر حجم فایل 1 مگابایت باشد',
+            'img.required' => 'تصویر تورنومنت ضروری است',
+            'img.base64_image' => 'فرمت تصویر نامعتبر است',
+            'img.base64_size' => 'حداکثر حجم فایل 1 مگابایت باشد',
         ]);
+        if ($request->tournament_id != null && $request->tournament_name != null) {
+            throw ValidationException::withMessages(['tournament' => "در صورت جدید بودن تورنومنت، انتخاب تورنومنت را خالی بگذارید"]);
+        }
 
-
+        $tournament = null;
+        if ($request->tournament_name != null) {
+            $tournament = Tournament::create(['name' => $request->tournament_name, 'sport_id' => $request->sport_id]);
+            Tournament::createImage($request->img, $tournament->id);
+        }
         $table = Table::create([
 
-            'type_id' => $request->category_id,
+            'tournament_id' => $tournament ? $tournament->id : $request->tournament_id,
             'title' => $request->title,
-            'tournament' => $request->tournament,
             'content' => json_encode($request->data),
-            'active' => false,
+            'active' => true,
 
         ]);
-
+        \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, 'table-created', $table);
         //make title image
 
         return redirect(url('panel/table'))->with('success-alert', 'با موفقیت ثبت شد! با انتخاب آن می توانید اطلاعات ثبت شده را مشاهده و ویرایش کنید');
@@ -81,19 +101,24 @@ class TableController extends Controller
             'id' => ['required', 'exists:tables,id'],
             'title' => 'required|string|max:100|unique:tables,title,' . $request->id,
             'data' => 'required|array',
-            'category_id' => 'required|in:' . implode(',', array_values(\Helper::$tableType)),
-            'tournament' => [Rule::requiredIf($request->category_id == \Helper::$tableType['تورنومنت'], 'max:100')],
+            'tournament_id' => [Rule::requiredIf(!$request->tournament_name), Rule::in(Tournament::pluck('id'))],
+            'tournament_name' => [Rule::requiredIf($request->tournament_id == null), $table->tournament_id == $request->tournament_id ? ('unique:tournaments,name,' . $request->tournament_id) : '', 'max:100'],
 
-            'data.img' => 'required|base64_image|base64_size:20480',
+            'img' => Rule::requiredIf($request->tournament_id == null) . '|base64_image|base64_size:20480',
 
 //            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
         ], [
-            'title.required' => 'تیتر نمی تواند خالی باشد',
-            'title.string' => 'تیتر متنی باشد',
-            'title.max' => 'تیتر حداکثر 100 حرف باشد',
-            'title.unique' => 'تیتر تکراری است',
-            'tournament.required' => 'نام تورنومنت ضروری است',
-            'tournament.max' => 'تیتر حداکثر 100 حرف باشد',
+            'title.required' => 'تیتر جدول نمی تواند خالی باشد',
+            'title.string' => 'تیتر جدول متنی باشد',
+            'title.max' => 'تیتر جدول حداکثر 100 حرف باشد',
+            'title.unique' => 'تیتر جدول تکراری است',
+
+            'tournament_id.required_if' => 'اطلاعات تورنومنت جدید و یا انتخاب تورنومنت ضروری است',
+            'tournament_id.in' => 'تورنومنت انتخابی نامعتبر است',
+
+            'tournament_name.required_if' => 'اطلاعات تورنومنت جدید و یا انتخاب تورنومنت ضروری است',
+            'tournament_name.unique' => 'نام تورنومنت تکراری است',
+            'tournament_name.max' => 'نام تورنومنت حداکثر 100 حرف باشد',
 
             'content.required' => 'جدول  نمی تواند خالی باشد',
             'content.json' => 'جدول نامعتبر است',
@@ -107,14 +132,16 @@ class TableController extends Controller
 
         ]);
 
-        $table->type_id = $request->category_id;
+
+        if ($table->tournament_id == $request->tournament_id) {
+            Tournament::where('id', $table->tournament_id)->update(['name' => $request->tournament_name, 'sport_id' => $request->sport_id]);
+
+            Tournament::createImage($request->img, $table->tournament_id);
+        }
         $table->title = $request->title;
-        $table->tournament = $request->tournament;
+        $table->tournament_id = $request->tournament_id;
         $table->content = json_encode($request->data);
-
-
         $table->save();
-
 
         //make title image
 
@@ -139,7 +166,7 @@ class TableController extends Controller
 
         $group = $request->group;
         $name = $request->name; //search in title,summary,content,tags
-        $category_id = $request->category;
+        $sport_id = $request->sport;
 
         $orderBy = $request->order_by;
         $paginate = $request->paginate;
@@ -168,8 +195,8 @@ class TableController extends Controller
 
         $query = Table::query();
 
-        if (is_numeric($category_id))
-            $query = $query->where('type_id', $category_id);
+        if (is_numeric($sport_id))
+            $query = $query->whereIntegerInRaw('tournament_id', Tournament::where('sport_id', $sport_id)->pluck('id'));
 
 
         if ($name) {
@@ -201,15 +228,13 @@ class TableController extends Controller
         if ($orderBy)
             $query = $query->orderBy($orderBy, $dir);
 
-        $cols = ['id', 'type_id', 'title', 'tournament', 'content->tags as tags', 'content->img as img', 'active', 'updated_at',];
+        $cols = ['id', 'title', 'tournament_id', 'content->tags as tags', 'active', 'updated_at',];
         if ($request->with_content) {
             $cols[] = 'content->table->header as header';
             $cols[] = 'content->table->body as body';
         }
         $query = $query->select($cols);
-        if ($group) {
-            $query->get()->groupBy('tournament');
-        }
+
 
 //        $data = $query->offset($page - 1)->limit($paginate)->get();
 
@@ -223,4 +248,6 @@ class TableController extends Controller
 
         return $data;
     }
+
+
 }

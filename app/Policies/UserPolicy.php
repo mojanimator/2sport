@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Shop;
 use App\Models\Table;
+use App\Models\Tournament;
 use App\Models\User;
 use Facade\Ignition\Tabs\Tab;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -108,10 +109,10 @@ class UserPolicy
         if (!$item_is_blog_table && $user->role == 'bl')
             return false;
 
-        if ($user->role == 'go' || $user->role == 'ad' && ($item == Event::class || $item == 'event'))
+        if ($user->role == 'go' || $user->role == 'ad' && ($item == Event::class || $item == 'event' ||$item == Tournament::class || $item == 'tournament'   ))
             return true;
 
-        if ($user->role != 'go' && $user->role != 'ad' && ($item == Event::class || $item == 'event'))
+        if ($user->role != 'go' && $user->role != 'ad' && ($item == Event::class || $item == 'event'||$item == Tournament::class || $item == 'tournament'))
             return false;
 
         if (!$item_is_blog_table)
