@@ -288,9 +288,9 @@
                 $events=(new \App\Http\Controllers\EventController )->search(new  \Illuminate\Http\Request(['group'=>true,]));
                 if( $events-> getData() ){
  $today=$events->getData()->today;
- $days=get_object_vars($events->getData()->days );
+ $days=count($events->getData()->days)>0? get_object_vars($events->getData()->days ):[];
  }
-dd($days);
+
             @endphp
             @if($days && is_array($days) && count($days)>0)
                 <div class="col-md-6 px-1 my-1">
