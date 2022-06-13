@@ -289,8 +289,9 @@
                 if( $events-> getData() ){
  $today=$events->getData()->today;
   $days=$events->getData()->days;
-  if(!in_array($today,  array_keys($days)) ){
-  $days[$today]=[];
+  if(!in_array($today,array_keys($days)) ){
+  $days=new stdClass;
+  $days->$today=[];
   }
  $days= get_object_vars($days );
  }
