@@ -303,7 +303,7 @@ class BlogController extends Controller
             $query = $query->where('is_draft', $is_draft);
 
 
-        if (!$user) {
+        if ($user && $user->role == 'us') {
             $query = $query->where('active', true);
         } else {
 
