@@ -15,7 +15,7 @@ class Category extends Model
         'id', 'name', 'type_id'
     ];
     protected $casts = [
-
+        'id' => 'string'
 
     ];
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Setting;
 use App\Models\Sport;
 use App\Models\County;
@@ -45,6 +46,7 @@ class Controller extends BaseController
             'shops' => Shop::select('id', 'name')->orDerByDesc('id')->get(),
             'counties' => County::select('id', 'name', 'province_id')->get(),
             'sports' => Sport::select('id', 'name')->get(),
+            'categories' => Category::select('id', 'name')->get(),
 
             'crop_ratio' => Helper::$cropsRatio,
             'app_info' => [
