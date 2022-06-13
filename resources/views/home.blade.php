@@ -325,7 +325,7 @@
                                     <div class="  carousel-item   h-100 w-100 position-relative  {{$idx==$today?  'active':''}}">
                                         <div class=" bg-gradient-primary  p-2 overflow-hidden position-absolute rounded-bottom    text-white"
                                              style="z-index: 1"
-                                        >{{$idx . ' کنداکتور '}}
+                                        >{{' کنداکتور '.$idx  }}
 
                                         </div>
                                         <div class="  carousel-caption   border-3  mt-3   overflow-y-auto    h-100 ">
