@@ -292,7 +292,7 @@
  }
 
             @endphp
-            @if($days && is_array($days))
+            @if($days && is_array($days) && count($days)>0)
                 <div class="col-md-6 px-1 my-1">
                     <div class=" bg-gradient-dark-transparent rounded-3    overflow-hidden  position-relative"
                          style="height: 18rem;">
