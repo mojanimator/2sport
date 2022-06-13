@@ -157,9 +157,9 @@ class TournamentController extends Controller
     public function search(Request $request)
     {
 
-
+        $id = $request->id;
         $name = $request->name; //search in title,summary,content,tags
-        $category_id = $request->category;
+        $sport_id = $request->sport;
 
         $orderBy = $request->order_by;
         $paginate = $request->paginate;
@@ -167,7 +167,6 @@ class TournamentController extends Controller
         $dir = $request->dir;
         $panel = $request->panel;
         $active = $request->active;
-        $user_id = $request->user_id;
 
 
         $user = auth()->user() ?: auth('api')->user();
@@ -188,16 +187,24 @@ class TournamentController extends Controller
 
         $query = Tournament::query();
 
-        if (is_numeric($category_id))
-            $query = $query->where('type_id', $category_id);
+        if (is_numeric($id))
+            $query = $query->where('id', $id);
+
+
+        if (is_numeric($sport_id))
+            $query = $query->where('sport_id', $sport_id);
 
 
         if ($name) {
             foreach (explode(' ', $name) as $word) {
                 $query = $query->where(function ($query) use ($word) {
-                    $query->orWhere('title', 'LIKE', '%' . $word . '%')
-                        ->orWhere('content->>tags', 'LIKE', '%' . $word . '%');
+                    $query->orWhere('name', 'LIKE', '%' . $word . '%');
                 });
+
+                $sport_id = json_decode($sport_id);
+
+                if (is_array($sport_id))
+                    $query = $query->orWhereIn('sport_id', $sport_id);
             }
         }
 
@@ -208,25 +215,19 @@ class TournamentController extends Controller
             $query = $query->where('active', true);
         } else {
 
-            if ($panel && $user->role == 'us')
-                $query = $query->where('user_id', $user->id);
-
             if ($panel && is_numeric($active))
                 $query = $query->where('active', $active == 1 ? true : false);
 
-            if ($user_id && $panel && ($user->role == 'ad' || $user->role == 'go'))
-                $query = $query->where('user_id', $user_id);
+
         }
 //
         if ($orderBy)
             $query = $query->orderBy($orderBy, $dir);
 
-        $cols = ['id', 'type_id', 'title', 'tournament', 'content->tags as tags', 'content->img as img', 'active', 'updated_at',];
-        if ($request->with_content) {
-            $cols[] = 'content->table->header as header';
-            $cols[] = 'content->table->body as body';
+
+        if ($request->with_tables) {
+            $query = $query->with('tables');
         }
-        $query = $query->select($cols);
 
 
 //        $data = $query->offset($page - 1)->limit($paginate)->get();

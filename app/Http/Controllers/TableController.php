@@ -29,6 +29,7 @@ class TableController extends Controller
             'sport_id' => 'nullable|' . Rule::in(Sport::pluck('id')),
             'tournament_id' => [Rule::requiredIf(!$request->tournament_name), !$request->tournament_name ? Rule::in(Tournament::pluck('id')) : 'nullable'],
             'tournament_name' => [Rule::requiredIf($request->tournament_id == null), Rule::unique('tournaments', 'name'), 'max:100'],
+            'tags' => 'nullable|max:150',
 
             'img' => Rule::requiredIf($request->tournament_id == null) . '|base64_image|base64_size:20480',
 
@@ -45,6 +46,8 @@ class TableController extends Controller
             'tournament_name.required' => ' تورنومنت جدید و یا انتخاب تورنومنت ضروری است',
             'tournament_name.unique' => 'نام تورنومنت تکراری است',
             'tournament_name.max' => 'نام تورنومنت حداکثر 100 حرف باشد',
+
+            'tags.max' => 'تگ حداکثر 150 حرف باشد',
 
             'tournament.required' => 'نام تورنومنت ضروری است',
             'tournament.max' => 'تیتر حداکثر 100 حرف باشد',
@@ -74,6 +77,7 @@ class TableController extends Controller
             'title' => $request->title,
             'content' => json_encode($request->data),
             'active' => true,
+            'tags' => $request->tags,
 
         ]);
         \Telegram::log(\Helper::$TELEGRAM_GROUP_ID, 'table-created', $table);
@@ -103,7 +107,7 @@ class TableController extends Controller
             'data' => 'required|array',
             'tournament_id' => [Rule::requiredIf(!$request->tournament_name), Rule::in(Tournament::pluck('id'))],
             'tournament_name' => [Rule::requiredIf($request->tournament_id == null), $table->tournament_id == $request->tournament_id ? ('unique:tournaments,name,' . $request->tournament_id) : '', 'max:100'],
-
+            'tags' => 'nullable|max:150',
             'img' => Rule::requiredIf($request->tournament_id == null) . '|base64_image|base64_size:20480',
 
 //            'video' => 'nullable|mimes:mp4' /*. ',m4v,avi,flv,mov'*/ . '|max:10240'
@@ -119,6 +123,8 @@ class TableController extends Controller
             'tournament_name.required_if' => 'اطلاعات تورنومنت جدید و یا انتخاب تورنومنت ضروری است',
             'tournament_name.unique' => 'نام تورنومنت تکراری است',
             'tournament_name.max' => 'نام تورنومنت حداکثر 100 حرف باشد',
+
+            'tags.max' => 'تگ حداکثر 150 حرف باشد',
 
             'content.required' => 'جدول  نمی تواند خالی باشد',
             'content.json' => 'جدول نامعتبر است',
@@ -139,6 +145,7 @@ class TableController extends Controller
             Tournament::createImage($request->img, $table->tournament_id);
         }
         $table->title = $request->title;
+        $table->tags = $request->tags;
         $table->tournament_id = $request->tournament_id;
         $table->content = json_encode($request->data);
         $table->save();
@@ -164,6 +171,7 @@ class TableController extends Controller
     public function search(Request $request)
     {
 
+        $tournament_id = $request->tournament_id;
         $group = $request->group;
         $name = $request->name; //search in title,summary,content,tags
         $sport_id = $request->sport;
@@ -198,12 +206,16 @@ class TableController extends Controller
         if (is_numeric($sport_id))
             $query = $query->whereIntegerInRaw('tournament_id', Tournament::where('sport_id', $sport_id)->pluck('id'));
 
+        if (is_numeric($tournament_id))
+            $query = $query->where('tournament_id', $tournament_id);
+
 
         if ($name) {
             foreach (explode(' ', $name) as $word) {
                 $query = $query->where(function ($query) use ($word) {
                     $query->orWhere('title', 'LIKE', '%' . $word . '%')
-                        ->orWhere('content->>tags', 'LIKE', '%' . $word . '%');
+//                        ->orWhere('content->>tags', 'LIKE', '%' . $word . '%')
+                        ->orWhere('tags', 'LIKE', '%' . $word . '%');
                 });
             }
         }
@@ -228,7 +240,8 @@ class TableController extends Controller
         if ($orderBy)
             $query = $query->orderBy($orderBy, $dir);
 
-        $cols = ['id', 'title', 'tournament_id', 'content->tags as tags', 'active', 'updated_at',];
+        $cols = ['id', 'title', 'tournament_id', /*'content->tags as tags',*/
+            'tags', 'active', 'updated_at',];
         if ($request->with_content) {
             $cols[] = 'content->table->header as header';
             $cols[] = 'content->table->body as body';

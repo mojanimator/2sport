@@ -169,7 +169,7 @@
 
                                                 </div>
                                                 <div class="small text-blue text-opacity-75 font-weight-bolder  my-1">
-                                                    {{ d.tags.split(' ').join(', ')}}
+                                                    {{ d.tags != null ? d.tags.split(' ').join(', ') : ''}}
 
                                                 </div>
 

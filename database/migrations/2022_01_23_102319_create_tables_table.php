@@ -17,6 +17,7 @@ class CreateTablesTable extends Migration
             $table->increments('id');
             $table->bigInteger('tournament_id')->unsigned()->nullable();
             $table->string('title', 100);
+            $table->string('tags', 150)->nullable();
 //            $table->tinyInteger('type_id')->unsigned(); //Helper::$tableTypes()
             $table->json('content');
             $table->boolean('active')->default(true);

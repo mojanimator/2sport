@@ -16,10 +16,17 @@ class Tournament extends Model
         'id', 'sport_id', 'name', 'started_at', 'updated_at', 'active'
     ];
     protected $casts = [
-        'active' => 'boolean'
+        'active' => 'boolean',
+        'updated_at' => 'timestamp',
+        'started_at' => 'timestamp',
+        'sport_id' => 'string',
 
     ];
 
+    public function tables()
+    {
+        return $this->hasMany(Table::class);
+    }
 
     static function createImage($img, $id)
     {

@@ -12,10 +12,11 @@ class Table extends Model
     public $timestamps = false;
     protected $table = 'tables';
     protected $fillable = [
-        'id', 'title', 'tournament_id', 'active', 'content', 'updated_at',
+        'id', 'title', 'tags', 'tournament_id', 'active', 'content', 'updated_at',
     ];
     protected $casts = [
-        'active' => 'boolean'
+        'active' => 'boolean',
+        'updated_at' => 'timestamp'
 
     ];
 

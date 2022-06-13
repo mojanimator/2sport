@@ -48,11 +48,11 @@
                 <image-uploader
                         class=" col-sm-10 col-md-8 col-lg-6 mx-auto  overflow-x-scroll" id="img"
                         label="لوگوی تورنومنت"
-                        :for-id="table.tournament.id" ref="imageUploader"
+                        :for-id="mode=='edit'?table.tournament.id:''" ref="imageUploader"
                         :crop-ratio="cropRatio"
                         :link="tournamentEditLink"
-                        :id="table.tournament.id"
-                        :data-id="table.id"
+                        :id="mode=='edit'?table.tournament.id:''"
+                        :data-id="mode=='edit'?table.id:''"
                         :replace="mode=='edit'"
                         :mode="mode==null?'create':mode"
                         :preload="img"
@@ -320,7 +320,7 @@
 
         mounted() {
             if (!this.category_id) this.category_id = "";
-            if (!this.tournament_id) this.tournament_id = "";
+            if (!this.tournament_id) this.tournament_id = null;
 
             if (this.table) {
                 if (this.table.tournament) {
@@ -336,11 +336,11 @@
                 this.tournament_id = this.table.tournament_id;
                 this.title = this.table.title;
                 this.category_id = this.table.type_id;
+                this.tags = this.table.tags;
                 if (this.table.content) {
                     this.table.content = JSON.parse(this.table.content);
 
 
-                    this.tags = this.table.content.tags;
                     this.content = this.table.content.table;
                     this.view = this.content.body.map(e => e.map(e => false));
                 }
@@ -541,21 +541,24 @@
             }, async sendData() {
                 validInputs();
                 this.loading = true;
-                axios.post(this.sendLink, {
+                let params = {
                     id: this.table ? this.table.id : null,
                     title: this.title,
                     sport_id: this.sport_id,
                     tournament_id: this.tournament_id,
                     tournament_name: this.tournament_name,
-                    img: this.$refs.imageUploader.getCroppedData(),
+                    tags: this.tags,
                     data: {
-                        tags: this.tags,
                         table: this.content,
 
                     },
 
 //                    content: this.convertDataToHtml(await this.editor.save())
-                }, {
+                };
+                if (this.tournament_id == null) {
+                    params['img'] = this.$refs.imageUploader.getCroppedData();
+                }
+                axios.post(this.sendLink, params, {
                     onUploadProgress: function (progressEvent) {
 //                        var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
 //                        console.log(percentCompleted);

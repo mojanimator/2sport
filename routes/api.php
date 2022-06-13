@@ -38,6 +38,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('blog/find', [App\Http\Controllers\BlogController::class, 'find'])->name('blog.find');
 
     Route::post('payment/create', [App\Http\Controllers\PaymentController::class, 'makePay'])->name('payment.create');
+    Route::get('tournament/search', [App\Http\Controllers\TournamentController::class, 'search'])->name('tournament.search');
 
 });
 Route::post('coupon/calculate', [App\Http\Controllers\CouponController::class, 'calculate'])->name('coupon.calculate');
