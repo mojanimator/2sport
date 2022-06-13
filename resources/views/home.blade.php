@@ -289,7 +289,12 @@
                 if( $events-> getData() ){
  $today=$events->getData()->today;
   $days=$events->getData()->days;
-  if(!in_array($today,array_keys($days)) ){
+ $keys=[];
+ foreach ($days as $idx=>$day) {
+ $keys[]=$idx;
+    }
+
+  if(!in_array($today,$keys) ){
   $days=new stdClass;
   $days->$today=[];
   }
