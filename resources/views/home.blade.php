@@ -288,7 +288,11 @@
                 $events=(new \App\Http\Controllers\EventController )->search(new  \Illuminate\Http\Request(['group'=>true,]));
                 if( $events-> getData() ){
  $today=$events->getData()->today;
- $days=count($events->getData()->days)>0? get_object_vars($events->getData()->days ):[];
+  $days=$events->getData()->days;
+  if(!in_array($today,  array_keys($days)) ){
+  $days[$today]=[];
+  }
+ $days= get_object_vars($days );
  }
 
             @endphp
