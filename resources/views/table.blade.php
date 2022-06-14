@@ -6,7 +6,7 @@
 @endphp
 
 @section('title')
-    {{$data?$data->tournament?:$data->title:'جدول یافت نشد'}}
+    {{$data?optional($data->tournament)->name?:$data->title:'جدول یافت نشد'}}
 @stop
 
 @section('content')
