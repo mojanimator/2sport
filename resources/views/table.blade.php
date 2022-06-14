@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @php
-    $data=\App\Models\Table::find($id);
+    $data=\App\Models\Table::whereId($id)->with('tournament')->first();
+
 @endphp
 
 @section('title')
@@ -57,27 +58,27 @@
         </div>
     </nav>
     @php
-        if ($data){
-            if($data->tournament){
-                $data=\App\Models\Table::where('tournament',$data->tournament)->get()->all();
-                foreach ($data as $d) {
-                    $d->content=json_decode($d->content);
-                    $d->img=$d->content->img;
-                    $d->header=$d->content->table->header;
-                    $d->body=$d->content->table->body;
-                    $d->tags=$d->content->tags;
+        $img=asset('storage/'.Helper::$docsMap['tournament'].$data->tournament_id.'.jpg');
+            if ($data){
+                if($data->tournament){
+                    $data=\App\Models\Table::where('tournament_id',$data->tournament->id)->get()->all();
+                    foreach ($data as $d) {
+                        $d->content=json_decode($d->content);
+                        $d->img=$img;
+                        $d->header=$d->content->table->header;
+                        $d->body=$d->content->table->body;
 
-                   }
 
-                }
-             else{
-                $content=json_decode($data->content);
-                $img=$content->img;
-                $header=$content->table->header;
-                $body=$content->table->body;
-                $tags=$content->tags;
-        }
-        }
+                       }
+
+                    }
+                 else{
+                    $content=json_decode($data->content);
+                    $header=$content->table->header;
+                    $body=$content->table->body;
+                    $tags=$content->tags;
+            }
+            }
     @endphp
     <div class="px-1 px-sm-2 px-md-3 mx-auto col-md-11 col-lg-10   my-5">
         @if (! isset($data))
@@ -87,7 +88,7 @@
             </div>
 
         @elseif( is_array($data))
-            <div class=" shadow rounded p-2 my-3 text-center bg-primary text-white">{{$d->tournament}}</div>
+            <div class=" shadow rounded p-2 my-3 text-center bg-primary text-white">{{$d->tournament->name}}</div>
 
             @foreach($data as $d)
                 <div class="card shadow-primary small">
