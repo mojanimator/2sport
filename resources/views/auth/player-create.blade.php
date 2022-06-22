@@ -376,7 +376,7 @@
                             </div>
                             <div class="form-group   mb-0">
                                 <div class="col-md-12  mt-2">
-                                    <button onclick=" submitWithFiles(event)" type="button"
+                                    <button onclick=" submitWithFiles(event,{'upload_pending': true})" type="button"
                                             class="btn btn-success btn-block font-weight-bold py-3">
                                         پرداخت و ثبت نام
                                     </button>
@@ -399,7 +399,7 @@
             addSMSBtnListener();
         });
 
-        function submitWithFiles(event) {
+        function submitWithFiles(event, extra = {}) {
             document.querySelector('#loading').classList.remove('d-none');
             validInputs();
 
@@ -411,7 +411,7 @@
                     continue;
                 if (data[i].id === 'img')
                     fd.append(data[i].name, app.$refs.imageUploader.getCroppedData());
-                else if (data[i].id === 'video-file') {
+                else if (data[i].id === 'video-file' && extra['upload_pending'] != true) {
                     if (data[i].files[0] !== undefined)
                         fd.append('video', data[i].files[0]);
                 }
@@ -421,7 +421,8 @@
                 else
                     fd.append(data[i].name, data[i].value);
             }
-
+            for (let i in extra)
+                fd.append(i, extra[i]);
             axios.post("{{route('player.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
                     var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -435,7 +436,10 @@
                         document.querySelector('#loading').classList.add('d-none');
 
                         if (response.status == 200)
-                            window.location = response.data.url;
+                            if (response.data.resume == true)
+                                submitWithFiles(event);
+                            else
+                                window.location = response.data.url;
 
                     }
                 ).catch((error) => {

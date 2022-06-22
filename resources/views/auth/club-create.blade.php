@@ -295,7 +295,7 @@
                             </div>
                             <div class="form-group   mb-0">
                                 <div class="col-md-12  mt-2">
-                                    <button onclick=" submitWithFiles(event)" type="button"
+                                    <button onclick=" submitWithFiles(event,{'upload_pending': true})" type="button"
                                             class="btn btn-success btn-block font-weight-bold py-3">
                                         پرداخت و ثبت
                                     </button>
@@ -320,7 +320,7 @@
             addSMSBtnListener();
         });
 
-        function submitWithFiles(event) {
+        function submitWithFiles(event, extra = {}) {
             document.querySelector('#loading').classList.remove('d-none');
             validInputs();
 
@@ -330,9 +330,9 @@
             for (let i in data) {
                 if (data[i].type === 'radio' && data[i].checked === false)
                     continue;
-                if (data[i].id === 'license')
+                if (data[i].id === 'license' && extra['upload_pending'] !== true)
                     fd.append(data[i].name, app.$refs.licenseUploader.getCroppedData());
-                else if (data[i].id && data[i].id.includes('img') && !data[i].id.includes('file')) {
+                else if (data[i].id && data[i].id.includes('img') && !data[i].id.includes('file') && extra['upload_pending'] !== true) {
 
                     let res = app.$refs['imageUploader-' + data[i].id].getCroppedData();
                     if (res)
@@ -344,6 +344,8 @@
                 else
                     fd.append(data[i].name, data[i].value);
             }
+            for (let i in extra)
+                fd.append(i, extra[i]);
             fd.append('times', app.$refs.clubTimes.getTimes());
             axios.post("{{route('club.create')}}", fd, {
                 onUploadProgress: function (progressEvent) {
@@ -358,7 +360,10 @@
                         document.querySelector('#loading').classList.add('d-none');
 
                         if (response.status == 200)
-                            window.location = response.data.url;
+                            if (response.data.resume == true)
+                                submitWithFiles(event);
+                            else
+                                window.location = response.data.url;
 
                     }
                 ).catch((error) => {

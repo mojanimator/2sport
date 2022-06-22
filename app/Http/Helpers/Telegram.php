@@ -194,6 +194,10 @@ class Telegram
                 case 'player_created':
                     $msg .= " 🟡 " . "یک بازیکن ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . ' ' . $data->family . PHP_EOL;
@@ -213,6 +217,10 @@ class Telegram
                 case 'coach_created':
                     $msg .= " 🟠 " . "یک مربی ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . ' ' . $data->family . PHP_EOL;
@@ -230,6 +238,10 @@ class Telegram
                 case 'club_created':
                     $msg .= " 🔵 " . "یک باشگاه ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . PHP_EOL;
@@ -248,6 +260,10 @@ class Telegram
                 case 'shop_created':
                     $msg .= " 🟣 " . "یک فروشگاه ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . PHP_EOL;
@@ -264,6 +280,10 @@ class Telegram
                     $shop = \App\Models\Shop::firstOrNew(['id' => $data->shop_id]);
                     $msg .= " ⚫️ " . "یک محصول ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . PHP_EOL;
@@ -285,6 +305,7 @@ class Telegram
                 case 'blog_created':
                     $user = \App\Models\User::firstOrNew(['id' => $data->user_id]);
                     $msg .= " 🟤 " . "یک خبر اضافه شد" . PHP_EOL;
+
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نویسنده: " . PHP_EOL;
@@ -326,6 +347,10 @@ class Telegram
                 case 'player_edited':
                     $msg .= " 🟧 " . ($admin ? "ادمین *$admin* یک بازیکن را ویرایش کرد" : "یک بازیکن ویرایش شد") . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . ' ' . $data->family . PHP_EOL;
@@ -345,6 +370,10 @@ class Telegram
                 case 'coach_edited':
                     $msg .= " 🟨 " . ($admin ? "ادمین *$admin* یک مربی را ویرایش کرد" : "یک مربی ویرایش شد") . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . ' ' . $data->family . PHP_EOL;
@@ -362,6 +391,10 @@ class Telegram
                 case 'club_edited':
                     $msg .= " 🟩 " . ($admin ? "ادمین *$admin* یک باشگاه را ویرایش کرد" : "یک باشگاه ویرایش شد") . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . PHP_EOL;
@@ -380,6 +413,10 @@ class Telegram
                 case 'shop_edited':
                     $msg .= " 🟦 " . ($admin ? "ادمین *$admin* یک فروشگاه را ویرایش کرد" : "یک فروشگاه ویرایش شد") . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . PHP_EOL;
@@ -396,6 +433,10 @@ class Telegram
                     $shop = \App\Models\Shop::firstOrNew(['id' => $data->shop_id]);
                     $msg .= " 🟪 " . ($admin ? "ادمین *$admin* یک محصول را ویرایش کرد" : "یک محصول ویرایش شد") . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $docs = $data->docs;
+                    foreach ($docs as $doc) {
+                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000);
+                    }
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->name . PHP_EOL;

@@ -27,8 +27,17 @@ Route::get('test', function () {
 //    Artisan::call('db:seed');
 //    Artisan::call('server:optimize');
 
-    $e = new \App\Http\Controllers\TournamentController();
-    return $e->search(new \Illuminate\Http\Request(['with_tables' => true]));
+//    $e = new \App\Http\Controllers\TournamentController();
+//    return $e->search(new \Illuminate\Http\Request(['with_tables' => true]));
+
+    $player = \App\Models\Player::find(2);
+    $docs = $player->docs;
+//    return $docs;
+//    foreach ($docs as $doc) {
+//
+//        echo url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?rev=' . time();
+//    }
+
 });
 
 Route::get('event/search', [App\Http\Controllers\EventController::class, 'search'])->name('event.search');
