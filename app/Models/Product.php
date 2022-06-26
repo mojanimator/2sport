@@ -29,6 +29,7 @@ class Product extends Model
         'discount_price' => 'string',
         'province_id' => 'string',
         'county_id' => 'string',
+      
     ];
 //    protected static function booted()
 //    {

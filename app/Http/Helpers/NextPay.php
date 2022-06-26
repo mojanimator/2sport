@@ -82,7 +82,7 @@ class  NextPay
 
             ]);
             (new SMS())->deleteActivationSMS($phone);
-            \App\Models\Ref::where('invited_id', $user->id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
+//            \App\Models\Ref::where('invited_id', $user->id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
             Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'payment', $payment);
             redirect("/panel/$type/edit/$id")->with('success-alert', 'پرداخت شما با موفقیت انجام شد و در صف فعالسازی قرار گرفت');
             return response()->json(['url' => url("panel/$type/edit/$id")], 200);
