@@ -153,7 +153,7 @@ class Telegram
                     $msg .= ($us->name ? "$us->name $us->family" : "$us->username") . PHP_EOL;
                     $msg .= " 📌 " . "عنوان" . PHP_EOL;
                     $msg .= $data->title . PHP_EOL;
-                    $msg .= " 📅 " . "تاریخ : " . PHP_EOL . Jalalian::fromDateTime($data->time, new DateTimeZone('Asia/Tehran'))->format('%Y/%m/%d ⏰ H:i') . PHP_EOL;
+                    $msg .= " 📅 " . "تاریخ : " . PHP_EOL . Jalalian::fromDateTime($data->time, 'Asia/Tehran')->format('%Y/%m/%d ⏰ H:i') . PHP_EOL;
                     $msg .= " 🚩 " . "آیتم 1" . PHP_EOL;
                     $msg .= $data->team1 . PHP_EOL;
                     $msg .= " 🚩 " . "آیتم 2" . PHP_EOL;
@@ -171,7 +171,7 @@ class Telegram
                     $msg .= ($us->name ? "$us->name $us->family" : "$us->username") . PHP_EOL;
                     $msg .= " 📌 " . "عنوان" . PHP_EOL;
                     $msg .= $data->title . PHP_EOL;
-                    $msg .= " 📅 " . "تاریخ : " . PHP_EOL . Jalalian::fromDateTime($data->time, new DateTimeZone('Asia/Tehran'))->format('%Y/%m/%d ⏰ H:i') . PHP_EOL;
+                    $msg .= " 📅 " . "تاریخ : " . PHP_EOL . Jalalian::fromDateTime($data->time, 'Asia/Tehran')->format('%Y/%m/%d ⏰ H:i') . PHP_EOL;
                     $msg .= " 🚩 " . "آیتم 1" . PHP_EOL;
                     $msg .= $data->team1 . PHP_EOL;
                     $msg .= " 🚩 " . "آیتم 2" . PHP_EOL;
