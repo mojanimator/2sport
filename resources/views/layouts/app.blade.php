@@ -172,7 +172,7 @@
     <footer class="footer pt-3 mt-1 bg-primary  ">
         {{--<hr class="horizontal dark mb-5">--}}
         <div class=" mx-3  ">
-            <div class=" row text-end col-12">
+            <div class=" row text-center col-10 mx-auto">
                 <div class="col-sm-4     ">
                     <div>
                         <h6 class="text-white text-primary font-weight-bolder">ارتباط با ما</h6>
@@ -215,20 +215,36 @@
                 <div class="col-sm-4      ">
                     <div>
                         <h6 class="text-gradient text-white   font-weight-bolder">دسترسی سریع</h6>
-                        <ul class="flex-column  nav  pr-0  ">
+                        <ul class="flex-row  nav  pr-0  small">
                             <li class="nav-item hoverable-text-teal">
-                                <a class="nav-link text-white" href="{{route('players.view')}}" target="_blank">
+                                <a class="nav-link text-white" href="{{route('players.view')}}" target="blank">
                                     بازیکن
                                 </a>
                             </li>
                             <li class="nav-item hoverable-text-teal">
-                                <a class="nav-link text-white" href="{{route('coaches.view')}}" target="_blank">
+                                <a class="nav-link text-white" href="{{route('coaches.view')}}" target="blank">
                                     مربی
                                 </a>
                             </li>
                             <li class="nav-item hoverable-text-teal">
-                                <a class="nav-link text-white" href="{{route('blogs.view')}}" target="_blank">
+                                <a class="nav-link text-white" href="{{route('clubs.view')}}" target="blank">
+                                    مرکز ورزشی
+                                </a>
+                            </li>
+                            <li class="nav-item hoverable-text-teal">
+                                <a class="nav-link text-white" href="{{route('shops.view')}}" target="blank">
+                                    فروشگاه ورزشی
+                                </a>
+                            </li>
+                            <li class="nav-item hoverable-text-teal">
+                                <a class="nav-link text-white" href="{{route('blogs.view')}}" target="blank">
                                     خبر ورزشی
+                                </a>
+                            </li>
+                            <li class="nav-item hoverable-text-teal">
+                                <a class="nav-link text-white" href="{{route('blogs.view',['view'=>'conductor'])}}"
+                                   target="blank">
+                                    کنداکتور
                                 </a>
                             </li>
 

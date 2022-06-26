@@ -289,15 +289,7 @@
                 if( $events-> getData() ){
  $today=$events->getData()->today;
   $days=$events->getData()->days;
- $keys=[];
- foreach ($days as $idx=>$day) {
- $keys[]=$idx;
-    }
 
-  if(!in_array($today,$keys) ){
-  $days=new stdClass;
-  $days->$today=[];
-  }
  $days= get_object_vars($days );
  }
 
@@ -323,55 +315,56 @@
 
                                 @endforeach
                             </div>
-                            <div class="carousel-inner h-100 w-100    ">
+                            <div class="carousel-inner h-100 w-100     ">
 
                                 @foreach($days as  $idx=>$eventGroups)
 
-                                    <div class="  carousel-item   h-100 w-100 position-relative  {{$idx==$today?  'active':''}}">
+                                    <div class="  carousel-item  overflow-y-auto h-100 w-100 position-relative  {{$idx==$today?  'active':''}}">
                                         <div class=" bg-gradient-primary  p-2 overflow-hidden position-absolute rounded-bottom    text-white"
                                              style="z-index: 1"
                                         >{{' کنداکتور '.$idx  }}
 
                                         </div>
-                                        <div class="  carousel-caption   border-3  mt-3   overflow-y-auto    h-100 ">
-                                            <div class="rounded-3 h-100 w-100 ">
+                                        <a href="{{url('blogs').'?view=conductor'}}">
+                                            <div class="  carousel-caption   border-3   mt-3 h-100  overflow-y-auto    ">
+                                                <div class="rounded-3 h-100   w-100 ">
 
-                                                @foreach($eventGroups as $title=>$events)
+                                                    @foreach($eventGroups as $title=>$events)
 
-                                                    <div class="card my-1   w-100  ">
-                                                        <div class="text-white card-header bg-indigo p-1 ">{{$title}}</div>
-                                                        @foreach($events as $idx=>$event)
-                                                            @if($idx!=0)
-                                                                <hr class="border border-top border-info p-0 m-0">
-                                                            @endif
-                                                            <div class="text-primary d-flex flex-column ">
-                                                                <div class="text-indigo justify-content-around d-flex ">
-                                                                    <div> {{$event->team1}}</div>
-                                                                    <div class="d-flex justify-content-center font-weight-bold text-purple ">
-                                                                        @if($event->score1 && $event->score2)
-                                                                            <div> {{$event->score1}}</div>
-                                                                            <div>:</div>
-                                                                            <div> {{$event->score2}}</div>
-                                                                        @elseif($event->status==null)
-                                                                            <div class="small"> {{Morilog\Jalali\Jalalian::forge($event->time, new DateTimeZone('Asia/Tehran'))->format('⏰ H:i')}}</div>
-
-                                                                        @endif
-                                                                    </div>
-                                                                    <div>{{$event->team2}}</div>
-                                                                </div>
-                                                                @if($event->status!=null)
-                                                                    <div class=" smaller">{{$event->status}}</div>
-                                                                @else
-                                                                    <div class="small"> {{Morilog\Jalali\Jalalian::forge($event->time, new DateTimeZone('Asia/Tehran'))->format('⏰ H:i')}}</div>
-
+                                                        <div class="card my-1   w-100  ">
+                                                            <div class="text-white card-header bg-indigo p-1 ">{{$title}}</div>
+                                                            @foreach($events as $idx=>$event)
+                                                                @if($idx!=0)
+                                                                    <hr class="border border-top border-info p-0 m-0">
                                                                 @endif
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
+                                                                <div class="text-primary d-flex flex-column ">
+                                                                    <div class="text-indigo justify-content-around d-flex ">
+                                                                        <div> {{$event->team1}}</div>
+                                                                        <div class="d-flex justify-content-center font-weight-bold text-purple ">
+                                                                            @if($event->score1 && $event->score2)
+                                                                                <div> {{$event->score1}}</div>
+                                                                                <div>:</div>
+                                                                                <div> {{$event->score2}}</div>
+                                                                                {{--@elseif($event->status==null)--}}
+                                                                                {{--<div class="small"> {{Morilog\Jalali\Jalalian::forge($event->time, new DateTimeZone('Asia/Tehran'))->format('⏰ H:i')}}</div>--}}
 
+                                                                            @endif
+                                                                        </div>
+                                                                        <div>{{$event->team2}}</div>
+                                                                    </div>
+                                                                    @if($event->status!=null)
+                                                                        <div class=" smaller">{{$event->status}}</div>
+                                                                    @else
+                                                                        <div class="small"> {{Morilog\Jalali\Jalalian::forge($event->time, new DateTimeZone('Asia/Tehran'))->format('⏰ H:i')}}</div>
+
+                                                                    @endif
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </a>
 
                                     </div>
                                 @endforeach

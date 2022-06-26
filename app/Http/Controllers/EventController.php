@@ -333,6 +333,8 @@ class EventController extends Controller
                 return Jalalian::forge($query->time, $zone)->format('%A');
             }, 'title']);
             $today = Jalalian::forge(Carbon::now($zone))->format('%A');
+            if (!key_exists($today, $data->all()))
+                $data[$today] = [str_replace(' 0', ' ', Jalalian::now()->format('%A %d %B', 'Asia/Tehran')) => [['title' => '...', 'team1' => '', 'team2' => '', 'score1' => null, 'score2' => null, 'status' => '', 'time' => null]]];
             return response()->json(['today' => $today, 'days' => $data]);
 //            $data = collect($data)->groupBy('time')->all();
         } else

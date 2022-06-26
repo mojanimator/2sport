@@ -417,7 +417,7 @@
 
             }
 
-
+            console.log(this.eventDays);
         },
         mounted() {
             self = this;
