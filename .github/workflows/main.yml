@@ -1,0 +1,23 @@
+on: push
+name:  2sport app changes
+jobs:
+  web-deploy:
+    name:  Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name:  Get latest code
+      uses: actions/checkout@v3
+    
+    - name:  Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      with:
+        server: 5.9.42.254
+        username: sportir
+        password: ${{ secrets.ftp_password }}
+        server-dir: /sportir/
+        dangerous-clean-slate: false
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          vendor/**

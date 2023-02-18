@@ -1,0 +1,51 @@
+
+#sidebar-container {
+
+  transition: .3s all ease;
+  min-height: 100vh;
+
+  &:not(.sidebar-expanded) {
+
+    @include media-breakpoint-up(sm) {
+      width: 200px !important;
+    }
+    @include media-breakpoint-down(sm) {
+      width: 60px !important;
+
+    }
+    @include media-breakpoint-down-px(343px) {
+      width: 60px !important;
+      flex: 1 0 0%
+    }
+
+    a {
+
+      .item-text {
+        @include media-breakpoint-up(sm) {
+          display: inline-block;
+        }
+        @include media-breakpoint-down(sm) {
+          display: none;
+        }
+      }
+      .item-icon {
+
+        @include media-breakpoint-down(sm) {
+          width: 100%;
+        }
+      }
+    }
+  }
+  &.sidebar-expanded {
+    width: 200px !important;
+    a {
+      .item-text {
+        display: inline-block;
+      }
+
+    }
+  }
+
+}
+
+
