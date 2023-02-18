@@ -37,7 +37,6 @@
 
 
                         @guest
-
                             <li class="nav-item align-self-center  me-2   ms-auto  ">
                                 <div class="   ">
                                     <!-- Authentication Links -->
