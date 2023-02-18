@@ -34,7 +34,6 @@
                         {{--<a class="nav-link px-1 px-md-2  hoverable-cyan rounded {{str_contains( url()->current(),'/blogs')? 'text-primary bg-cyan':'text-white'}} "--}}
                         {{--aria-current="page" href="/blogs">اخبار ورزشی</a>--}}
                         {{--</li>--}}
-
                         @guest
                             <li class="nav-item align-self-center  me-2   ms-auto  ">
                                 <div class="   ">
