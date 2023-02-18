@@ -35,7 +35,6 @@
                         {{--aria-current="page" href="/blogs">اخبار ورزشی</a>--}}
                         {{--</li>--}}
 
-
                         @guest
                             <li class="nav-item align-self-center  me-2   ms-auto  ">
                                 <div class="   ">
