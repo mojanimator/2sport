@@ -97,7 +97,7 @@ $poster=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.jpg";
                                         <div class=" col mx-auto rounded   bg-light   py-3  my-3"
                                              style="z-index: 2 ">
                                     <span
-                                        class="    text-primary small font-weight-bold  py-3 px-2 ">  {!! $data->description !!} </span>
+                                        class="    text-primary small font-weight-bold  py-3 px-2 ">  {!! str_replace("\n","&nbsp",$data->description) !!} </span>
                                         </div>
                                     @endif
                                 </div>
