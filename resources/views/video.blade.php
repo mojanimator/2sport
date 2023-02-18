@@ -1,5 +1,6 @@
 @php
     $data=\App\Models\Video::where('id',$id)->where('active',true)->first();
+    $timezone=new DateTimeZone('Asia/Tehran');
 if ($data){
 
 $video=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.mp4";
@@ -18,6 +19,14 @@ $poster=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.jpg";
 
   //new videos
      $newVideos=\App\Models\Video::query()->whereNotIn('id',[$data->id])->orderByDesc('id' )->take(8)->get();
+
+     function getDuration($time){
+         if(!$time) return '';
+         $min=intdiv($time ,60);
+         $sec= $time   %60;
+         return str_pad($min, 2, "0", STR_PAD_LEFT) .":".str_pad($sec, 2, "0", STR_PAD_LEFT);
+
+     }
 
 }
 @endphp
@@ -71,11 +80,11 @@ $poster=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.jpg";
                                 <div
                                     class="col-12 p-2 rounded d-flex  justify-content-around  small  bg-light rounded-bottom text-dark ">
                                     <div>
-                                        @php($ago= Morilog\Jalali\Jalalian::forge ($data->created_at)->ago())
-                                        {{ (str_contains($ago,'ماه')|| str_contains($ago,'سال'))?Morilog\Jalali\Jalalian::forge($data->created_at)->format('%A, %d %B %Y ⏰ H:i'):$ago}}
+                                        @php($ago= Morilog\Jalali\Jalalian::forge ($data->created_at,$timezone)->ago())
+                                        {{ (str_contains($ago,'ماه')|| str_contains($ago,'سال'))?Morilog\Jalali\Jalalian::forge($data->created_at,$timezone)->format('%A, %d %B %Y ⏰ H:i'):$ago}}
                                     </div>
                                     <div>
-                                        {{$data->duration? (intdiv($data->duration ,60).':'.($data->duration%60)):''}}
+                                        {{getDuration($data->duration)  }}
                                     </div>
                                 </div>
                                 <div class="card-divider opacity-50"></div>
@@ -88,7 +97,7 @@ $poster=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.jpg";
                                         <div class=" col mx-auto rounded   bg-light   py-3  my-3"
                                              style="z-index: 2 ">
                                     <span
-                                        class="    text-primary small font-weight-bold  py-3 px-2 ">  {{ $data->description  }} </span>
+                                        class="    text-primary small font-weight-bold  py-3 px-2 ">  {!! $data->description !!} </span>
                                         </div>
                                     @endif
                                 </div>
@@ -144,7 +153,7 @@ $poster=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.jpg";
                                             </span>
                                                             <span
                                                                 class="   rounded-end  bg-secondary text-white small   px-2 ">
-                                                        {{$vid->duration? (intdiv($vid->duration ,60).':'.($vid->duration%60)):''}}
+                                                          {{getDuration($vid->duration)  }}
 
                                                 </span>
                                                         </div>
@@ -158,8 +167,8 @@ $poster=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.jpg";
                                             class="m-card-body  px-2 d-flex  flex-column  align-self-stretch    text-center z-index-1">
 
                                             <div class="text-indigo   text-end max-2-line " style="font-size:13px">
-                                                @php($ago= Morilog\Jalali\Jalalian::forge ($vid->created_at)->ago())
-                                                {{ (str_contains($ago,'ماه')|| str_contains($ago,'سال'))?Morilog\Jalali\Jalalian::forge($data->created_at)->format('%A, %d %B %Y ⏰ H:i'):$ago}}
+                                                @php($ago= Morilog\Jalali\Jalalian::forge ($vid->created_at,$timezone)->ago())
+                                                {{ (str_contains($ago,'ماه')|| str_contains($ago,'سال'))?Morilog\Jalali\Jalalian::forge($data->created_at,$timezone)->format('%A, %d %B %Y ⏰ H:i'):$ago}}
                                             </div>
                                             <div class="card-divider opacity-50"></div>
                                             <div
