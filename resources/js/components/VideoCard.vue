@@ -219,7 +219,9 @@ export default {
         },
         getDuration(t) {
             if (t == null) return '';
-            return `${Math.floor(t / 60)}:${t % 60}`;
+            let min = Math.floor(t / 60);
+            let sec = t % 60;
+            return `${min < 10 ? '0' + min : min}:${sec < 10 ? '0' + sec : sec}`;
         },
         getDateTime(date) {
             if (date == null) return '';
