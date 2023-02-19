@@ -70,6 +70,7 @@ $poster=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.jpg";
                                         <!--<a href="https://videojs.com/html5-video-support/" target="_blank"-->
                                         <!--&gt;بیشتر</a>-->
 
+
                                     </p>
                                 </video>
                             </div>
