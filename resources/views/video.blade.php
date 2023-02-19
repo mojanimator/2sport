@@ -55,7 +55,7 @@ $poster=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.jpg";
                     <div class="col-md-8 my-3">
                         @if($video)
                             <div class="  w-100 card bg-light   ">
-                                <video style="min-height: 20rem ; "
+                                <video style="max-height: 25rem ; "
                                        id="my-video"
                                        class="video-js w-100    rounded-top overflow-hidden"
                                        controls
