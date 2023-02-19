@@ -10,10 +10,10 @@
     <title> @yield('title',   config("app.name", "Laravel")   )</title>
 
     <!-- Scripts -->
-{{--<script src="{{ mix('js/app.js').'?id='.rand(1000,9000) }}" defer></script>--}}
+    {{--<script src="{{ mix('js/app.js').'?id='.rand(1000,9000) }}" defer></script>--}}
 
 
-<!-- Fonts -->
+    <!-- Fonts -->
     {{--<link rel="dns-prefetch" href="//fonts.gstatic.com">--}}
     {{--<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">--}}
 
@@ -53,7 +53,6 @@
 
     @if (!Route::is('/') && !str_contains( url()->current(),'/panel') )
 
-
         <nav id="navbars00" class="navbar navbar-expand-sm navbar-dark bg-primary " aria-label="Eighth navbar example">
             <div class="container-fluid px-md-0">
                 <a class="navbar-brand me-0 me-md-2 font-weight-bold" href="{{route('/')}}">
@@ -87,6 +86,10 @@
                         <li class="nav-item  small ms-1 ms-sm-0 ms-md-1 my-1">
                             <a class="nav-link px-1 px-md-2  hoverable-cyan rounded {{str_contains( url()->current(),'/blogs')? 'text-primary bg-cyan':'text-white'}} "
                                aria-current="page" href="/blogs">خبر ورزشی</a>
+                        </li>
+                        <li class="nav-item  small ms-1 ms-sm-0 ms-md-1 my-1">
+                            <a class="nav-link px-1 px-md-2  hoverable-cyan rounded {{str_contains( url()->current(),'/videos')? 'text-primary bg-cyan':'text-white'}} "
+                               aria-current="page" href="/blogs">ویدیو</a>
                         </li>
 
 
@@ -147,7 +150,6 @@
                                     @csrf
                                 </form>
                             </li>
-
 
                         @endauth
                     </ul>
@@ -245,6 +247,12 @@
                                 <a class="nav-link text-white" href="{{route('blogs.view',['view'=>'conductor'])}}"
                                    target="blank">
                                     کنداکتور
+                                </a>
+                            </li>
+                            <li class="nav-item hoverable-text-teal">
+                                <a class="nav-link text-white" href="{{route('videos.view' )}}"
+                                   target="blank">
+                                    ویدیو
                                 </a>
                             </li>
 
