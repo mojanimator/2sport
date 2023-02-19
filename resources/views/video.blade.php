@@ -220,7 +220,7 @@ $poster=asset('storage')."/".Helper::$docsMap['videos']."/$data->id.jpg";
         <script>
             document.addEventListener("DOMContentLoaded", function (event) {
 
-                window.initPlayer("{{$video}}");
+                window.initPlayer("{{$video}}", "360px");
 
             });
 

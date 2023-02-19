@@ -208,16 +208,20 @@ window.validInputs = function () {
 };
 import videojs from 'video.js';
 
-window.initPlayer = function (src) {
+window.initPlayer = function (src, height = null) {
 
     let player;
     let video = document.getElementById('video');
-    player = videojs('my-video', {
+    let options = {
         controls: true,
         controlBar: true,
         autoplay: false,
         preload: 'auto'
-    }, (e) => {
+    };
+    if (height)
+        options['height'] = height;
+
+    player = videojs('my-video', options, (e) => {
 //                    console.log('ready');
     });
 
