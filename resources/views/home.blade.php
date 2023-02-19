@@ -648,7 +648,7 @@
         </section>
 
 
-        <section class=" mx-4 my-3 py-4 pe-4 ps-5  row blur   rounded-3 position-relative  ">
+        <section class=" mx-4 my-3 py-4 pe-4 ps-5  row bg-primary blur   rounded-3 position-relative  ">
             {{--<div class="d-md-inline-block d-sm-none d-none    align-self-center position-absolute right-0 top-50   ">--}}
             {{--<p class="vertical  text-white text-lg    ">جدید ترین ها</p>--}}
             {{--</div>--}}
