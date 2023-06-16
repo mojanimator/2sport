@@ -59,13 +59,13 @@ class BotController extends Controller
             $reply = isset($message->reply_to_message) ? $message->reply_to_message : "";
 
             $new_chat_member = $update->message->new_chat_member; #id,is_bot,first_name,last_name,username
-            $new_chat_members = $update->message->new_chat_members; #[id,is_bot,first_name,last_name,username]
+            $new_chat_members = $update->message->new_chat_members; # id,is_bot,first_name,last_name,username]
             $left_chat_member = $update->message->left_chat_member; #id,is_bot,first_name,username
             $new_chat_participant = $update->message->new_chat_participant; #id,username
 
 //            $animation = $update->message->animation;  #file_name,mime_type,width,height,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,
 //            $sticker = $update->message->sticker;  #width,height,emoji,set_name,is_animated,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,
-//            $photo = $update->message->photo; #[file_id,file_unique_id,file_size,width,height] array of different photo sizes
+//            $photo = $update->message->photo; # file_id,file_unique_id,file_size,width,height] array of different photo sizes
 //            $document = $update->message->document; #file_name,mime_type,thumb[file_id,file_unique_id,file_size,width,height]
 //            $video = $update->message->video; #duration,width,height,mime_type,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,height]
 //            $audio = $update->message->audio; #duration,mime_type,title,performer,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,height]
@@ -123,7 +123,8 @@ class BotController extends Controller
 //        $USER_REGISTER = " ثبت نام ";
 //        $CANCEL_REGISTER = "لغو ثبت نام";
 
-
+        $this->sendMessage(72534783, "$from_id");
+        $this->sendMessage(72534783, file_get_contents('php://input'));
         if ($tc == 'private') {
             $this->user = User::where('telegram_id', $from_id)->first();
 //            return (string)($USER_REGISTER . "\xE2\x9C\x85" == $text);
@@ -1537,6 +1538,8 @@ class BotController extends Controller
 
     function creator($method, $datas = [])
     {
+
+        return \Telegram::creator($method, $datas);
         $url = "https://qr-image-creator.com/wallpapers/api/dabel_telegram";
         $datas['cmnd'] = $method;
 
@@ -1785,7 +1788,7 @@ class BotController extends Controller
         $sticker = $message->sticker;  #width,height,emoji,set_name,is_animated,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,
         $animation = $message->animation;  #file_name,mime_type,width,height,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,
 
-        $photo = $message->photo; #[file_id,file_unique_id,file_size,width,height] array of different photo sizes
+        $photo = $message->photo; # file_id,file_unique_id,file_size,width,height] array of different photo sizes
         $document = $message->document; #file_name,mime_type,thumb[file_id,file_unique_id,file_size,width,height]
         $video = $message->video; #duration,width,height,mime_type,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,height]
         $audio = $message->audio; #duration,mime_type,title,performer,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,height]
@@ -1965,7 +1968,7 @@ class BotController extends Controller
         $sticker = $message->sticker;  #width,height,emoji,set_name,is_animated,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,
         $animation = $message->animation;  #file_name,mime_type,width,height,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,
 
-        $photo = $message->photo; #[file_id,file_unique_id,file_size,width,height] array of different photo sizes
+        $photo = $message->photo; # file_id,file_unique_id,file_size,width,height] array of different photo sizes
         $document = $message->document; #file_name,mime_type,thumb[file_id,file_unique_id,file_size,width,height]
         $video = $message->video; #duration,width,height,mime_type,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,height]
         $audio = $message->audio; #duration,mime_type,title,performer,file_id,file_unique_id,file_size,thumb[file_id,file_unique_id,file_size,width,height]
