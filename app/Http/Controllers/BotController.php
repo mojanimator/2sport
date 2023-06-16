@@ -1525,7 +1525,7 @@ class BotController extends Controller
         ]);
     }
 
-    function sendMessage($chat_id, $text, $mode, $reply = null, $keyboard = null, $disable_notification = false)
+    function sendMessage($chat_id, $text, $mode = null, $reply = null, $keyboard = null, $disable_notification = false)
     {
         return $this->creator('sendMessage', [
             'chat_id' => $chat_id,
