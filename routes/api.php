@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/bot/getupdates', 'BotController@getupdates');
-Route::post('/bot/sendmessage', 'BotController@sendmessage');
-Route::get('/bot/getme', 'BotController@myInfo');
+Route::post('/bot/getupdates', [\App\Http\Controllers\BotController::class, 'getupdates']);
+Route::post('/bot/sendmessage', [\App\Http\Controllers\BotController::class, 'sendmessage']);
+Route::get('/bot/getme', [\App\Http\Controllers\BotController::class, 'myInfo']);
 
 
 Route::middleware('auth:api')->group(function () {
