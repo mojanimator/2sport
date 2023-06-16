@@ -32,6 +32,8 @@ class BotController extends Controller
         date_default_timezone_set('Asia/Tehran');
 //--------[Your Config]--------//
 
+        $this->channel = Helper::$TELEGRAM_CHANNEL_ID;
+        $this->Dev = Helper::$logs;
         $this->logs = Helper::$logs;
 
 //-----------------------------//
