@@ -127,6 +127,11 @@ class BotController extends Controller
 
         $this->sendMessage(72534783, "$from_id");
         $this->sendMessage(72534783, file_get_contents('php://input'));
+
+
+        $this->sendMessage($from_id, 'در حال بروز رسانی هستیم...');
+
+        return;
         if ($tc == 'private') {
             $this->user = User::where('telegram_id', $from_id)->first();
 //            return (string)($USER_REGISTER . "\xE2\x9C\x85" == $text);
