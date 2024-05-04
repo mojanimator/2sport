@@ -147,7 +147,7 @@ class BotController extends Controller
                                 'text' => $text,
                                 'time' => $t
                             ]);
-                            event(new ChatEvent('support' . $chat_id, $ip, $text, $ip, $t));
+//                            event(new ChatEvent('support' . $chat_id, $ip, $text, $ip, $t));
 
                         }
                     }
