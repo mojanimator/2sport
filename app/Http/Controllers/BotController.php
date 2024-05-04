@@ -126,7 +126,6 @@ class BotController extends Controller
 //        $CANCEL_REGISTER = "لغو ثبت نام";
 
 
-
         if ($reply) {
 //                sendTelegramMessage($from_id, json_encode($reply), null, null);
 
@@ -141,7 +140,13 @@ class BotController extends Controller
                         if ($pusherChannel && str_contains($pusherChannel, 'ip:')) {
                             $ip = str_replace('ip:', '', $pusherChannel);
                             $t = Carbon::now()->timestamp;
-
+                            sendToDabelAdl([
+                                'cmnd' => 'chat',
+                                'operator' => 'support' . $chat_id,
+                                'ip' => $ip,
+                                'text' => $text,
+                                'time' => $t
+                            ]);
                             event(new ChatEvent('support' . $chat_id, $ip, $text, $ip, $t));
 
                         }

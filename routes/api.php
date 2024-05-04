@@ -103,3 +103,45 @@ Route::post('dabel_telegram', function (Request $request) {
     }
 
 });
+Route::post('dabelchin_telegram', function (Request $request) {
+
+    $method = $request->cmnd;
+    $datas = $request->all();
+
+    $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN_DABELCHIN', 'YOUR-BOT-TOKEN') . "/" . $method;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $datas);
+
+    $res = curl_exec($ch);
+
+//        echo $res;
+    $res = json_decode($res);
+    if (curl_error($ch)) {
+
+        curl_close($ch);
+        return null;
+    } else {
+        curl_close($ch);
+        return $res;
+    }
+
+});
+function sendToDabelAdl($datas=[]){
+    $url = "https://dabeladl.com/api/2sport";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $datas);
+
+    $res = curl_exec($ch);
+    if (curl_error($ch)) {
+
+        curl_close($ch);
+        return null;
+    } else {
+        curl_close($ch);
+        return $res;
+    }
+}
