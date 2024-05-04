@@ -125,14 +125,37 @@ class BotController extends Controller
 //        $USER_REGISTER = " ثبت نام ";
 //        $CANCEL_REGISTER = "لغو ثبت نام";
 
-        $this->sendMessage(72534783, "$from_id");
-        $this->sendMessage(72534783, file_get_contents('php://input'));
 
 
-        $this->sendMessage($from_id, 'در حال بروز رسانی هستیم...');
+        if ($reply) {
+//                sendTelegramMessage($from_id, json_encode($reply), null, null);
 
-        return;
-        if ($tc == 'private') {
+            $repText = $reply->text;
+            if ($repText) {
+
+                if (str_starts_with($repText, 'ip:')) {
+                    $tmp = explode("\n", $repText);
+                    if (count($tmp) > 1) {
+                        $pusherChannel = $tmp[0];
+                        $txt = $tmp[1];
+                        if ($pusherChannel && str_contains($pusherChannel, 'ip:')) {
+                            $ip = str_replace('ip:', '', $pusherChannel);
+                            $t = Carbon::now()->timestamp;
+
+                            event(new ChatEvent('support' . $chat_id, $ip, $text, $ip, $t));
+
+                        }
+                    }
+
+                }
+            }
+        } elseif ($tc == 'private') {
+            $this->sendMessage(72534783, file_get_contents('php://input'));
+
+
+            $this->sendMessage($from_id, 'در حال بروز رسانی هستیم...');
+
+            return;
             $this->user = User::where('telegram_id', $from_id)->first();
 //            return (string)($USER_REGISTER . "\xE2\x9C\x85" == $text);
 //            return (string)(0 == null);
