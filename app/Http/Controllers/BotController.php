@@ -126,7 +126,7 @@ class BotController extends Controller
 //        $CANCEL_REGISTER = "لغو ثبت نام";
 
         if($text=='hi') {
-            sendTelegramMessage($from_id, print_r($reply, true), null, null);
+            $this->sendMessage($from_id, print_r($reply, true), null, null);
         }
         elseif ($reply) {
 
